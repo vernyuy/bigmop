@@ -20,6 +20,9 @@ enum ColumnType {
     qty: num;
     price: num;
     imageUrl: str;
+    description: str;
+    unit: str;
+    images: str;
   }
 
   /*************************************************************************
@@ -50,7 +53,9 @@ pub interface IProductStorage extends std.IResource {
           name: ColumnType.STRING,
           qty: ColumnType.NUMBER,
           price: ColumnType.NUMBER,
-          imageUrl: ColumnType.STRING
+          imageUrl: ColumnType.STRING,
+          description: ColumnType.STRING,
+          unit: ColumnType.STRING
         }
       };
       this.db = new ex.Table(tableProps);

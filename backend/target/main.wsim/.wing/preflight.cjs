@@ -14,8 +14,10 @@ const product = require("./preflight.product-18.cjs");
 const user = require("./preflight.user-19.cjs");
 const order = require("./preflight.order-20.cjs");
 const basicAuth = require("./preflight.auth-17.cjs");
+const category = require("./preflight.categories-21.cjs");
+const subCategory = require("./preflight.subCategories-22.cjs");
 const cloud = $stdlib.cloud;
-const cart = require("./preflight.cart-21.cjs");
+const cart = require("./preflight.cart-23.cjs");
 class $Root extends $stdlib.std.Resource {
   constructor($scope, $id) {
     super($scope, $id);
@@ -28,7 +30,7 @@ class $Root extends $stdlib.std.Resource {
       }
       static _toInflightType() {
         return `
-          require("${$helpers.normalPath(__dirname)}/inflight.Utils-14.cjs")({
+          require("${$helpers.normalPath(__dirname)}/inflight.Utils-16.cjs")({
           })
         `;
       }
@@ -58,7 +60,7 @@ class $Root extends $stdlib.std.Resource {
       }
       static _toInflightType() {
         return `
-          require("${$helpers.normalPath(__dirname)}/inflight.$Closure1-14.cjs")({
+          require("${$helpers.normalPath(__dirname)}/inflight.$Closure1-16.cjs")({
             $counter: ${$stdlib.core.liftObject(counter)},
           })
         `;
@@ -93,7 +95,7 @@ class $Root extends $stdlib.std.Resource {
       }
       static _toInflightType() {
         return `
-          require("${$helpers.normalPath(__dirname)}/inflight.$Closure2-14.cjs")({
+          require("${$helpers.normalPath(__dirname)}/inflight.$Closure2-16.cjs")({
             $counter: ${$stdlib.core.liftObject(counter)},
             $myBroadcaster: ${$stdlib.core.liftObject(myBroadcaster)},
           })
@@ -131,7 +133,7 @@ class $Root extends $stdlib.std.Resource {
       }
       static _toInflightType() {
         return `
-          require("${$helpers.normalPath(__dirname)}/inflight.$Closure3-14.cjs")({
+          require("${$helpers.normalPath(__dirname)}/inflight.$Closure3-16.cjs")({
             $api_url: ${$stdlib.core.liftObject(api.url)},
             $counter: ${$stdlib.core.liftObject(counter)},
             $http_Util: ${$stdlib.core.liftObject($stdlib.core.toLiftableModuleType(http.Util, "@winglang/sdk/http", "Util"))},
@@ -173,6 +175,12 @@ class $Root extends $stdlib.std.Resource {
     const userService = new user.UserService(this, "UserService", userStorage, api, auth);
     const orderStorage = new order.OrderStorage(this, "OrderStorage");
     const orderApi = new order.OrderService(this, "OrderService", orderStorage, productStorage, queue, api, auth);
+    const categoryStorage = new category.CategoryStorage(this, "CategoryStorage");
+    const categoryApi = new category.CategoryService(this, "CategoryService", categoryStorage, api, auth, myBroadcaster);
+    const subCategoryStorage = new subCategory.SubCategoryStorage(this, "SubCategoryStorage");
+    const subCategoryApi = new subCategory.SubCategoryService(this, "SubCategoryService", subCategoryStorage, productStorage, api, auth, myBroadcaster);
+    const cartStorage = new cart.CartStorage(this, "CartStorage");
+    const cartApi = new cart.CartService(this, "CartService", cartStorage, productStorage, api, auth, myBroadcaster);
     const website = new vite.Vite(this, "Vite Website", { root: String.raw({ raw: ["", "/../frontend"] }, (Utils.__dirname())), publicEnv: ({"TITLE": "Wing + Vite + React", "API_URL": api.url, "WS_URL": myBroadcaster.url}) });
     (api.get("/counter", new $Closure1(this, "$Closure1")));
     (api.post("/counter", new $Closure2(this, "$Closure2")));

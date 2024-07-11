@@ -2,6 +2,9 @@ bring cloud;
 bring ex;
 bring util;
 bring http;
+bring "./auth.w" as basicAuth;
+bring "./broadcaster.w" as broadcaster;
+bring "./product.w" as product;
 
 enum ColumnType {
   STRING,
@@ -112,12 +115,18 @@ pub interface ICartStorage extends std.IResource {
  * Create a CartService Class with api endpoints
  ***************************************************/
  pub class CartService {
-    pub api: cloud.Api;
+  pub api: cloud.Api;
+  pub auth: basicAuth.BasicAuth;
+  prodStorage: product.IProductStorage;
+  pub myBroadcaster: broadcaster.Broadcaster;
     cartStorage: ICartStorage;
   
-    new(storage: ICartStorage, api: cloud.Api) {
-      this.api = api;
-  
+    new(storage: ICartStorage, prodStore: product.IProductStorage, api: cloud.Api, auth: basicAuth.BasicAuth, broadcaster: broadcaster.Broadcaster) {
+      
+    this.auth = auth;
+    this.api = api;
+    this.myBroadcaster = broadcaster;
+    this.prodStorage = prodStore;
       this.cartStorage = storage;
   
       // API endpoints

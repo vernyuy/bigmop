@@ -1,6 +1,6 @@
 "use strict";
 const $helpers = require("@winglang/sdk/lib/helpers");
-module.exports = function({ $__parent_this_3_cartStorage, $std_Json }) {
+module.exports = function({ $__parent_this_3_categoryStorage, $auth, $std_Json }) {
   class $Closure3 {
     constructor({  }) {
       const $obj = (...args) => this.handle(...args);
@@ -8,8 +8,12 @@ module.exports = function({ $__parent_this_3_cartStorage, $std_Json }) {
       return $obj;
     }
     async handle(req) {
-      const carts = (await $__parent_this_3_cartStorage.list());
-      return ({"status": 200, "body": ((json, opts) => { return JSON.stringify(json, null, opts?.indent) })(({"items": carts}))});
+      const categorys = (await $__parent_this_3_categoryStorage.list());
+      const authenticated = (await $auth.call(req));
+      if ((!authenticated)) {
+        return ({"status": 401, "headers": ({["Content-Type"]: "text/plain"}), "body": "Unauthorized"});
+      }
+      return ({"status": 200, "body": ((json, opts) => { return JSON.stringify(json, null, opts?.indent) })(({"items": categorys}))});
     }
   }
   return $Closure3;

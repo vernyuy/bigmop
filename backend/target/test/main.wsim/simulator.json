@@ -147,7 +147,9 @@
           "name": "STRING",
           "qty": "NUMBER",
           "price": "NUMBER",
-          "imageUrl": "STRING"
+          "imageUrl": "STRING",
+          "description": "STRING",
+          "unit": "STRING"
         },
         "primaryKey": "id",
         "initialRows": {}
@@ -418,6 +420,42 @@
           },
           {
             "resourceHandle": "${wsim#root/env0/Api/OnRequestHandler10#attrs.handle}",
+            "operation": "invoke"
+          },
+          {
+            "resourceHandle": "${wsim#root/env0/Api/OnRequestHandler11#attrs.handle}",
+            "operation": "invoke"
+          },
+          {
+            "resourceHandle": "${wsim#root/env0/Api/OnRequestHandler12#attrs.handle}",
+            "operation": "invoke"
+          },
+          {
+            "resourceHandle": "${wsim#root/env0/Api/OnRequestHandler13#attrs.handle}",
+            "operation": "invoke"
+          },
+          {
+            "resourceHandle": "${wsim#root/env0/Api/OnRequestHandler14#attrs.handle}",
+            "operation": "invoke"
+          },
+          {
+            "resourceHandle": "${wsim#root/env0/Api/OnRequestHandler15#attrs.handle}",
+            "operation": "invoke"
+          },
+          {
+            "resourceHandle": "${wsim#root/env0/Api/OnRequestHandler16#attrs.handle}",
+            "operation": "invoke"
+          },
+          {
+            "resourceHandle": "${wsim#root/env0/Api/OnRequestHandler17#attrs.handle}",
+            "operation": "invoke"
+          },
+          {
+            "resourceHandle": "${wsim#root/env0/Api/OnRequestHandler18#attrs.handle}",
+            "operation": "invoke"
+          },
+          {
+            "resourceHandle": "${wsim#root/env0/Api/OnRequestHandler19#attrs.handle}",
             "operation": "invoke"
           }
         ]
@@ -796,6 +834,335 @@
             "/orders": {
               "get": {
                 "operationId": "get-orders",
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "content": {},
+                    "headers": {
+                      "Access-Control-Allow-Origin": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Methods": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Max-Age": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": []
+              }
+            },
+            "/categories": {
+              "post": {
+                "operationId": "post-categories",
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "content": {},
+                    "headers": {
+                      "Access-Control-Allow-Origin": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Methods": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Max-Age": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": []
+              },
+              "get": {
+                "operationId": "get-categories",
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "content": {},
+                    "headers": {
+                      "Access-Control-Allow-Origin": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Methods": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Max-Age": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": []
+              }
+            },
+            "/category/{id}": {
+              "get": {
+                "operationId": "get-category/:id",
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "content": {},
+                    "headers": {
+                      "Access-Control-Allow-Origin": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Methods": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Max-Age": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              }
+            },
+            "/subCategories": {
+              "post": {
+                "operationId": "post-subCategories",
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "content": {},
+                    "headers": {
+                      "Access-Control-Allow-Origin": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Methods": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Max-Age": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": []
+              },
+              "get": {
+                "operationId": "get-subCategories",
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "content": {},
+                    "headers": {
+                      "Access-Control-Allow-Origin": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Methods": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Max-Age": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": []
+              }
+            },
+            "/subSubCategory/{id}": {
+              "get": {
+                "operationId": "get-subSubCategory/:id",
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "content": {},
+                    "headers": {
+                      "Access-Control-Allow-Origin": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Methods": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Max-Age": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              }
+            },
+            "/cart": {
+              "post": {
+                "operationId": "post-cart",
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "content": {},
+                    "headers": {
+                      "Access-Control-Allow-Origin": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Methods": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Max-Age": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": []
+              }
+            },
+            "/cart/{id}": {
+              "get": {
+                "operationId": "get-cart/:id",
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "content": {},
+                    "headers": {
+                      "Access-Control-Allow-Origin": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Methods": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Max-Age": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              }
+            },
+            "/carts": {
+              "get": {
+                "operationId": "get-carts",
                 "responses": {
                   "200": {
                     "description": "200 response",
@@ -1390,10 +1757,572 @@
         "root/env0/Api"
       ]
     },
+    "root/env0/CategoryStorage/Counter/Resource": {
+      "type": "@winglang/sdk.sim.Resource",
+      "props": {
+        "environmentVariables": {
+          "WING_TARGET": "sim"
+        },
+        "sourceCodeFile": ".wing/resource_c87b4f7e.cjs",
+        "sourceCodeLanguage": "javascript"
+      },
+      "policy": [],
+      "path": "root/env0/CategoryStorage/Counter/Resource",
+      "addr": "c87b4f7e00e60053824af65416a5b7bb6c46788abe"
+    },
+    "root/env0/CategoryStorage/Table": {
+      "type": "@winglang/sdk.ex.Table",
+      "props": {
+        "name": "CategoriesTable",
+        "columns": {
+          "id": "STRING",
+          "name": "STRING",
+          "description": "STRING"
+        },
+        "primaryKey": "id",
+        "initialRows": {}
+      },
+      "path": "root/env0/CategoryStorage/Table",
+      "addr": "c855b7dd45d4272770f2fa5effd78d00d4eaf43122"
+    },
     "root/env0/Api/OnRequestHandler9": {
       "type": "@winglang/sdk.cloud.Function",
       "props": {
         "sourceCodeFile": ".wing/onrequesthandler9_c8282ed7.cjs",
+        "sourceCodeLanguage": "javascript",
+        "environmentVariables": {
+          "WING_TARGET": "sim",
+          "COUNTER_HANDLE_46788abe": "${wsim#root/env0/CategoryStorage/Counter/Resource#attrs.handle}",
+          "TABLE_HANDLE_eaf43122": "${wsim#root/env0/CategoryStorage/Table#attrs.handle}",
+          "BUCKET_HANDLE_523a1d04": "${wsim#root/env0/Broadcaster/Bucket#attrs.handle}",
+          "RESOURCE_HANDLE_46788abe": "${wsim#root/env0/CategoryStorage/Counter/Resource#attrs.handle}",
+          "STATE_HANDLE_b63ab41d": "${wsim#root/env0/Broadcaster/counter_updates/counter_updates/State#attrs.handle}"
+        },
+        "timeout": 60000,
+        "concurrency": 100
+      },
+      "policy": [
+        {
+          "operation": "inc",
+          "resourceHandle": "${wsim#root/env0/CategoryStorage/Counter/Resource#attrs.handle}"
+        },
+        {
+          "operation": "insert",
+          "resourceHandle": "${wsim#root/env0/CategoryStorage/Table#attrs.handle}"
+        },
+        {
+          "operation": "list",
+          "resourceHandle": "${wsim#root/env0/Broadcaster/Bucket#attrs.handle}"
+        },
+        {
+          "operation": "call",
+          "resourceHandle": "${wsim#root/env0/CategoryStorage/Counter/Resource#attrs.handle}"
+        },
+        {
+          "operation": "get",
+          "resourceHandle": "${wsim#root/env0/Broadcaster/counter_updates/counter_updates/State#attrs.handle}"
+        }
+      ],
+      "path": "root/env0/Api/OnRequestHandler9",
+      "addr": "c8282ed7737a1b12c637d64c63457268fffaed38b7",
+      "deps": [
+        "root/env0/CategoryStorage/Counter/Resource",
+        "root/env0/CategoryStorage/Table",
+        "root/env0/Broadcaster/Bucket",
+        "root/env0/Broadcaster/counter_updates/counter_updates/State"
+      ]
+    },
+    "root/env0/Api/ApiEventMapping9": {
+      "type": "@winglang/sdk.sim.EventMapping",
+      "props": {
+        "subscriber": "${wsim#root/env0/Api/OnRequestHandler9#attrs.handle}",
+        "publisher": "${wsim#root/env0/Api#attrs.handle}",
+        "subscriptionProps": {
+          "routes": [
+            {
+              "pathPattern": "/categories",
+              "method": "POST"
+            }
+          ]
+        }
+      },
+      "path": "root/env0/Api/ApiEventMapping9",
+      "addr": "c8082b0601c17ad95ab06bdcb9dd716a14db895a15",
+      "deps": [
+        "root/env0/Api/OnRequestHandler9",
+        "root/env0/Api"
+      ]
+    },
+    "root/env0/Api/OnRequestHandler10": {
+      "type": "@winglang/sdk.cloud.Function",
+      "props": {
+        "sourceCodeFile": ".wing/onrequesthandler10_c812cc9f.cjs",
+        "sourceCodeLanguage": "javascript",
+        "environmentVariables": {
+          "WING_TARGET": "sim",
+          "TABLE_HANDLE_eaf43122": "${wsim#root/env0/CategoryStorage/Table#attrs.handle}",
+          "COUNTER_HANDLE_46788abe": "${wsim#root/env0/CategoryStorage/Counter/Resource#attrs.handle}"
+        },
+        "timeout": 60000,
+        "concurrency": 100
+      },
+      "policy": [
+        {
+          "operation": "tryGet",
+          "resourceHandle": "${wsim#root/env0/CategoryStorage/Table#attrs.handle}"
+        }
+      ],
+      "path": "root/env0/Api/OnRequestHandler10",
+      "addr": "c812cc9fa5fa54b379d54653c3884a9fe21e6ebf15",
+      "deps": [
+        "root/env0/CategoryStorage/Table",
+        "root/env0/CategoryStorage/Counter/Resource"
+      ]
+    },
+    "root/env0/Api/ApiEventMapping10": {
+      "type": "@winglang/sdk.sim.EventMapping",
+      "props": {
+        "subscriber": "${wsim#root/env0/Api/OnRequestHandler10#attrs.handle}",
+        "publisher": "${wsim#root/env0/Api#attrs.handle}",
+        "subscriptionProps": {
+          "routes": [
+            {
+              "pathPattern": "/category/:id",
+              "method": "GET"
+            }
+          ]
+        }
+      },
+      "path": "root/env0/Api/ApiEventMapping10",
+      "addr": "c8020d01f723d743a3eb5f68fec6d5e45f09ea7014",
+      "deps": [
+        "root/env0/Api/OnRequestHandler10",
+        "root/env0/Api"
+      ]
+    },
+    "root/env0/Api/OnRequestHandler11": {
+      "type": "@winglang/sdk.cloud.Function",
+      "props": {
+        "sourceCodeFile": ".wing/onrequesthandler11_c8a3dcbb.cjs",
+        "sourceCodeLanguage": "javascript",
+        "environmentVariables": {
+          "WING_TARGET": "sim",
+          "TABLE_HANDLE_eaf43122": "${wsim#root/env0/CategoryStorage/Table#attrs.handle}",
+          "COUNTER_HANDLE_46788abe": "${wsim#root/env0/CategoryStorage/Counter/Resource#attrs.handle}"
+        },
+        "timeout": 60000,
+        "concurrency": 100
+      },
+      "policy": [
+        {
+          "operation": "list",
+          "resourceHandle": "${wsim#root/env0/CategoryStorage/Table#attrs.handle}"
+        }
+      ],
+      "path": "root/env0/Api/OnRequestHandler11",
+      "addr": "c8a3dcbb3a29f189c49175e0b2b293013805f14aa9",
+      "deps": [
+        "root/env0/CategoryStorage/Table",
+        "root/env0/CategoryStorage/Counter/Resource"
+      ]
+    },
+    "root/env0/Api/ApiEventMapping11": {
+      "type": "@winglang/sdk.sim.EventMapping",
+      "props": {
+        "subscriber": "${wsim#root/env0/Api/OnRequestHandler11#attrs.handle}",
+        "publisher": "${wsim#root/env0/Api#attrs.handle}",
+        "subscriptionProps": {
+          "routes": [
+            {
+              "pathPattern": "/categories",
+              "method": "GET"
+            }
+          ]
+        }
+      },
+      "path": "root/env0/Api/ApiEventMapping11",
+      "addr": "c86da38ae42b43d989462ce0ba06cc858ced545086",
+      "deps": [
+        "root/env0/Api/OnRequestHandler11",
+        "root/env0/Api"
+      ]
+    },
+    "root/env0/SubCategoryStorage/Counter/Resource": {
+      "type": "@winglang/sdk.sim.Resource",
+      "props": {
+        "environmentVariables": {
+          "WING_TARGET": "sim"
+        },
+        "sourceCodeFile": ".wing/resource_c8a4303c.cjs",
+        "sourceCodeLanguage": "javascript"
+      },
+      "policy": [],
+      "path": "root/env0/SubCategoryStorage/Counter/Resource",
+      "addr": "c8a4303c722aa93c1680c8ad38c3b0410a2dbc04da"
+    },
+    "root/env0/SubCategoryStorage/Table": {
+      "type": "@winglang/sdk.ex.Table",
+      "props": {
+        "name": "CategoriesTable",
+        "columns": {
+          "id": "STRING",
+          "name": "STRING",
+          "description": "STRING"
+        },
+        "primaryKey": "id",
+        "initialRows": {}
+      },
+      "path": "root/env0/SubCategoryStorage/Table",
+      "addr": "c8a02f663938dfe9ba732c97ae9d3396145b766ff9"
+    },
+    "root/env0/Api/OnRequestHandler12": {
+      "type": "@winglang/sdk.cloud.Function",
+      "props": {
+        "sourceCodeFile": ".wing/onrequesthandler12_c89a773a.cjs",
+        "sourceCodeLanguage": "javascript",
+        "environmentVariables": {
+          "WING_TARGET": "sim",
+          "BUCKET_HANDLE_523a1d04": "${wsim#root/env0/Broadcaster/Bucket#attrs.handle}",
+          "COUNTER_HANDLE_2dbc04da": "${wsim#root/env0/SubCategoryStorage/Counter/Resource#attrs.handle}",
+          "TABLE_HANDLE_5b766ff9": "${wsim#root/env0/SubCategoryStorage/Table#attrs.handle}",
+          "RESOURCE_HANDLE_2dbc04da": "${wsim#root/env0/SubCategoryStorage/Counter/Resource#attrs.handle}",
+          "STATE_HANDLE_b63ab41d": "${wsim#root/env0/Broadcaster/counter_updates/counter_updates/State#attrs.handle}"
+        },
+        "timeout": 60000,
+        "concurrency": 100
+      },
+      "policy": [
+        {
+          "operation": "list",
+          "resourceHandle": "${wsim#root/env0/Broadcaster/Bucket#attrs.handle}"
+        },
+        {
+          "operation": "inc",
+          "resourceHandle": "${wsim#root/env0/SubCategoryStorage/Counter/Resource#attrs.handle}"
+        },
+        {
+          "operation": "insert",
+          "resourceHandle": "${wsim#root/env0/SubCategoryStorage/Table#attrs.handle}"
+        },
+        {
+          "operation": "call",
+          "resourceHandle": "${wsim#root/env0/SubCategoryStorage/Counter/Resource#attrs.handle}"
+        },
+        {
+          "operation": "get",
+          "resourceHandle": "${wsim#root/env0/Broadcaster/counter_updates/counter_updates/State#attrs.handle}"
+        }
+      ],
+      "path": "root/env0/Api/OnRequestHandler12",
+      "addr": "c89a773afdbbc843388dc92ec6da895f5c3641f00b",
+      "deps": [
+        "root/env0/Broadcaster/Bucket",
+        "root/env0/SubCategoryStorage/Counter/Resource",
+        "root/env0/SubCategoryStorage/Table",
+        "root/env0/Broadcaster/counter_updates/counter_updates/State"
+      ]
+    },
+    "root/env0/Api/ApiEventMapping12": {
+      "type": "@winglang/sdk.sim.EventMapping",
+      "props": {
+        "subscriber": "${wsim#root/env0/Api/OnRequestHandler12#attrs.handle}",
+        "publisher": "${wsim#root/env0/Api#attrs.handle}",
+        "subscriptionProps": {
+          "routes": [
+            {
+              "pathPattern": "/subCategories",
+              "method": "POST"
+            }
+          ]
+        }
+      },
+      "path": "root/env0/Api/ApiEventMapping12",
+      "addr": "c8a849d0e037d1f18ae028cb642c6ba47014eefe7d",
+      "deps": [
+        "root/env0/Api/OnRequestHandler12",
+        "root/env0/Api"
+      ]
+    },
+    "root/env0/Api/OnRequestHandler13": {
+      "type": "@winglang/sdk.cloud.Function",
+      "props": {
+        "sourceCodeFile": ".wing/onrequesthandler13_c895114e.cjs",
+        "sourceCodeLanguage": "javascript",
+        "environmentVariables": {
+          "WING_TARGET": "sim",
+          "TABLE_HANDLE_5b766ff9": "${wsim#root/env0/SubCategoryStorage/Table#attrs.handle}",
+          "COUNTER_HANDLE_2dbc04da": "${wsim#root/env0/SubCategoryStorage/Counter/Resource#attrs.handle}"
+        },
+        "timeout": 60000,
+        "concurrency": 100
+      },
+      "policy": [
+        {
+          "operation": "tryGet",
+          "resourceHandle": "${wsim#root/env0/SubCategoryStorage/Table#attrs.handle}"
+        }
+      ],
+      "path": "root/env0/Api/OnRequestHandler13",
+      "addr": "c895114e8709c8bd8397ec94506b8b6292a7e5fdab",
+      "deps": [
+        "root/env0/SubCategoryStorage/Table",
+        "root/env0/SubCategoryStorage/Counter/Resource"
+      ]
+    },
+    "root/env0/Api/ApiEventMapping13": {
+      "type": "@winglang/sdk.sim.EventMapping",
+      "props": {
+        "subscriber": "${wsim#root/env0/Api/OnRequestHandler13#attrs.handle}",
+        "publisher": "${wsim#root/env0/Api#attrs.handle}",
+        "subscriptionProps": {
+          "routes": [
+            {
+              "pathPattern": "/subSubCategory/:id",
+              "method": "GET"
+            }
+          ]
+        }
+      },
+      "path": "root/env0/Api/ApiEventMapping13",
+      "addr": "c8a7ba20db9eb21a7ffd36654a1d170dc6995a19a1",
+      "deps": [
+        "root/env0/Api/OnRequestHandler13",
+        "root/env0/Api"
+      ]
+    },
+    "root/env0/Api/OnRequestHandler14": {
+      "type": "@winglang/sdk.cloud.Function",
+      "props": {
+        "sourceCodeFile": ".wing/onrequesthandler14_c84835d6.cjs",
+        "sourceCodeLanguage": "javascript",
+        "environmentVariables": {
+          "WING_TARGET": "sim",
+          "TABLE_HANDLE_5b766ff9": "${wsim#root/env0/SubCategoryStorage/Table#attrs.handle}",
+          "COUNTER_HANDLE_2dbc04da": "${wsim#root/env0/SubCategoryStorage/Counter/Resource#attrs.handle}"
+        },
+        "timeout": 60000,
+        "concurrency": 100
+      },
+      "policy": [
+        {
+          "operation": "list",
+          "resourceHandle": "${wsim#root/env0/SubCategoryStorage/Table#attrs.handle}"
+        }
+      ],
+      "path": "root/env0/Api/OnRequestHandler14",
+      "addr": "c84835d6d88772c3c206cde0c2fefdf37f95b5f045",
+      "deps": [
+        "root/env0/SubCategoryStorage/Table",
+        "root/env0/SubCategoryStorage/Counter/Resource"
+      ]
+    },
+    "root/env0/Api/ApiEventMapping14": {
+      "type": "@winglang/sdk.sim.EventMapping",
+      "props": {
+        "subscriber": "${wsim#root/env0/Api/OnRequestHandler14#attrs.handle}",
+        "publisher": "${wsim#root/env0/Api#attrs.handle}",
+        "subscriptionProps": {
+          "routes": [
+            {
+              "pathPattern": "/subCategories",
+              "method": "GET"
+            }
+          ]
+        }
+      },
+      "path": "root/env0/Api/ApiEventMapping14",
+      "addr": "c891ec2a237dfa49ee9c0029e7a9bbce024dc7cb75",
+      "deps": [
+        "root/env0/Api/OnRequestHandler14",
+        "root/env0/Api"
+      ]
+    },
+    "root/env0/CartStorage/Counter/Resource": {
+      "type": "@winglang/sdk.sim.Resource",
+      "props": {
+        "environmentVariables": {
+          "WING_TARGET": "sim"
+        },
+        "sourceCodeFile": ".wing/resource_c8bda215.cjs",
+        "sourceCodeLanguage": "javascript"
+      },
+      "policy": [],
+      "path": "root/env0/CartStorage/Counter/Resource",
+      "addr": "c8bda215fa1cb580811050f01254600b3499b6a4f4"
+    },
+    "root/env0/CartStorage/Table": {
+      "type": "@winglang/sdk.ex.Table",
+      "props": {
+        "name": "CartsTable",
+        "columns": {
+          "id": "STRING",
+          "firstName": "STRING",
+          "lastName": "STRING",
+          "email": "STRING",
+          "cartname": "STRING",
+          "dob": "STRING",
+          "imageUrl": "STRING"
+        },
+        "primaryKey": "id",
+        "initialRows": {}
+      },
+      "path": "root/env0/CartStorage/Table",
+      "addr": "c8a29d4b8f6c652fed5f6e8e6c764b1bc890d8e3d9"
+    },
+    "root/env0/Api/OnRequestHandler15": {
+      "type": "@winglang/sdk.cloud.Function",
+      "props": {
+        "sourceCodeFile": ".wing/onrequesthandler15_c87541dd.cjs",
+        "sourceCodeLanguage": "javascript",
+        "environmentVariables": {
+          "WING_TARGET": "sim",
+          "COUNTER_HANDLE_99b6a4f4": "${wsim#root/env0/CartStorage/Counter/Resource#attrs.handle}",
+          "TABLE_HANDLE_90d8e3d9": "${wsim#root/env0/CartStorage/Table#attrs.handle}",
+          "RESOURCE_HANDLE_99b6a4f4": "${wsim#root/env0/CartStorage/Counter/Resource#attrs.handle}"
+        },
+        "timeout": 60000,
+        "concurrency": 100
+      },
+      "policy": [
+        {
+          "operation": "inc",
+          "resourceHandle": "${wsim#root/env0/CartStorage/Counter/Resource#attrs.handle}"
+        },
+        {
+          "operation": "insert",
+          "resourceHandle": "${wsim#root/env0/CartStorage/Table#attrs.handle}"
+        },
+        {
+          "operation": "call",
+          "resourceHandle": "${wsim#root/env0/CartStorage/Counter/Resource#attrs.handle}"
+        }
+      ],
+      "path": "root/env0/Api/OnRequestHandler15",
+      "addr": "c87541dd1093f9e16595460a0404eb84e42b11e81b",
+      "deps": [
+        "root/env0/CartStorage/Counter/Resource",
+        "root/env0/CartStorage/Table"
+      ]
+    },
+    "root/env0/Api/ApiEventMapping15": {
+      "type": "@winglang/sdk.sim.EventMapping",
+      "props": {
+        "subscriber": "${wsim#root/env0/Api/OnRequestHandler15#attrs.handle}",
+        "publisher": "${wsim#root/env0/Api#attrs.handle}",
+        "subscriptionProps": {
+          "routes": [
+            {
+              "pathPattern": "/cart",
+              "method": "POST"
+            }
+          ]
+        }
+      },
+      "path": "root/env0/Api/ApiEventMapping15",
+      "addr": "c8c1d47d068445dec474fac4c3136412022c4f7d44",
+      "deps": [
+        "root/env0/Api/OnRequestHandler15",
+        "root/env0/Api"
+      ]
+    },
+    "root/env0/Api/OnRequestHandler16": {
+      "type": "@winglang/sdk.cloud.Function",
+      "props": {
+        "sourceCodeFile": ".wing/onrequesthandler16_c811d7f3.cjs",
+        "sourceCodeLanguage": "javascript",
+        "environmentVariables": {
+          "WING_TARGET": "sim",
+          "TABLE_HANDLE_90d8e3d9": "${wsim#root/env0/CartStorage/Table#attrs.handle}",
+          "COUNTER_HANDLE_99b6a4f4": "${wsim#root/env0/CartStorage/Counter/Resource#attrs.handle}"
+        },
+        "timeout": 60000,
+        "concurrency": 100
+      },
+      "policy": [
+        {
+          "operation": "tryGet",
+          "resourceHandle": "${wsim#root/env0/CartStorage/Table#attrs.handle}"
+        }
+      ],
+      "path": "root/env0/Api/OnRequestHandler16",
+      "addr": "c811d7f3663530f63228880e7992f6b196ce4d8757",
+      "deps": [
+        "root/env0/CartStorage/Table",
+        "root/env0/CartStorage/Counter/Resource"
+      ]
+    },
+    "root/env0/Api/ApiEventMapping16": {
+      "type": "@winglang/sdk.sim.EventMapping",
+      "props": {
+        "subscriber": "${wsim#root/env0/Api/OnRequestHandler16#attrs.handle}",
+        "publisher": "${wsim#root/env0/Api#attrs.handle}",
+        "subscriptionProps": {
+          "routes": [
+            {
+              "pathPattern": "/cart/:id",
+              "method": "GET"
+            }
+          ]
+        }
+      },
+      "path": "root/env0/Api/ApiEventMapping16",
+      "addr": "c8edf3848d24b0befb4e10dffffffded8dcedf1e48",
+      "deps": [
+        "root/env0/Api/OnRequestHandler16",
+        "root/env0/Api"
+      ]
+    },
+    "root/env0/Api/OnRequestHandler17": {
+      "type": "@winglang/sdk.cloud.Function",
+      "props": {
+        "sourceCodeFile": ".wing/onrequesthandler17_c835ba7d.cjs",
+        "sourceCodeLanguage": "javascript",
+        "environmentVariables": {
+          "WING_TARGET": "sim",
+          "TABLE_HANDLE_90d8e3d9": "${wsim#root/env0/CartStorage/Table#attrs.handle}",
+          "COUNTER_HANDLE_99b6a4f4": "${wsim#root/env0/CartStorage/Counter/Resource#attrs.handle}"
+        },
+        "timeout": 60000,
+        "concurrency": 100
+      },
+      "policy": [
+        {
+          "operation": "list",
+          "resourceHandle": "${wsim#root/env0/CartStorage/Table#attrs.handle}"
+        }
+      ],
+      "path": "root/env0/Api/OnRequestHandler17",
+      "addr": "c835ba7d37d4ea1c01abd43fd26e6a584069b2e42a",
+      "deps": [
+        "root/env0/CartStorage/Table",
+        "root/env0/CartStorage/Counter/Resource"
+      ]
+    },
+    "root/env0/Api/ApiEventMapping17": {
+      "type": "@winglang/sdk.sim.EventMapping",
+      "props": {
+        "subscriber": "${wsim#root/env0/Api/OnRequestHandler17#attrs.handle}",
+        "publisher": "${wsim#root/env0/Api#attrs.handle}",
+        "subscriptionProps": {
+          "routes": [
+            {
+              "pathPattern": "/carts",
+              "method": "GET"
+            }
+          ]
+        }
+      },
+      "path": "root/env0/Api/ApiEventMapping17",
+      "addr": "c8ffbda7e2d3d74a3bd55570682551d5a930837181",
+      "deps": [
+        "root/env0/Api/OnRequestHandler17",
+        "root/env0/Api"
+      ]
+    },
+    "root/env0/Api/OnRequestHandler18": {
+      "type": "@winglang/sdk.cloud.Function",
+      "props": {
+        "sourceCodeFile": ".wing/onrequesthandler18_c853c0fc.cjs",
         "sourceCodeLanguage": "javascript",
         "environmentVariables": {
           "WING_TARGET": "sim",
@@ -1413,16 +2342,16 @@
           "resourceHandle": "${wsim#root/env0/Counter/Resource#attrs.handle}"
         }
       ],
-      "path": "root/env0/Api/OnRequestHandler9",
-      "addr": "c8282ed7737a1b12c637d64c63457268fffaed38b7",
+      "path": "root/env0/Api/OnRequestHandler18",
+      "addr": "c853c0fc587ec256e4b8d381ec7f8f743ff147c738",
       "deps": [
         "root/env0/Counter/Resource"
       ]
     },
-    "root/env0/Api/ApiEventMapping9": {
+    "root/env0/Api/ApiEventMapping18": {
       "type": "@winglang/sdk.sim.EventMapping",
       "props": {
-        "subscriber": "${wsim#root/env0/Api/OnRequestHandler9#attrs.handle}",
+        "subscriber": "${wsim#root/env0/Api/OnRequestHandler18#attrs.handle}",
         "publisher": "${wsim#root/env0/Api#attrs.handle}",
         "subscriptionProps": {
           "routes": [
@@ -1433,17 +2362,17 @@
           ]
         }
       },
-      "path": "root/env0/Api/ApiEventMapping9",
-      "addr": "c8082b0601c17ad95ab06bdcb9dd716a14db895a15",
+      "path": "root/env0/Api/ApiEventMapping18",
+      "addr": "c8cea76da2a5c3ffaa188e750c2a94ac52e9922e15",
       "deps": [
-        "root/env0/Api/OnRequestHandler9",
+        "root/env0/Api/OnRequestHandler18",
         "root/env0/Api"
       ]
     },
-    "root/env0/Api/OnRequestHandler10": {
+    "root/env0/Api/OnRequestHandler19": {
       "type": "@winglang/sdk.cloud.Function",
       "props": {
-        "sourceCodeFile": ".wing/onrequesthandler10_c812cc9f.cjs",
+        "sourceCodeFile": ".wing/onrequesthandler19_c85747b1.cjs",
         "sourceCodeLanguage": "javascript",
         "environmentVariables": {
           "WING_TARGET": "sim",
@@ -1473,18 +2402,18 @@
           "resourceHandle": "${wsim#root/env0/Broadcaster/counter_updates/counter_updates/State#attrs.handle}"
         }
       ],
-      "path": "root/env0/Api/OnRequestHandler10",
-      "addr": "c812cc9fa5fa54b379d54653c3884a9fe21e6ebf15",
+      "path": "root/env0/Api/OnRequestHandler19",
+      "addr": "c85747b122ee024c552670d253eb3a6369ab80ad49",
       "deps": [
         "root/env0/Counter/Resource",
         "root/env0/Broadcaster/Bucket",
         "root/env0/Broadcaster/counter_updates/counter_updates/State"
       ]
     },
-    "root/env0/Api/ApiEventMapping10": {
+    "root/env0/Api/ApiEventMapping19": {
       "type": "@winglang/sdk.sim.EventMapping",
       "props": {
-        "subscriber": "${wsim#root/env0/Api/OnRequestHandler10#attrs.handle}",
+        "subscriber": "${wsim#root/env0/Api/OnRequestHandler19#attrs.handle}",
         "publisher": "${wsim#root/env0/Api#attrs.handle}",
         "subscriptionProps": {
           "routes": [
@@ -1495,10 +2424,10 @@
           ]
         }
       },
-      "path": "root/env0/Api/ApiEventMapping10",
-      "addr": "c8020d01f723d743a3eb5f68fec6d5e45f09ea7014",
+      "path": "root/env0/Api/ApiEventMapping19",
+      "addr": "c84b103e61ddfe1cd4128a6ae308218ffef0eccf50",
       "deps": [
-        "root/env0/Api/OnRequestHandler10",
+        "root/env0/Api/OnRequestHandler19",
         "root/env0/Api"
       ]
     },

@@ -76,12 +76,75 @@
       "sourceOp": "request",
       "target": "root/Default/Api/OnRequestHandler9",
       "targetOp": "invoke",
-      "name": "get /counter"
+      "name": "post /categories"
     },
     {
       "source": "root/Default/Api",
       "sourceOp": "request",
       "target": "root/Default/Api/OnRequestHandler10",
+      "targetOp": "invoke",
+      "name": "get /category/:id"
+    },
+    {
+      "source": "root/Default/Api",
+      "sourceOp": "request",
+      "target": "root/Default/Api/OnRequestHandler11",
+      "targetOp": "invoke",
+      "name": "get /categories"
+    },
+    {
+      "source": "root/Default/Api",
+      "sourceOp": "request",
+      "target": "root/Default/Api/OnRequestHandler12",
+      "targetOp": "invoke",
+      "name": "post /subCategories"
+    },
+    {
+      "source": "root/Default/Api",
+      "sourceOp": "request",
+      "target": "root/Default/Api/OnRequestHandler13",
+      "targetOp": "invoke",
+      "name": "get /subSubCategory/:id"
+    },
+    {
+      "source": "root/Default/Api",
+      "sourceOp": "request",
+      "target": "root/Default/Api/OnRequestHandler14",
+      "targetOp": "invoke",
+      "name": "get /subCategories"
+    },
+    {
+      "source": "root/Default/Api",
+      "sourceOp": "request",
+      "target": "root/Default/Api/OnRequestHandler15",
+      "targetOp": "invoke",
+      "name": "post /cart"
+    },
+    {
+      "source": "root/Default/Api",
+      "sourceOp": "request",
+      "target": "root/Default/Api/OnRequestHandler16",
+      "targetOp": "invoke",
+      "name": "get /cart/:id"
+    },
+    {
+      "source": "root/Default/Api",
+      "sourceOp": "request",
+      "target": "root/Default/Api/OnRequestHandler17",
+      "targetOp": "invoke",
+      "name": "get /carts"
+    },
+    {
+      "source": "root/Default/Api",
+      "sourceOp": "request",
+      "target": "root/Default/Api/OnRequestHandler18",
+      "targetOp": "invoke",
+      "name": "get /counter"
+    },
+    {
+      "source": "root/Default/Api",
+      "sourceOp": "request",
+      "target": "root/Default/Api/OnRequestHandler19",
       "targetOp": "invoke",
       "name": "post /counter"
     },
@@ -410,40 +473,278 @@
     {
       "source": "root/Default/Api/OnRequestHandler9",
       "sourceOp": "invoke",
-      "target": "root/Default/Counter",
-      "targetOp": "peek",
+      "target": "root/Default/CategoryStorage",
+      "targetOp": "add",
       "name": "call"
     },
     {
       "source": "root/Default/Api/OnRequestHandler9",
-      "sourceOp": "invokeAsync",
-      "target": "root/Default/Counter",
-      "targetOp": "peek",
-      "name": "call"
-    },
-    {
-      "source": "root/Default/Api/OnRequestHandler10",
-      "sourceOp": "invoke",
-      "target": "root/Default/Counter",
-      "targetOp": "inc",
-      "name": "call"
-    },
-    {
-      "source": "root/Default/Api/OnRequestHandler10",
       "sourceOp": "invoke",
       "target": "root/Default/Broadcaster",
       "targetOp": "broadcast",
       "name": "call"
     },
     {
+      "source": "root/Default/Api/OnRequestHandler9",
+      "sourceOp": "invoke",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler9",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/CategoryStorage",
+      "targetOp": "add",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler9",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/Broadcaster",
+      "targetOp": "broadcast",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler9",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
       "source": "root/Default/Api/OnRequestHandler10",
+      "sourceOp": "invoke",
+      "target": "root/Default/CategoryStorage",
+      "targetOp": "get",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler10",
+      "sourceOp": "invoke",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler10",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/CategoryStorage",
+      "targetOp": "get",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler10",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler11",
+      "sourceOp": "invoke",
+      "target": "root/Default/CategoryStorage",
+      "targetOp": "list",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler11",
+      "sourceOp": "invoke",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler11",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/CategoryStorage",
+      "targetOp": "list",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler11",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler12",
+      "sourceOp": "invoke",
+      "target": "root/Default/Broadcaster",
+      "targetOp": "broadcast",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler12",
+      "sourceOp": "invoke",
+      "target": "root/Default/SubCategoryStorage",
+      "targetOp": "add",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler12",
+      "sourceOp": "invoke",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler12",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/Broadcaster",
+      "targetOp": "broadcast",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler12",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/SubCategoryStorage",
+      "targetOp": "add",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler12",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler13",
+      "sourceOp": "invoke",
+      "target": "root/Default/SubCategoryStorage",
+      "targetOp": "get",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler13",
+      "sourceOp": "invoke",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler13",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/SubCategoryStorage",
+      "targetOp": "get",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler13",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler14",
+      "sourceOp": "invoke",
+      "target": "root/Default/SubCategoryStorage",
+      "targetOp": "list",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler14",
+      "sourceOp": "invoke",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler14",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/SubCategoryStorage",
+      "targetOp": "list",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler14",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler15",
+      "sourceOp": "invoke",
+      "target": "root/Default/CartStorage",
+      "targetOp": "add",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler15",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/CartStorage",
+      "targetOp": "add",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler16",
+      "sourceOp": "invoke",
+      "target": "root/Default/CartStorage",
+      "targetOp": "get",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler16",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/CartStorage",
+      "targetOp": "get",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler17",
+      "sourceOp": "invoke",
+      "target": "root/Default/CartStorage",
+      "targetOp": "list",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler17",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/CartStorage",
+      "targetOp": "list",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler18",
+      "sourceOp": "invoke",
+      "target": "root/Default/Counter",
+      "targetOp": "peek",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler18",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/Counter",
+      "targetOp": "peek",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler19",
+      "sourceOp": "invoke",
+      "target": "root/Default/Counter",
+      "targetOp": "inc",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler19",
+      "sourceOp": "invoke",
+      "target": "root/Default/Broadcaster",
+      "targetOp": "broadcast",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler19",
       "sourceOp": "invokeAsync",
       "target": "root/Default/Counter",
       "targetOp": "inc",
       "name": "call"
     },
     {
-      "source": "root/Default/Api/OnRequestHandler10",
+      "source": "root/Default/Api/OnRequestHandler19",
       "sourceOp": "invokeAsync",
       "target": "root/Default/Broadcaster",
       "targetOp": "broadcast",
@@ -761,6 +1062,230 @@
       "source": "root/Default/OrderService/Counter",
       "sourceOp": "set",
       "target": "root/Default/OrderService/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CategoryStorage",
+      "sourceOp": "_add",
+      "target": "root/Default/CategoryStorage/Table",
+      "targetOp": "insert",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CategoryStorage",
+      "sourceOp": "add",
+      "target": "root/Default/CategoryStorage",
+      "targetOp": "_add",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CategoryStorage",
+      "sourceOp": "add",
+      "target": "root/Default/CategoryStorage/Counter",
+      "targetOp": "inc",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CategoryStorage",
+      "sourceOp": "remove",
+      "target": "root/Default/CategoryStorage/Table",
+      "targetOp": "delete",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CategoryStorage",
+      "sourceOp": "get",
+      "target": "root/Default/CategoryStorage/Table",
+      "targetOp": "tryGet",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CategoryStorage",
+      "sourceOp": "list",
+      "target": "root/Default/CategoryStorage/Table",
+      "targetOp": "list",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CategoryStorage/Counter",
+      "sourceOp": "inc",
+      "target": "root/Default/CategoryStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CategoryStorage/Counter",
+      "sourceOp": "dec",
+      "target": "root/Default/CategoryStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CategoryStorage/Counter",
+      "sourceOp": "peek",
+      "target": "root/Default/CategoryStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CategoryStorage/Counter",
+      "sourceOp": "set",
+      "target": "root/Default/CategoryStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/SubCategoryStorage",
+      "sourceOp": "_add",
+      "target": "root/Default/SubCategoryStorage/Table",
+      "targetOp": "insert",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/SubCategoryStorage",
+      "sourceOp": "add",
+      "target": "root/Default/SubCategoryStorage",
+      "targetOp": "_add",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/SubCategoryStorage",
+      "sourceOp": "add",
+      "target": "root/Default/SubCategoryStorage/Counter",
+      "targetOp": "inc",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/SubCategoryStorage",
+      "sourceOp": "remove",
+      "target": "root/Default/SubCategoryStorage/Table",
+      "targetOp": "delete",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/SubCategoryStorage",
+      "sourceOp": "get",
+      "target": "root/Default/SubCategoryStorage/Table",
+      "targetOp": "tryGet",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/SubCategoryStorage",
+      "sourceOp": "list",
+      "target": "root/Default/SubCategoryStorage/Table",
+      "targetOp": "list",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/SubCategoryStorage/Counter",
+      "sourceOp": "inc",
+      "target": "root/Default/SubCategoryStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/SubCategoryStorage/Counter",
+      "sourceOp": "dec",
+      "target": "root/Default/SubCategoryStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/SubCategoryStorage/Counter",
+      "sourceOp": "peek",
+      "target": "root/Default/SubCategoryStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/SubCategoryStorage/Counter",
+      "sourceOp": "set",
+      "target": "root/Default/SubCategoryStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CartStorage",
+      "sourceOp": "_add",
+      "target": "root/Default/CartStorage/Table",
+      "targetOp": "insert",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CartStorage",
+      "sourceOp": "add",
+      "target": "root/Default/CartStorage",
+      "targetOp": "_add",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CartStorage",
+      "sourceOp": "add",
+      "target": "root/Default/CartStorage/Counter",
+      "targetOp": "inc",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CartStorage",
+      "sourceOp": "remove",
+      "target": "root/Default/CartStorage/Table",
+      "targetOp": "delete",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CartStorage",
+      "sourceOp": "get",
+      "target": "root/Default/CartStorage/Table",
+      "targetOp": "tryGet",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CartStorage",
+      "sourceOp": "list",
+      "target": "root/Default/CartStorage/Table",
+      "targetOp": "list",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CartStorage",
+      "sourceOp": "updateCart",
+      "target": "root/Default/CartStorage/Table",
+      "targetOp": "tryGet",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CartStorage",
+      "sourceOp": "updateCart",
+      "target": "root/Default/CartStorage/Table",
+      "targetOp": "update",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CartStorage/Counter",
+      "sourceOp": "inc",
+      "target": "root/Default/CartStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CartStorage/Counter",
+      "sourceOp": "dec",
+      "target": "root/Default/CartStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CartStorage/Counter",
+      "sourceOp": "peek",
+      "target": "root/Default/CartStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/CartStorage/Counter",
+      "sourceOp": "set",
+      "target": "root/Default/CartStorage/Counter/Resource",
       "targetOp": "call",
       "name": "call"
     },

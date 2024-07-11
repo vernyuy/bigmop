@@ -26961,7 +26961,7 @@ exports.handler = async function(event) {
         const $Closure3Client = require_inflight_Closure3_10()({
           $__parent_this_3_productStorage: await (async () => {
             const ProductStorageClient = require_inflight_ProductStorage_10()({
-              $Product: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Product", "type": "object", "properties": { "id": { "type": "string" }, "imageUrl": { "type": "string" }, "name": { "type": "string" }, "price": { "type": "number" }, "qty": { "type": "number" } }, "required": ["id", "imageUrl", "name", "price", "qty"] }),
+              $Product: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Product", "type": "object", "properties": { "description": { "type": "string" }, "id": { "type": "string" }, "imageUrl": { "type": "string" }, "images": { "type": "string" }, "name": { "type": "string" }, "price": { "type": "number" }, "qty": { "type": "number" }, "unit": { "type": "string" } }, "required": ["description", "id", "imageUrl", "images", "name", "price", "qty", "unit"] }),
               $std_Number: require_number().Number
             });
             const client2 = new ProductStorageClient({

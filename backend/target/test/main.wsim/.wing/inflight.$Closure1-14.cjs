@@ -1,14 +1,30 @@
 "use strict";
 const $helpers = require("@winglang/sdk/lib/helpers");
-module.exports = function({ $counter }) {
+module.exports = function({ $__parent_this_1_myBroadcaster, $__parent_this_1_subSubCategoryStorage, $auth, $std_Json }) {
   class $Closure1 {
     constructor({  }) {
       const $obj = (...args) => this.handle(...args);
       Object.setPrototypeOf($obj, this);
       return $obj;
     }
-    async handle() {
-      return ({"body": String.raw({ raw: ["", ""] }, (await $counter.peek()))});
+    async handle(req) {
+      const authenticated = (await $auth.call(req));
+      if ((!authenticated)) {
+        return ({"status": 401, "headers": ({["Content-Type"]: "text/plain"}), "body": "Unauthorized"});
+      }
+      {
+        const $if_let_value = req.body;
+        if ($if_let_value != undefined) {
+          const body = $if_let_value;
+          const subSubCategory = JSON.parse($helpers.unwrap(req.body));
+          const id = (await $__parent_this_1_subSubCategoryStorage.add(subSubCategory));
+          (await $__parent_this_1_myBroadcaster.broadcast("refresh"));
+          return ({"status": 201, "body": id});
+        }
+        else {
+          return ({"status": 400});
+        }
+      }
     }
   }
   return $Closure1;

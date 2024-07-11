@@ -9,7 +9,7 @@ const util = $stdlib.util;
 const http = $stdlib.http;
 const basicAuth = require("./preflight.auth-17.cjs");
 const broadcaster = require("./preflight.broadcaster-16.cjs");
-const Product = $stdlib.std.Struct._createJsonSchema({$id:"/Product",type:"object",properties:{id:{type:"string"},imageUrl:{type:"string"},name:{type:"string"},price:{type:"number"},qty:{type:"number"},},required:["id","imageUrl","name","price","qty",]});
+const Product = $stdlib.std.Struct._createJsonSchema({$id:"/Product",type:"object",properties:{description:{type:"string"},id:{type:"string"},imageUrl:{type:"string"},images:{type:"string"},name:{type:"string"},price:{type:"number"},qty:{type:"number"},unit:{type:"string"},},required:["description","id","imageUrl","images","name","price","qty","unit",]});
 const ColumnType =
   (function (tmp) {
     tmp["STRING"] = "STRING";
@@ -20,7 +20,7 @@ const ColumnType =
 class ProductStorage extends $stdlib.std.Resource {
   constructor($scope, $id, ) {
     super($scope, $id);
-    const tableProps = ({"name": "ProductsTable", "primaryKey": "id", "columns": ({"id": ColumnType.STRING, "name": ColumnType.STRING, "qty": ColumnType.NUMBER, "price": ColumnType.NUMBER, "imageUrl": ColumnType.STRING})});
+    const tableProps = ({"name": "ProductsTable", "primaryKey": "id", "columns": ({"id": ColumnType.STRING, "name": ColumnType.STRING, "qty": ColumnType.NUMBER, "price": ColumnType.NUMBER, "imageUrl": ColumnType.STRING, "description": ColumnType.STRING, "unit": ColumnType.STRING})});
     this.db = this.node.root.new("@winglang/sdk.ex.Table", ex.Table, this, "Table", tableProps);
     this.counter = this.node.root.new("@winglang/sdk.cloud.Counter", cloud.Counter, this, "Counter");
   }

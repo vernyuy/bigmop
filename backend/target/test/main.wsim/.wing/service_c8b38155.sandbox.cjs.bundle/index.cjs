@@ -10774,7 +10774,7 @@ exports.start = async function() {
       $cliFilename: "/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/node_modules/@winglibs/vite/vite-cli.mjs",
       $homeEnv: "/Users/pro-3ie-s",
       $openBrowser: false,
-      $pathEnv: "/Library/Frameworks/Python.framework/Versions/3.12/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin:/Applications/Postgres.app/Contents/Versions/latest/bin",
+      $pathEnv: "/Library/Frameworks/Python.framework/Versions/3.12/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin:/Applications/Postgres.app/Contents/Versions/latest/bin:/Library/Frameworks/Python.framework/Versions/3.12/bin",
       $props_generateTypeDefinitions: void 0,
       $props_publicEnv: { "TITLE": "Wing + Vite + React", "API_URL": process.env["WING_TOKEN_WSIM_ROOT_ENV0_API_ATTRS_URL"], "WS_URL": process.env["WING_TOKEN_WSIM_ROOT_ENV0_BROADCASTER_COUNTER_UPDATES_COUNTER_UPDATES_STATE_ATTRS_URL"] },
       $props_publicEnvName: void 0,

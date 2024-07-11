@@ -6,6 +6,8 @@ bring "./product.w" as product;
 bring "./user.w" as user;
 bring "./order.w" as order;
 bring "./auth.w" as basicAuth;
+bring "./categories.w" as category;
+bring "./subCategories.w" as subCategory;
 bring cloud;
 bring "./cart.w" as cart;
 
@@ -51,6 +53,12 @@ let userStorage = new user.UserStorage();
 let userService = new user.UserService(userStorage, api, auth);
 let orderStorage = new order.OrderStorage();
 let orderApi = new order.OrderService(orderStorage, productStorage, queue, api, auth);
+let categoryStorage = new category.CategoryStorage();
+let categoryApi = new category.CategoryService(categoryStorage, api, auth, myBroadcaster);
+let subCategoryStorage = new subCategory.SubCategoryStorage();
+let subCategoryApi = new subCategory.SubCategoryService(subCategoryStorage, productStorage, api, auth, myBroadcaster);
+let cartStorage = new cart.CartStorage();
+let cartApi = new cart.CartService(cartStorage, productStorage, api, auth, myBroadcaster);
 
 let website = new vite.Vite(
   root: "{Utils.__dirname()}/../frontend",
