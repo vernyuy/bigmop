@@ -139,12 +139,33 @@
       "sourceOp": "request",
       "target": "root/Default/Api/OnRequestHandler18",
       "targetOp": "invoke",
-      "name": "get /counter"
+      "name": "post /notifications"
     },
     {
       "source": "root/Default/Api",
       "sourceOp": "request",
       "target": "root/Default/Api/OnRequestHandler19",
+      "targetOp": "invoke",
+      "name": "get /notification/:id"
+    },
+    {
+      "source": "root/Default/Api",
+      "sourceOp": "request",
+      "target": "root/Default/Api/OnRequestHandler20",
+      "targetOp": "invoke",
+      "name": "get /notifications"
+    },
+    {
+      "source": "root/Default/Api",
+      "sourceOp": "request",
+      "target": "root/Default/Api/OnRequestHandler21",
+      "targetOp": "invoke",
+      "name": "get /counter"
+    },
+    {
+      "source": "root/Default/Api",
+      "sourceOp": "request",
+      "target": "root/Default/Api/OnRequestHandler22",
       "targetOp": "invoke",
       "name": "post /counter"
     },
@@ -711,40 +732,138 @@
     {
       "source": "root/Default/Api/OnRequestHandler18",
       "sourceOp": "invoke",
+      "target": "root/Default/Broadcaster",
+      "targetOp": "broadcast",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler18",
+      "sourceOp": "invoke",
+      "target": "root/Default/NotificationStorage",
+      "targetOp": "add",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler18",
+      "sourceOp": "invoke",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler18",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/Broadcaster",
+      "targetOp": "broadcast",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler18",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/NotificationStorage",
+      "targetOp": "add",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler18",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler19",
+      "sourceOp": "invoke",
+      "target": "root/Default/NotificationStorage",
+      "targetOp": "get",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler19",
+      "sourceOp": "invoke",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler19",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/NotificationStorage",
+      "targetOp": "get",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler19",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler20",
+      "sourceOp": "invoke",
+      "target": "root/Default/NotificationStorage",
+      "targetOp": "list",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler20",
+      "sourceOp": "invoke",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler20",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/NotificationStorage",
+      "targetOp": "list",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler20",
+      "sourceOp": "invokeAsync",
+      "target": "root/Default/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/Api/OnRequestHandler21",
+      "sourceOp": "invoke",
       "target": "root/Default/Counter",
       "targetOp": "peek",
       "name": "call"
     },
     {
-      "source": "root/Default/Api/OnRequestHandler18",
+      "source": "root/Default/Api/OnRequestHandler21",
       "sourceOp": "invokeAsync",
       "target": "root/Default/Counter",
       "targetOp": "peek",
       "name": "call"
     },
     {
-      "source": "root/Default/Api/OnRequestHandler19",
+      "source": "root/Default/Api/OnRequestHandler22",
       "sourceOp": "invoke",
       "target": "root/Default/Counter",
       "targetOp": "inc",
       "name": "call"
     },
     {
-      "source": "root/Default/Api/OnRequestHandler19",
+      "source": "root/Default/Api/OnRequestHandler22",
       "sourceOp": "invoke",
       "target": "root/Default/Broadcaster",
       "targetOp": "broadcast",
       "name": "call"
     },
     {
-      "source": "root/Default/Api/OnRequestHandler19",
+      "source": "root/Default/Api/OnRequestHandler22",
       "sourceOp": "invokeAsync",
       "target": "root/Default/Counter",
       "targetOp": "inc",
       "name": "call"
     },
     {
-      "source": "root/Default/Api/OnRequestHandler19",
+      "source": "root/Default/Api/OnRequestHandler22",
       "sourceOp": "invokeAsync",
       "target": "root/Default/Broadcaster",
       "targetOp": "broadcast",
@@ -1286,6 +1405,76 @@
       "source": "root/Default/CartStorage/Counter",
       "sourceOp": "set",
       "target": "root/Default/CartStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/NotificationStorage",
+      "sourceOp": "_add",
+      "target": "root/Default/NotificationStorage/Table",
+      "targetOp": "insert",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/NotificationStorage",
+      "sourceOp": "add",
+      "target": "root/Default/NotificationStorage",
+      "targetOp": "_add",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/NotificationStorage",
+      "sourceOp": "add",
+      "target": "root/Default/NotificationStorage/Counter",
+      "targetOp": "inc",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/NotificationStorage",
+      "sourceOp": "remove",
+      "target": "root/Default/NotificationStorage/Table",
+      "targetOp": "delete",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/NotificationStorage",
+      "sourceOp": "get",
+      "target": "root/Default/NotificationStorage/Table",
+      "targetOp": "tryGet",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/NotificationStorage",
+      "sourceOp": "list",
+      "target": "root/Default/NotificationStorage/Table",
+      "targetOp": "list",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/NotificationStorage/Counter",
+      "sourceOp": "inc",
+      "target": "root/Default/NotificationStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/NotificationStorage/Counter",
+      "sourceOp": "dec",
+      "target": "root/Default/NotificationStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/NotificationStorage/Counter",
+      "sourceOp": "peek",
+      "target": "root/Default/NotificationStorage/Counter/Resource",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/Default/NotificationStorage/Counter",
+      "sourceOp": "set",
+      "target": "root/Default/NotificationStorage/Counter/Resource",
       "targetOp": "call",
       "name": "call"
     },

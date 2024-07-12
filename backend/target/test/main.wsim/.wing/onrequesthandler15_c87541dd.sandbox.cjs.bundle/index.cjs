@@ -25930,7 +25930,7 @@ exports.handler = async function(event) {
         const $Closure1Client = require_inflight_Closure1_15()({
           $__parent_this_1_cartStorage: await (async () => {
             const CartStorageClient = require_inflight_CartStorage_15()({
-              $Cart: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Cart", "type": "object", "properties": { "cartname": { "type": "string" }, "dob": { "type": "string" }, "email": { "type": "string" }, "firstName": { "type": "string" }, "id": { "type": "string" }, "imageUrl": { "type": "string" }, "lastName": { "type": "string" } }, "required": ["cartname", "dob", "email", "firstName", "id", "imageUrl", "lastName"] }),
+              $Cart: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Cart", "type": "object", "properties": { "id": { "type": "string" }, "products": { "type": "array", "items": { "type": "object", "patternProperties": { ".*": { "type": "object", "properties": { "productID": { "type": "string" }, "qty": { "type": "number" }, "totalPrice": { "type": "number" } }, "required": ["productID", "qty", "totalPrice"] } } } }, "status": { "type": "string" } }, "required": ["id", "products", "status"] }),
               $std_Number: require_number().Number
             });
             const client2 = new CartStorageClient({

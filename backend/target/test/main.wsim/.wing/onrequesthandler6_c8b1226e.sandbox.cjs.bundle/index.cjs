@@ -26980,7 +26980,7 @@ exports.handler = async function(event) {
           }(),
           $__parent_this_1_storage: await (async () => {
             const OrderStorageClient = require_inflight_OrderStorage_12()({
-              $Order: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Order", "type": "object", "properties": { "id": { "type": "string" }, "productId": { "type": "string" }, "qty": { "type": "number" }, "status": { "type": "string" } }, "required": ["id", "productId", "qty", "status"] })
+              $Order: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Order", "type": "object", "properties": { "cartID": { "type": "string" }, "id": { "type": "string" }, "orderProducts": { "type": "array", "items": { "type": "object", "patternProperties": { ".*": { "type": "object", "properties": { "productID": { "type": "string" }, "qty": { "type": "number" }, "totalPrice": { "type": "number" } }, "required": ["productID", "qty", "totalPrice"] } } } }, "status": { "type": "string" }, "userID": { "type": "string" } }, "required": ["cartID", "id", "orderProducts", "status", "userID"] })
             });
             const client2 = new OrderStorageClient({
               $this_counter: function() {

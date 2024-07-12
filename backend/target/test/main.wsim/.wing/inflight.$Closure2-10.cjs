@@ -8,7 +8,7 @@ module.exports = function({ $__parent_this_2_productStorage, $auth, $std_Json })
       return $obj;
     }
     async handle(req) {
-      const id = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "id");
+      const id = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "productId");
       const product = (await $__parent_this_2_productStorage.get(id));
       const authenticated = (await $auth.call(req));
       if ((!authenticated)) {

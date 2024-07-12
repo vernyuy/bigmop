@@ -401,6 +401,18 @@
           {
             "resourceHandle": "${wsim#root/Default/Api/OnRequestHandler19#attrs.handle}",
             "operation": "invoke"
+          },
+          {
+            "resourceHandle": "${wsim#root/Default/Api/OnRequestHandler20#attrs.handle}",
+            "operation": "invoke"
+          },
+          {
+            "resourceHandle": "${wsim#root/Default/Api/OnRequestHandler21#attrs.handle}",
+            "operation": "invoke"
+          },
+          {
+            "resourceHandle": "${wsim#root/Default/Api/OnRequestHandler22#attrs.handle}",
+            "operation": "invoke"
           }
         ]
       },
@@ -1136,6 +1148,115 @@
                   }
                 },
                 "parameters": []
+              }
+            },
+            "/notifications": {
+              "post": {
+                "operationId": "post-notifications",
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "content": {},
+                    "headers": {
+                      "Access-Control-Allow-Origin": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Methods": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Max-Age": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": []
+              },
+              "get": {
+                "operationId": "get-notifications",
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "content": {},
+                    "headers": {
+                      "Access-Control-Allow-Origin": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Methods": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Max-Age": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": []
+              }
+            },
+            "/notification/{id}": {
+              "get": {
+                "operationId": "get-notification/:id",
+                "responses": {
+                  "200": {
+                    "description": "200 response",
+                    "content": {},
+                    "headers": {
+                      "Access-Control-Allow-Origin": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Methods": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Allow-Headers": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      },
+                      "Access-Control-Max-Age": {
+                        "schema": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "parameters": [
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                ]
               }
             },
             "/counter": {
@@ -2100,12 +2221,8 @@
         "name": "CartsTable",
         "columns": {
           "id": "STRING",
-          "firstName": "STRING",
-          "lastName": "STRING",
-          "email": "STRING",
-          "cartname": "STRING",
-          "dob": "STRING",
-          "imageUrl": "STRING"
+          "products": "Array",
+          "status": "STRING"
         },
         "primaryKey": "id",
         "initialRows": {}
@@ -2263,6 +2380,196 @@
         "root/Default/Api"
       ]
     },
+    "root/Default/NotificationStorage/Counter/Resource": {
+      "type": "@winglang/sdk.sim.Resource",
+      "props": {
+        "environmentVariables": {
+          "WING_TARGET": "sim"
+        },
+        "sourceCodeFile": ".wing/resource_c8ca8e70.cjs",
+        "sourceCodeLanguage": "javascript"
+      },
+      "policy": [],
+      "path": "root/Default/NotificationStorage/Counter/Resource",
+      "addr": "c8ca8e7013f43d9e04e51b04904e9e09a4c4166356"
+    },
+    "root/Default/NotificationStorage/Table": {
+      "type": "@winglang/sdk.ex.Table",
+      "props": {
+        "name": "CategoriesTable",
+        "columns": {
+          "id": "STRING",
+          "name": "STRING",
+          "description": "STRING"
+        },
+        "primaryKey": "id",
+        "initialRows": {}
+      },
+      "path": "root/Default/NotificationStorage/Table",
+      "addr": "c8719522ad48bab090a6c16849e1fe08d6092916b6"
+    },
+    "root/Default/Api/OnRequestHandler18": {
+      "type": "@winglang/sdk.cloud.Function",
+      "props": {
+        "sourceCodeFile": ".wing/onrequesthandler18_c8fbb211.cjs",
+        "sourceCodeLanguage": "javascript",
+        "environmentVariables": {
+          "WING_TARGET": "sim",
+          "BUCKET_HANDLE_1b6cd9c9": "${wsim#root/Default/Broadcaster/Bucket#attrs.handle}",
+          "COUNTER_HANDLE_c4166356": "${wsim#root/Default/NotificationStorage/Counter/Resource#attrs.handle}",
+          "TABLE_HANDLE_092916b6": "${wsim#root/Default/NotificationStorage/Table#attrs.handle}",
+          "RESOURCE_HANDLE_c4166356": "${wsim#root/Default/NotificationStorage/Counter/Resource#attrs.handle}",
+          "STATE_HANDLE_63ce87a2": "${wsim#root/Default/Broadcaster/counter_updates/counter_updates/State#attrs.handle}"
+        },
+        "timeout": 60000,
+        "concurrency": 100
+      },
+      "policy": [
+        {
+          "operation": "list",
+          "resourceHandle": "${wsim#root/Default/Broadcaster/Bucket#attrs.handle}"
+        },
+        {
+          "operation": "inc",
+          "resourceHandle": "${wsim#root/Default/NotificationStorage/Counter/Resource#attrs.handle}"
+        },
+        {
+          "operation": "insert",
+          "resourceHandle": "${wsim#root/Default/NotificationStorage/Table#attrs.handle}"
+        },
+        {
+          "operation": "call",
+          "resourceHandle": "${wsim#root/Default/NotificationStorage/Counter/Resource#attrs.handle}"
+        },
+        {
+          "operation": "get",
+          "resourceHandle": "${wsim#root/Default/Broadcaster/counter_updates/counter_updates/State#attrs.handle}"
+        }
+      ],
+      "path": "root/Default/Api/OnRequestHandler18",
+      "addr": "c8fbb2112ae02572cc070be2ef71694aa87662c6b8",
+      "deps": [
+        "root/Default/Broadcaster/Bucket",
+        "root/Default/NotificationStorage/Counter/Resource",
+        "root/Default/NotificationStorage/Table",
+        "root/Default/Broadcaster/counter_updates/counter_updates/State"
+      ]
+    },
+    "root/Default/Api/ApiEventMapping18": {
+      "type": "@winglang/sdk.sim.EventMapping",
+      "props": {
+        "subscriber": "${wsim#root/Default/Api/OnRequestHandler18#attrs.handle}",
+        "publisher": "${wsim#root/Default/Api#attrs.handle}",
+        "subscriptionProps": {
+          "routes": [
+            {
+              "pathPattern": "/notifications",
+              "method": "POST"
+            }
+          ]
+        }
+      },
+      "path": "root/Default/Api/ApiEventMapping18",
+      "addr": "c823cd630c7e7fe3bab4e6306accf95722d44ffb30",
+      "deps": [
+        "root/Default/Api/OnRequestHandler18",
+        "root/Default/Api"
+      ]
+    },
+    "root/Default/Api/OnRequestHandler19": {
+      "type": "@winglang/sdk.cloud.Function",
+      "props": {
+        "sourceCodeFile": ".wing/onrequesthandler19_c869a26d.cjs",
+        "sourceCodeLanguage": "javascript",
+        "environmentVariables": {
+          "WING_TARGET": "sim",
+          "TABLE_HANDLE_092916b6": "${wsim#root/Default/NotificationStorage/Table#attrs.handle}",
+          "COUNTER_HANDLE_c4166356": "${wsim#root/Default/NotificationStorage/Counter/Resource#attrs.handle}"
+        },
+        "timeout": 60000,
+        "concurrency": 100
+      },
+      "policy": [
+        {
+          "operation": "tryGet",
+          "resourceHandle": "${wsim#root/Default/NotificationStorage/Table#attrs.handle}"
+        }
+      ],
+      "path": "root/Default/Api/OnRequestHandler19",
+      "addr": "c869a26d42f66a964725f75650797ef33b39a8dfb7",
+      "deps": [
+        "root/Default/NotificationStorage/Table",
+        "root/Default/NotificationStorage/Counter/Resource"
+      ]
+    },
+    "root/Default/Api/ApiEventMapping19": {
+      "type": "@winglang/sdk.sim.EventMapping",
+      "props": {
+        "subscriber": "${wsim#root/Default/Api/OnRequestHandler19#attrs.handle}",
+        "publisher": "${wsim#root/Default/Api#attrs.handle}",
+        "subscriptionProps": {
+          "routes": [
+            {
+              "pathPattern": "/notification/:id",
+              "method": "GET"
+            }
+          ]
+        }
+      },
+      "path": "root/Default/Api/ApiEventMapping19",
+      "addr": "c8752f97eedf61c354f81799ee1921f0e671f7f29b",
+      "deps": [
+        "root/Default/Api/OnRequestHandler19",
+        "root/Default/Api"
+      ]
+    },
+    "root/Default/Api/OnRequestHandler20": {
+      "type": "@winglang/sdk.cloud.Function",
+      "props": {
+        "sourceCodeFile": ".wing/onrequesthandler20_c8e6abaa.cjs",
+        "sourceCodeLanguage": "javascript",
+        "environmentVariables": {
+          "WING_TARGET": "sim",
+          "TABLE_HANDLE_092916b6": "${wsim#root/Default/NotificationStorage/Table#attrs.handle}",
+          "COUNTER_HANDLE_c4166356": "${wsim#root/Default/NotificationStorage/Counter/Resource#attrs.handle}"
+        },
+        "timeout": 60000,
+        "concurrency": 100
+      },
+      "policy": [
+        {
+          "operation": "list",
+          "resourceHandle": "${wsim#root/Default/NotificationStorage/Table#attrs.handle}"
+        }
+      ],
+      "path": "root/Default/Api/OnRequestHandler20",
+      "addr": "c8e6abaabf4f5fb87a8324643a498b471de59cfe97",
+      "deps": [
+        "root/Default/NotificationStorage/Table",
+        "root/Default/NotificationStorage/Counter/Resource"
+      ]
+    },
+    "root/Default/Api/ApiEventMapping20": {
+      "type": "@winglang/sdk.sim.EventMapping",
+      "props": {
+        "subscriber": "${wsim#root/Default/Api/OnRequestHandler20#attrs.handle}",
+        "publisher": "${wsim#root/Default/Api#attrs.handle}",
+        "subscriptionProps": {
+          "routes": [
+            {
+              "pathPattern": "/notifications",
+              "method": "GET"
+            }
+          ]
+        }
+      },
+      "path": "root/Default/Api/ApiEventMapping20",
+      "addr": "c89c8c70cd3a250e5ed77fa18f45af8e790f9997fa",
+      "deps": [
+        "root/Default/Api/OnRequestHandler20",
+        "root/Default/Api"
+      ]
+    },
     "root/Default/Counter/Resource": {
       "type": "@winglang/sdk.sim.Resource",
       "props": {
@@ -2276,10 +2583,10 @@
       "path": "root/Default/Counter/Resource",
       "addr": "c81c3275fbc6097ba49888dd0f69ada4fc7ced9640"
     },
-    "root/Default/Api/OnRequestHandler18": {
+    "root/Default/Api/OnRequestHandler21": {
       "type": "@winglang/sdk.cloud.Function",
       "props": {
-        "sourceCodeFile": ".wing/onrequesthandler18_c8fbb211.cjs",
+        "sourceCodeFile": ".wing/onrequesthandler21_c81608f6.cjs",
         "sourceCodeLanguage": "javascript",
         "environmentVariables": {
           "WING_TARGET": "sim",
@@ -2299,16 +2606,16 @@
           "resourceHandle": "${wsim#root/Default/Counter/Resource#attrs.handle}"
         }
       ],
-      "path": "root/Default/Api/OnRequestHandler18",
-      "addr": "c8fbb2112ae02572cc070be2ef71694aa87662c6b8",
+      "path": "root/Default/Api/OnRequestHandler21",
+      "addr": "c81608f684970e177e6677498558f07ab8423687e0",
       "deps": [
         "root/Default/Counter/Resource"
       ]
     },
-    "root/Default/Api/ApiEventMapping18": {
+    "root/Default/Api/ApiEventMapping21": {
       "type": "@winglang/sdk.sim.EventMapping",
       "props": {
-        "subscriber": "${wsim#root/Default/Api/OnRequestHandler18#attrs.handle}",
+        "subscriber": "${wsim#root/Default/Api/OnRequestHandler21#attrs.handle}",
         "publisher": "${wsim#root/Default/Api#attrs.handle}",
         "subscriptionProps": {
           "routes": [
@@ -2319,17 +2626,17 @@
           ]
         }
       },
-      "path": "root/Default/Api/ApiEventMapping18",
-      "addr": "c823cd630c7e7fe3bab4e6306accf95722d44ffb30",
+      "path": "root/Default/Api/ApiEventMapping21",
+      "addr": "c88510cd766740e83928dc0def1796a79c592a37ce",
       "deps": [
-        "root/Default/Api/OnRequestHandler18",
+        "root/Default/Api/OnRequestHandler21",
         "root/Default/Api"
       ]
     },
-    "root/Default/Api/OnRequestHandler19": {
+    "root/Default/Api/OnRequestHandler22": {
       "type": "@winglang/sdk.cloud.Function",
       "props": {
-        "sourceCodeFile": ".wing/onrequesthandler19_c869a26d.cjs",
+        "sourceCodeFile": ".wing/onrequesthandler22_c8d072cc.cjs",
         "sourceCodeLanguage": "javascript",
         "environmentVariables": {
           "WING_TARGET": "sim",
@@ -2359,18 +2666,18 @@
           "resourceHandle": "${wsim#root/Default/Broadcaster/counter_updates/counter_updates/State#attrs.handle}"
         }
       ],
-      "path": "root/Default/Api/OnRequestHandler19",
-      "addr": "c869a26d42f66a964725f75650797ef33b39a8dfb7",
+      "path": "root/Default/Api/OnRequestHandler22",
+      "addr": "c8d072ccecc3035adc6eca08597aef70fc9b34d555",
       "deps": [
         "root/Default/Counter/Resource",
         "root/Default/Broadcaster/Bucket",
         "root/Default/Broadcaster/counter_updates/counter_updates/State"
       ]
     },
-    "root/Default/Api/ApiEventMapping19": {
+    "root/Default/Api/ApiEventMapping22": {
       "type": "@winglang/sdk.sim.EventMapping",
       "props": {
-        "subscriber": "${wsim#root/Default/Api/OnRequestHandler19#attrs.handle}",
+        "subscriber": "${wsim#root/Default/Api/OnRequestHandler22#attrs.handle}",
         "publisher": "${wsim#root/Default/Api#attrs.handle}",
         "subscriptionProps": {
           "routes": [
@@ -2381,10 +2688,10 @@
           ]
         }
       },
-      "path": "root/Default/Api/ApiEventMapping19",
-      "addr": "c8752f97eedf61c354f81799ee1921f0e671f7f29b",
+      "path": "root/Default/Api/ApiEventMapping22",
+      "addr": "c8c280411256496b083d8e932000bd2ba362186397",
       "deps": [
-        "root/Default/Api/OnRequestHandler19",
+        "root/Default/Api/OnRequestHandler22",
         "root/Default/Api"
       ]
     },

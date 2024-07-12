@@ -19,7 +19,7 @@ enum ColumnType {
     id: str;
     name: str;
     description: str;
-    parentSubCategory: str;
+    parentCategoryID: str;
   }
 
   /*************************************************************************

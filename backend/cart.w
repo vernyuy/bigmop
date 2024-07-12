@@ -11,29 +11,34 @@ enum ColumnType {
   NUMBER
 }
 
+
+struct CartItemDetails{
+  productID: str;
+  qty: num;
+  totalPrice: num;
+}
+
 /*************************************************************************
  * Define a cart Item Struct
  *************************************************************************/
 
  struct Cart {
     id: str;
-    firstName: str;
-    lastName: str;
-    dob: str;
-    cartname: str;
-    email: str;
-    imageUrl: str;
+    productId: str;
+    userId: str;
+    status: str;
+    qty: num;
+    createdAt: str;
   }
 
   /*************************************************************************
  * Define cart interface
  *************************************************************************/
 pub interface ICartStorage extends std.IResource {
-    inflight add(cart: Json): str;
+    inflight addItemToCart(productId: str, userId: str, qty:num): str;
     inflight remove(id: str): void;
-    inflight get(id: str): Cart?;
-    inflight updateCart(id: str, qty: num): void;
-    inflight list(): Array<Json>;
+    inflight getCartItem(id: str, userId: str): Cart?;
+    inflight updateCartStatus(id: str, userID: str): void;
   }
 
   /******************************************************************************
@@ -50,32 +55,27 @@ pub interface ICartStorage extends std.IResource {
         primaryKey: "id",
         columns: {
           id: ColumnType.STRING,
-          firstName: ColumnType.STRING,
-          lastName: ColumnType.STRING,
-          email: ColumnType.STRING,
-          cartname: ColumnType.STRING,
-          dob: ColumnType.STRING,
-          imageUrl: ColumnType.STRING
+          productId: ColumnType.STRING,
+          status: ColumnType.STRING,
+          qty: ColumnType.NUMBER
         }
       };
       this.db = new ex.Table(tableProps);
       this.counter = new cloud.Counter();
     }
   
-    inflight _add(id: str, j: Json) {
-      this.db.insert(id, j);
+    inflight _add(id: str, cartItem: Json) {
+      this.db.insert(id, cartItem);
     }
   
-    pub inflight add(cart: Json): str {
+    pub inflight addItemToCart(productId: str, userId: str, qty: num): str {
       let id = "{this.counter.inc()}";
       let cartJson = {
         id: id,
-        firstName: cart.get("firstName"),
-        lastName: cart.get("lastName"),
-        dob: cart.get("dob"),
-        email: cart.get("email"),
-        cartname: cart.get("cartname"),
-        imageUrl: cart.get("imageUrl")
+        productId: productId,
+        userId: userId,
+        qty: qty,
+        status: "PENDING",
       };
       this._add(id, cartJson);
       log("adding cart {id} with data: {cartJson}");
@@ -87,27 +87,31 @@ pub interface ICartStorage extends std.IResource {
       log("deleting cart {id}");
     }
   
-    pub inflight get(id: str): Cart {
+    pub inflight getCartItem(id: str, userId: str): Cart {
     let cartJson = this.db.tryGet(id);
-        return Cart.fromJson(cartJson);
+    let cartItems: Array<Cart> = [];
+    let userCartItems = cartJson?.get("userId");
+    let pendindCartItems = userCartItems?.get("PENDING");
+        return Cart.fromJson(pendindCartItems);
     }
   
-    pub inflight list(): Array<Json> {
-    let cartJson = this.db.list();
-    log("{cartJson.length}");
-        return cartJson;
-    }
   
-    pub inflight updateCart(id: str, qty: num) {
+    pub inflight updateCartStatus(id: str, userID: str) {
         let cartId = id;
-        let orderQty = qty;
         let response = this.db.tryGet(cartId);
-        let prodQty = response!.get("qty");
-        let totalQty = num.fromJson(prodQty) - orderQty;
+        let cartStatus = response!.get("PENDING");
         let updatedItem = {
-          qty: totalQty
+          status: "COMPLETED"
         };
         this.db.update(cartId, updatedItem);
+      }
+
+      pub inflight updateCartProductQuantity(id: str, qty: num, userID: str, productID: str) {
+        let cartId = id;
+        let orderQty = qty;
+        let userId = userID;
+        let productId = productID;
+        let response = this.db.tryGet(cartId);
       }
   }
 
@@ -130,10 +134,14 @@ pub interface ICartStorage extends std.IResource {
       this.cartStorage = storage;
   
       // API endpoints
-      this.api.post("/cart", inflight (req): cloud.ApiResponse => {
+      this.api.post("/cart/:productId/:userId/:qty", inflight (req): cloud.ApiResponse => {
         if let body = req.body {
           let cart = Json.parse(req.body!);
-          let id = this.cartStorage.add(cart);
+          let productId = req.vars.get("productId");
+          let userId = req.vars.get("userId");
+          let qty = req.vars.get("qty");
+          let productQty = num.fromJson(qty);
+          let id = this.cartStorage.addItemToCart( productId, userId, productQty);
           return {
             status:201,
             body: id
@@ -145,23 +153,13 @@ pub interface ICartStorage extends std.IResource {
         }
       });
   
-      this.api.get("/cart/:id", inflight (req): cloud.ApiResponse => {
+      this.api.get("/cart/:id/:userId", inflight (req): cloud.ApiResponse => {
           let id = req.vars.get("id");
-          let cart = this.cartStorage.get(id);
+          let userId = req.vars.get("userId");
+          let cart = this.cartStorage.getCartItem(id, userId);
           return {
             status:200,
             body: Json.stringify(cart)
-          };
-      });
-  
-      this.api.get("/carts", inflight (req): cloud.ApiResponse => {
-          let carts = this.cartStorage.list();
-          
-          return {
-            status:200,
-            body: Json.stringify({
-              items: carts
-            })
           };
       });
   

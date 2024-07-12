@@ -10,7 +10,7 @@ const http = $stdlib.http;
 const basicAuth = require("./preflight.auth-17.cjs");
 const broadcaster = require("./preflight.broadcaster-16.cjs");
 const product = require("./preflight.product-18.cjs");
-const SubCategory = $stdlib.std.Struct._createJsonSchema({$id:"/SubCategory",type:"object",properties:{description:{type:"string"},id:{type:"string"},name:{type:"string"},parentSubCategory:{type:"string"},},required:["description","id","name","parentSubCategory",]});
+const SubCategory = $stdlib.std.Struct._createJsonSchema({$id:"/SubCategory",type:"object",properties:{description:{type:"string"},id:{type:"string"},name:{type:"string"},parentCategoryID:{type:"string"},},required:["description","id","name","parentCategoryID",]});
 const ColumnType =
   (function (tmp) {
     tmp["STRING"] = "STRING";

@@ -1,6 +1,7 @@
 bring expect;
 bring vite;
 bring http;
+bring cloud;
 bring "./broadcaster.w" as broadcaster;
 bring "./product.w" as product;
 bring "./user.w" as user;
@@ -8,8 +9,8 @@ bring "./order.w" as order;
 bring "./auth.w" as basicAuth;
 bring "./categories.w" as category;
 bring "./subCategories.w" as subCategory;
-bring cloud;
 bring "./cart.w" as cart;
+bring "./notification.w" as notification;
 
 let queue = new cloud.Queue();
 
@@ -59,6 +60,8 @@ let subCategoryStorage = new subCategory.SubCategoryStorage();
 let subCategoryApi = new subCategory.SubCategoryService(subCategoryStorage, productStorage, api, auth, myBroadcaster);
 let cartStorage = new cart.CartStorage();
 let cartApi = new cart.CartService(cartStorage, productStorage, api, auth, myBroadcaster);
+let notificationStorage = new notification.NotificationStorage();
+let notificationApi = new notification.NotificationService(notificationStorage, userStorage, api, auth, myBroadcaster);
 
 let website = new vite.Vite(
   root: "{Utils.__dirname()}/../frontend",

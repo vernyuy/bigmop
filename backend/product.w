@@ -22,7 +22,11 @@ enum ColumnType {
     imageUrl: str;
     description: str;
     unit: str;
-    images: str;
+    images: Array<str>;
+    weight: num;
+    categoryID: str;
+    subCategoryID: str;
+    createdAt: str;
   }
 
   /*************************************************************************
@@ -156,7 +160,7 @@ pub interface IProductStorage extends std.IResource {
       });
   
       this.api.get("/product/:id", inflight (req): cloud.ApiResponse => {
-          let id = req.vars.get("id");
+          let id = req.vars.get("productId");
           let product = this.productStorage.get(id);
           let authenticated = auth.call(req);  
           if (!authenticated) {

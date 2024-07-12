@@ -10,7 +10,7 @@ const http = $stdlib.http;
 const expect = $stdlib.expect;
 const product = require("./preflight.product-18.cjs");
 const basicAuth = require("./preflight.auth-17.cjs");
-const Order = $stdlib.std.Struct._createJsonSchema({$id:"/Order",type:"object",properties:{id:{type:"string"},productId:{type:"string"},qty:{type:"number"},status:{type:"string"},},required:["id","productId","qty","status",]});
+const Order = $stdlib.std.Struct._createJsonSchema({$id:"/Order",type:"object",properties:{cartID:{type:"string"},createdAt:{type:"string"},id:{type:"string"},orderedProducts:{type:"array",items:{type:"object",patternProperties:{".*":{type:"object",properties:{productID:{type:"string"},qty:{type:"number"},totalPrice:{type:"number"},},required:["productID","qty","totalPrice",]}}}},status:{type:"string"},userID:{type:"string"},},required:["cartID","createdAt","id","orderedProducts","status","userID",]});
 const ColumnType =
   (function (tmp) {
     tmp["STRING"] = "STRING";
@@ -102,7 +102,6 @@ class OrderService extends $stdlib.std.Resource {
             $auth: ${$stdlib.core.liftObject(auth)},
             $queue: ${$stdlib.core.liftObject(queue)},
             $std_Json: ${$stdlib.core.liftObject($stdlib.core.toLiftableModuleType(std.Json, "@winglang/sdk/std", "Json"))},
-            $std_Number: ${$stdlib.core.liftObject($stdlib.core.toLiftableModuleType(std.Number, "@winglang/sdk/std", "Number"))},
           })
         `;
       }
@@ -134,7 +133,7 @@ class OrderService extends $stdlib.std.Resource {
         });
       }
     }
-    (this.api.post("/order/:id/:qty", new $Closure1(this, "$Closure1")));
+    (this.api.post("/order/:id", new $Closure1(this, "$Closure1")));
     const __parent_this_2 = this;
     class $Closure2 extends $stdlib.std.AutoIdResource {
       _id = $stdlib.core.closureId();
@@ -227,10 +226,8 @@ class OrderService extends $stdlib.std.Resource {
       static _toInflightType() {
         return `
           require("${$helpers.normalPath(__dirname)}/inflight.$Closure4-12.cjs")({
-            $__parent_this_4_prodStorage: ${$stdlib.core.liftObject(__parent_this_4.prodStorage)},
             $__parent_this_4_storage: ${$stdlib.core.liftObject(__parent_this_4.storage)},
             $std_Json: ${$stdlib.core.liftObject($stdlib.core.toLiftableModuleType(std.Json, "@winglang/sdk/std", "Json"))},
-            $std_Number: ${$stdlib.core.liftObject($stdlib.core.toLiftableModuleType(std.Number, "@winglang/sdk/std", "Number"))},
           })
         `;
       }
@@ -248,11 +245,9 @@ class OrderService extends $stdlib.std.Resource {
       get _liftMap() {
         return ({
           "handle": [
-            [__parent_this_4.prodStorage, ["updateProduct"]],
             [__parent_this_4.storage, ["updateOrderStatus"]],
           ],
           "$inflight_init": [
-            [__parent_this_4.prodStorage, []],
             [__parent_this_4.storage, []],
           ],
         });

@@ -1,6 +1,6 @@
 "use strict";
 const $helpers = require("@winglang/sdk/lib/helpers");
-module.exports = function({ $__parent_this_1_counter, $__parent_this_1_storage, $auth, $queue, $std_Json, $std_Number }) {
+module.exports = function({ $__parent_this_1_counter, $__parent_this_1_storage, $auth, $queue, $std_Json }) {
   class $Closure1 {
     constructor({  }) {
       const $obj = (...args) => this.handle(...args);
@@ -17,13 +17,15 @@ module.exports = function({ $__parent_this_1_counter, $__parent_this_1_storage, 
         if ($if_let_value != undefined) {
           const body = $if_let_value;
           const id = String.raw({ raw: ["", ""] }, (await $__parent_this_1_counter.inc()));
-          const prodId = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "id");
+          const userId = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "userId");
+          const reqBody = JSON.parse($helpers.unwrap(req.body));
+          const orderedItems = ((obj, args) => { if (obj[args] === undefined) throw new Error(`Json property "${args}" does not exist`); return obj[args] })(reqBody, "orderedItems");
           const orderQty = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "qty");
-          (await $__parent_this_1_storage.add(id, ({"id": id, "qty": ((args) => { if (isNaN(args)) {throw new Error("unable to parse \"" + args + "\" as a number")}; return Number(args) })(orderQty), "prodId": prodId, "status": "PENDING"})));
+          (await $__parent_this_1_storage.add(id, ({"id": id, "userId": userId, "orderedItems": orderedItems, "status": "PENDING"})));
           console.log("Sending to queue");
-          (await $queue.push(((json, opts) => { return JSON.stringify(json, null, opts?.indent) })(({"id": id, "prodId": prodId, "orderQty": orderQty}))));
+          (await $queue.push(((json, opts) => { return JSON.stringify(json, null, opts?.indent) })(({"id": id, "userId": userId, "orderedItems": orderedItems}))));
           console.log("Queue recieved");
-          return ({"status": 201, "body": prodId});
+          return ({"status": 201, "body": id});
         }
         else {
           return ({"status": 400});

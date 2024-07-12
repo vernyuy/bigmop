@@ -556,7 +556,7 @@ var require_inflight_Closure2_16 = __commonJS({
   "target/test/main.wsim/.wing/inflight.$Closure2-16.cjs"(exports2, module2) {
     "use strict";
     var $helpers = require_helpers();
-    module2.exports = function({ $counter, $myBroadcaster }) {
+    module2.exports = function({ $__parent_this_2_notificationStorage, $auth, $std_Json }) {
       class $Closure2 {
         static {
           __name(this, "$Closure2");
@@ -566,10 +566,20 @@ var require_inflight_Closure2_16 = __commonJS({
           Object.setPrototypeOf($obj, this);
           return $obj;
         }
-        async handle() {
-          const prev = await $counter.inc();
-          await $myBroadcaster.broadcast("refresh");
-          return { "body": String.raw({ raw: ["", ""] }, prev + 1) };
+        async handle(req) {
+          const id = ((obj, key) => {
+            if (!(key in obj))
+              throw new Error(`Map does not contain key: "${key}"`);
+            return obj[key];
+          })(req.vars, "id");
+          const notification = await $__parent_this_2_notificationStorage.get(id);
+          const authenticated = await $auth.call(req);
+          if (!authenticated) {
+            return { "status": 401, "headers": { ["Content-Type"]: "text/plain" }, "body": "Unauthorized" };
+          }
+          return { "status": 200, "body": ((json, opts) => {
+            return JSON.stringify(json, null, opts?.indent);
+          })(notification) };
         }
       }
       return $Closure2;
@@ -577,5610 +587,54 @@ var require_inflight_Closure2_16 = __commonJS({
   }
 });
 
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/dependency.js
-var require_dependency = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/dependency.js"(exports2) {
-    "use strict";
-    var _a;
-    var _b;
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.Dependable = exports2.DependencyGroup = void 0;
-    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var DependencyGroup = class {
-      static {
-        __name(this, "DependencyGroup");
-      }
-      constructor(...deps) {
-        this._deps = new Array();
-        const self = this;
-        Dependable.implement(this, {
-          get dependencyRoots() {
-            const result = new Array();
-            for (const d of self._deps) {
-              result.push(...Dependable.of(d).dependencyRoots);
-            }
-            return result;
-          }
-        });
-        this.add(...deps);
-      }
-      /**
-       * Add a construct to the dependency roots
-       */
-      add(...scopes) {
-        this._deps.push(...scopes);
-      }
-    };
-    _a = JSII_RTTI_SYMBOL_1;
-    DependencyGroup[_a] = { fqn: "constructs.DependencyGroup", version: "10.3.0" };
-    exports2.DependencyGroup = DependencyGroup;
-    var DEPENDABLE_SYMBOL = Symbol.for("@aws-cdk/core.DependableTrait");
-    var Dependable = class {
-      static {
-        __name(this, "Dependable");
-      }
-      /**
-       * Turn any object into an IDependable.
-       */
-      static implement(instance, trait) {
-        instance[DEPENDABLE_SYMBOL] = trait;
-      }
-      /**
-       * Return the matching Dependable for the given class instance.
-       */
-      static of(instance) {
-        const ret = instance[DEPENDABLE_SYMBOL];
-        if (!ret) {
-          throw new Error(`${instance} does not implement IDependable. Use "Dependable.implement()" to implement`);
-        }
-        return ret;
-      }
-      /**
-       * Return the matching Dependable for the given class instance.
-       * @deprecated use `of`
-       */
-      static get(instance) {
-        return this.of(instance);
-      }
-    };
-    _b = JSII_RTTI_SYMBOL_1;
-    Dependable[_b] = { fqn: "constructs.Dependable", version: "10.3.0" };
-    exports2.Dependable = Dependable;
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/private/stack-trace.js
-var require_stack_trace = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/private/stack-trace.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.captureStackTrace = void 0;
-    function captureStackTrace(below) {
-      below = below || captureStackTrace;
-      const object = { stack: "" };
-      const previousLimit = Error.stackTraceLimit;
-      try {
-        Error.stackTraceLimit = Number.MAX_SAFE_INTEGER;
-        Error.captureStackTrace(object, below);
-      } finally {
-        Error.stackTraceLimit = previousLimit;
-      }
-      if (!object.stack) {
-        return [];
-      }
-      return object.stack.split("\n").slice(1).map((s) => s.replace(/^\s*at\s+/, ""));
-    }
-    __name(captureStackTrace, "captureStackTrace");
-    exports2.captureStackTrace = captureStackTrace;
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/private/uniqueid.js
-var require_uniqueid = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/private/uniqueid.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.addressOf = void 0;
-    var crypto = require("crypto");
-    var HIDDEN_ID = "Default";
-    function addressOf(components) {
-      const hash = crypto.createHash("sha1");
-      for (const c of components) {
-        if (c === HIDDEN_ID) {
-          continue;
-        }
-        hash.update(c);
-        hash.update("\n");
-      }
-      return "c8" + hash.digest("hex");
-    }
-    __name(addressOf, "addressOf");
-    exports2.addressOf = addressOf;
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/construct.js
-var require_construct = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/construct.js"(exports2) {
-    "use strict";
-    var _a;
-    var _b;
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ConstructOrder = exports2.Construct = exports2.Node = void 0;
-    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var dependency_1 = require_dependency();
-    var stack_trace_1 = require_stack_trace();
-    var uniqueid_1 = require_uniqueid();
-    var CONSTRUCT_SYM = Symbol.for("constructs.Construct");
-    var Node2 = class _Node {
-      static {
-        __name(this, "Node");
-      }
-      /**
-       * Returns the node associated with a construct.
-       * @param construct the construct
-       *
-       * @deprecated use `construct.node` instead
-       */
-      static of(construct2) {
-        return construct2.node;
-      }
-      constructor(host, scope, id) {
-        this.host = host;
-        this._locked = false;
-        this._children = {};
-        this._context = {};
-        this._metadata = new Array();
-        this._dependencies = /* @__PURE__ */ new Set();
-        this._validations = new Array();
-        id = id ?? "";
-        this.id = sanitizeId(id);
-        this.scope = scope;
-        if (scope && !this.id) {
-          throw new Error("Only root constructs may have an empty ID");
-        }
-        scope?.node.addChild(host, this.id);
-      }
-      /**
-       * The full, absolute path of this construct in the tree.
-       *
-       * Components are separated by '/'.
-       */
-      get path() {
-        const components = [];
-        for (const scope of this.scopes) {
-          if (scope.node.id) {
-            components.push(scope.node.id);
-          }
-        }
-        return components.join(_Node.PATH_SEP);
-      }
-      /**
-       * Returns an opaque tree-unique address for this construct.
-       *
-       * Addresses are 42 characters hexadecimal strings. They begin with "c8"
-       * followed by 40 lowercase hexadecimal characters (0-9a-f).
-       *
-       * Addresses are calculated using a SHA-1 of the components of the construct
-       * path.
-       *
-       * To enable refactorings of construct trees, constructs with the ID `Default`
-       * will be excluded from the calculation. In those cases constructs in the
-       * same tree may have the same addreess.
-       *
-       * @example c83a2846e506bcc5f10682b564084bca2d275709ee
-       */
-      get addr() {
-        if (!this._addr) {
-          this._addr = (0, uniqueid_1.addressOf)(this.scopes.map((c) => c.node.id));
-        }
-        return this._addr;
-      }
-      /**
-       * Return a direct child by id, or undefined
-       *
-       * @param id Identifier of direct child
-       * @returns the child if found, or undefined
-       */
-      tryFindChild(id) {
-        return this._children[sanitizeId(id)];
-      }
-      /**
-       * Return a direct child by id
-       *
-       * Throws an error if the child is not found.
-       *
-       * @param id Identifier of direct child
-       * @returns Child with the given id.
-       */
-      findChild(id) {
-        const ret = this.tryFindChild(id);
-        if (!ret) {
-          throw new Error(`No child with id: '${id}'`);
-        }
-        return ret;
-      }
-      /**
-       * Returns the child construct that has the id `Default` or `Resource"`.
-       * This is usually the construct that provides the bulk of the underlying functionality.
-       * Useful for modifications of the underlying construct that are not available at the higher levels.
-       *
-       * @throws if there is more than one child
-       * @returns a construct or undefined if there is no default child
-       */
-      get defaultChild() {
-        if (this._defaultChild !== void 0) {
-          return this._defaultChild;
-        }
-        const resourceChild = this.tryFindChild("Resource");
-        const defaultChild = this.tryFindChild("Default");
-        if (resourceChild && defaultChild) {
-          throw new Error(`Cannot determine default child for ${this.path}. There is both a child with id "Resource" and id "Default"`);
-        }
-        return defaultChild || resourceChild;
-      }
-      /**
-       * Override the defaultChild property.
-       *
-       * This should only be used in the cases where the correct
-       * default child is not named 'Resource' or 'Default' as it
-       * should be.
-       *
-       * If you set this to undefined, the default behavior of finding
-       * the child named 'Resource' or 'Default' will be used.
-       */
-      set defaultChild(value) {
-        this._defaultChild = value;
-      }
-      /**
-       * All direct children of this construct.
-       */
-      get children() {
-        return Object.values(this._children);
-      }
-      /**
-       * Return this construct and all of its children in the given order
-       */
-      findAll(order = ConstructOrder.PREORDER) {
-        const ret = new Array();
-        visit(this.host);
-        return ret;
-        function visit(c) {
-          if (order === ConstructOrder.PREORDER) {
-            ret.push(c);
-          }
-          for (const child of c.node.children) {
-            visit(child);
-          }
-          if (order === ConstructOrder.POSTORDER) {
-            ret.push(c);
-          }
-        }
-        __name(visit, "visit");
-      }
-      /**
-       * This can be used to set contextual values.
-       * Context must be set before any children are added, since children may consult context info during construction.
-       * If the key already exists, it will be overridden.
-       * @param key The context key
-       * @param value The context value
-       */
-      setContext(key, value) {
-        if (this.children.length > 0) {
-          const names = this.children.map((c) => c.node.id);
-          throw new Error("Cannot set context after children have been added: " + names.join(","));
-        }
-        this._context[key] = value;
-      }
-      /**
-       * Retrieves a value from tree context if present. Otherwise, would throw an error.
-       *
-       * Context is usually initialized at the root, but can be overridden at any point in the tree.
-       *
-       * @param key The context key
-       * @returns The context value or throws error if there is no context value for this key
-       */
-      getContext(key) {
-        const value = this._context[key];
-        if (value !== void 0) {
-          return value;
-        }
-        if (value === void 0 && !this.scope?.node) {
-          throw new Error(`No context value present for ${key} key`);
-        }
-        return this.scope && this.scope.node.getContext(key);
-      }
-      /**
-       * Retrieves the all context of a node from tree context.
-       *
-       * Context is usually initialized at the root, but can be overridden at any point in the tree.
-       *
-       * @param defaults Any keys to override the retrieved context
-       * @returns The context object or an empty object if there is discovered context
-       */
-      getAllContext(defaults) {
-        if (typeof defaults === "undefined") {
-          defaults = {};
-        }
-        if (this.scope === void 0) {
-          return defaults;
-        }
-        const value = { ...this._context, ...defaults };
-        return this.scope && this.scope.node.getAllContext(value);
-      }
-      /**
-       * Retrieves a value from tree context.
-       *
-       * Context is usually initialized at the root, but can be overridden at any point in the tree.
-       *
-       * @param key The context key
-       * @returns The context value or `undefined` if there is no context value for this key.
-       */
-      tryGetContext(key) {
-        const value = this._context[key];
-        if (value !== void 0) {
-          return value;
-        }
-        return this.scope && this.scope.node.tryGetContext(key);
-      }
-      /**
-       * An immutable array of metadata objects associated with this construct.
-       * This can be used, for example, to implement support for deprecation notices, source mapping, etc.
-       */
-      get metadata() {
-        return [...this._metadata];
-      }
-      /**
-       * Adds a metadata entry to this construct.
-       * Entries are arbitrary values and will also include a stack trace to allow tracing back to
-       * the code location for when the entry was added. It can be used, for example, to include source
-       * mapping in CloudFormation templates to improve diagnostics.
-       *
-       * @param type a string denoting the type of metadata
-       * @param data the value of the metadata (can be a Token). If null/undefined, metadata will not be added.
-       * @param options options
-       */
-      addMetadata(type, data, options = {}) {
-        if (data == null) {
-          return;
-        }
-        const shouldTrace = options.stackTrace ?? false;
-        const trace = shouldTrace ? (0, stack_trace_1.captureStackTrace)(options.traceFromFunction ?? this.addMetadata) : void 0;
-        this._metadata.push({ type, data, trace });
-      }
-      /**
-       * All parent scopes of this construct.
-       *
-       * @returns a list of parent scopes. The last element in the list will always
-       * be the current construct and the first element will be the root of the
-       * tree.
-       */
-      get scopes() {
-        const ret = new Array();
-        let curr = this.host;
-        while (curr) {
-          ret.unshift(curr);
-          curr = curr.node.scope;
-        }
-        return ret;
-      }
-      /**
-       * Returns the root of the construct tree.
-       * @returns The root of the construct tree.
-       */
-      get root() {
-        return this.scopes[0];
-      }
-      /**
-       * Returns true if this construct or the scopes in which it is defined are
-       * locked.
-       */
-      get locked() {
-        if (this._locked) {
-          return true;
-        }
-        if (this.scope && this.scope.node.locked) {
-          return true;
-        }
-        return false;
-      }
-      /**
-       * Add an ordering dependency on another construct.
-       *
-       * An `IDependable`
-       */
-      addDependency(...deps) {
-        for (const d of deps) {
-          this._dependencies.add(d);
-        }
-      }
-      /**
-       * Return all dependencies registered on this node (non-recursive).
-       */
-      get dependencies() {
-        const result = new Array();
-        for (const dep of this._dependencies) {
-          for (const root of dependency_1.Dependable.of(dep).dependencyRoots) {
-            result.push(root);
-          }
-        }
-        return result;
-      }
-      /**
-       * Remove the child with the given name, if present.
-       *
-       * @returns Whether a child with the given name was deleted.
-       * @experimental
-       */
-      tryRemoveChild(childName) {
-        if (!(childName in this._children)) {
-          return false;
-        }
-        delete this._children[childName];
-        return true;
-      }
-      /**
-       * Adds a validation to this construct.
-       *
-       * When `node.validate()` is called, the `validate()` method will be called on
-       * all validations and all errors will be returned.
-       *
-       * @param validation The validation object
-       */
-      addValidation(validation) {
-        this._validations.push(validation);
-      }
-      /**
-       * Validates this construct.
-       *
-       * Invokes the `validate()` method on all validations added through
-       * `addValidation()`.
-       *
-       * @returns an array of validation error messages associated with this
-       * construct.
-       */
-      validate() {
-        const deprecated = ["validate", "onValidate", "synthesize", "onSynthesize", "prepare", "onPrepare"];
-        for (const method of deprecated) {
-          if (typeof this.host[method] === "function") {
-            throw new Error(`the construct "${this.path}" has a "${method}()" method which is no longer supported. Use "construct.node.addValidation()" to add validations to a construct`);
-          }
-        }
-        const errors = new Array();
-        for (const v of this._validations) {
-          errors.push(...v.validate());
-        }
-        return errors;
-      }
-      /**
-       * Locks this construct from allowing more children to be added. After this
-       * call, no more children can be added to this construct or to any children.
-       */
-      lock() {
-        this._locked = true;
-      }
-      /**
-       * Adds a child construct to this node.
-       *
-       * @param child The child construct
-       * @param childName The type name of the child construct.
-       * @returns The resolved path part name of the child
-       */
-      addChild(child, childName) {
-        if (this.locked) {
-          if (!this.path) {
-            throw new Error("Cannot add children during synthesis");
-          }
-          throw new Error(`Cannot add children to "${this.path}" during synthesis`);
-        }
-        if (this._children[childName]) {
-          const name = this.id ?? "";
-          const typeName = this.host.constructor.name;
-          throw new Error(`There is already a Construct with name '${childName}' in ${typeName}${name.length > 0 ? " [" + name + "]" : ""}`);
-        }
-        this._children[childName] = child;
-      }
-    };
-    _a = JSII_RTTI_SYMBOL_1;
-    Node2[_a] = { fqn: "constructs.Node", version: "10.3.0" };
-    Node2.PATH_SEP = "/";
-    exports2.Node = Node2;
-    var Construct = class {
-      static {
-        __name(this, "Construct");
-      }
-      /**
-       * Checks if `x` is a construct.
-       *
-       * Use this method instead of `instanceof` to properly detect `Construct`
-       * instances, even when the construct library is symlinked.
-       *
-       * Explanation: in JavaScript, multiple copies of the `constructs` library on
-       * disk are seen as independent, completely different libraries. As a
-       * consequence, the class `Construct` in each copy of the `constructs` library
-       * is seen as a different class, and an instance of one class will not test as
-       * `instanceof` the other class. `npm install` will not create installations
-       * like this, but users may manually symlink construct libraries together or
-       * use a monorepo tool: in those cases, multiple copies of the `constructs`
-       * library can be accidentally installed, and `instanceof` will behave
-       * unpredictably. It is safest to avoid using `instanceof`, and using
-       * this type-testing method instead.
-       *
-       * @returns true if `x` is an object created from a class which extends `Construct`.
-       * @param x Any object
-       */
-      static isConstruct(x) {
-        return x && typeof x === "object" && x[CONSTRUCT_SYM];
-      }
-      /**
-       * Creates a new construct node.
-       *
-       * @param scope The scope in which to define this construct
-       * @param id The scoped construct ID. Must be unique amongst siblings. If
-       * the ID includes a path separator (`/`), then it will be replaced by double
-       * dash `--`.
-       */
-      constructor(scope, id) {
-        this.node = new Node2(this, scope, id);
-        dependency_1.Dependable.implement(this, {
-          dependencyRoots: [this]
-        });
-      }
-      /**
-       * Returns a string representation of this construct.
-       */
-      toString() {
-        return this.node.path || "<root>";
-      }
-    };
-    _b = JSII_RTTI_SYMBOL_1;
-    Construct[_b] = { fqn: "constructs.Construct", version: "10.3.0" };
-    exports2.Construct = Construct;
-    var ConstructOrder;
-    (function(ConstructOrder2) {
-      ConstructOrder2[ConstructOrder2["PREORDER"] = 0] = "PREORDER";
-      ConstructOrder2[ConstructOrder2["POSTORDER"] = 1] = "POSTORDER";
-    })(ConstructOrder = exports2.ConstructOrder || (exports2.ConstructOrder = {}));
-    var PATH_SEP_REGEX = new RegExp(`${Node2.PATH_SEP}`, "g");
-    function sanitizeId(id) {
-      return id.replace(PATH_SEP_REGEX, "--");
-    }
-    __name(sanitizeId, "sanitizeId");
-    Object.defineProperty(Construct.prototype, CONSTRUCT_SYM, {
-      value: true,
-      enumerable: false,
-      writable: false
-    });
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/metadata.js
-var require_metadata = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/metadata.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/index.js
-var require_lib = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/index.js"(exports2) {
-    "use strict";
-    var __createBinding2 = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
-      if (k2 === void 0)
-        k2 = k;
-      var desc = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-        desc = { enumerable: true, get: function() {
-          return m[k];
-        } };
-      }
-      Object.defineProperty(o, k2, desc);
-    } : function(o, m, k, k2) {
-      if (k2 === void 0)
-        k2 = k;
-      o[k2] = m[k];
-    });
-    var __exportStar = exports2 && exports2.__exportStar || function(m, exports3) {
-      for (var p in m)
-        if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports3, p))
-          __createBinding2(exports3, m, p);
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    __exportStar(require_construct(), exports2);
-    __exportStar(require_metadata(), exports2);
-    __exportStar(require_dependency(), exports2);
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/errors.js
-var require_errors = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/errors.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.AbstractMemberError = exports2.NotImplementedError = void 0;
-    var NotImplementedError = class extends Error {
-      static {
-        __name(this, "NotImplementedError");
-      }
-      constructor(message, options) {
-        super(`${message}${options?.issue ? `
-For more information see: ${options.issue}.
-Contributions welcome \u2764\uFE0F` : ""}`);
-        this.name = "NotImplementedError";
-        this.resource = options?.resource;
-        this.operation = options?.operation;
-      }
-    };
-    exports2.NotImplementedError = NotImplementedError;
-    var AbstractMemberError = class extends Error {
-      static {
-        __name(this, "AbstractMemberError");
-      }
-      constructor() {
-        super("This member is abstract and must be implemented in a subclass.");
-      }
-    };
-    exports2.AbstractMemberError = AbstractMemberError;
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/tokens.js
-var require_tokens = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/tokens.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.getTokenResolver = exports2.registerTokenResolver = exports2.tokenEnvName = void 0;
-    var _resolvers = [];
-    function tokenEnvName(value) {
-      return `WING_TOKEN_${value.replace(/([^a-zA-Z0-9]+)/g, "_").replace(/_+$/, "").replace(/^_+/, "").toUpperCase()}`;
-    }
-    __name(tokenEnvName, "tokenEnvName");
-    exports2.tokenEnvName = tokenEnvName;
-    function registerTokenResolver(resolver) {
-      _resolvers.push(resolver);
-    }
-    __name(registerTokenResolver, "registerTokenResolver");
-    exports2.registerTokenResolver = registerTokenResolver;
-    function getTokenResolver(value) {
-      return _resolvers.find((r) => r.isToken(value));
-    }
-    __name(getTokenResolver, "getTokenResolver");
-    exports2.getTokenResolver = getTokenResolver;
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/lifting.js
-var require_lifting = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/lifting.js"(exports2) {
-    "use strict";
-    var _a;
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.Lifting = exports2.collectLifts = exports2.mergeLiftDeps = exports2.liftObject = exports2.toLiftableModuleType = exports2.INFLIGHT_INIT_METHOD_NAME = void 0;
-    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var constructs_1 = require_lib();
-    var errors_1 = require_errors();
-    var tokens_1 = require_tokens();
-    exports2.INFLIGHT_INIT_METHOD_NAME = "$inflight_init";
-    var INFLIGHT_CLOSURE_HANDLE_METHOD = "handle";
-    var INFLIGHT_CLOSURE_TYPE_PREFIX = "$Closure";
-    function toLiftableModuleType(type, moduleSpec, path2) {
-      if (typeof type?._toInflightType === "function" || type?.constructor?.name === "Object") {
-        return type;
-      } else {
-        return {
-          _toInflightType: () => `require("${moduleSpec}").${path2}`
-        };
-      }
-    }
-    __name(toLiftableModuleType, "toLiftableModuleType");
-    exports2.toLiftableModuleType = toLiftableModuleType;
-    function liftObject(obj) {
-      if (obj == null) {
-        return JSON.stringify(obj);
-      }
-      const tokenResolver = (0, tokens_1.getTokenResolver)(obj);
-      if (tokenResolver) {
-        return tokenResolver.lift(obj);
-      }
-      if (typeof obj?._toInflightType === "function") {
-        return obj._toInflightType();
-      }
-      switch (typeof obj) {
-        case "string":
-        case "boolean":
-        case "number":
-          return JSON.stringify(obj);
-        case "object":
-          if (Array.isArray(obj)) {
-            return `[${obj.map((o) => liftObject(o)).join(",")}]`;
-          }
-          if (obj instanceof Set) {
-            return `new Set(${liftObject(Array.from(obj))})`;
-          }
-          if (obj instanceof Map) {
-            return `new Map(${liftObject(Array.from(obj))})`;
-          }
-          if (typeof obj._toInflight === "function") {
-            return obj._toInflight();
-          }
-          if (obj.constructor.name === "Object") {
-            const lines = [];
-            lines.push("{");
-            for (const [k, v] of Object.entries(obj)) {
-              lines.push(`"${k.replace(/"/g, '\\"')}": ${liftObject(v)},`);
-            }
-            lines.push("}");
-            return lines.join("");
-          }
-          break;
-      }
-      throw new Error(`Unable to lift object of type ${obj?.constructor?.name}`);
-    }
-    __name(liftObject, "liftObject");
-    exports2.liftObject = liftObject;
-    function mergeLiftDeps(matrix1 = {}, matrix2 = {}) {
-      const result = {};
-      for (const [op, deps] of Object.entries(matrix1)) {
-        result[op] = /* @__PURE__ */ new Map();
-        for (const [obj, objDeps] of deps) {
-          result[op].set(obj, new Set(objDeps));
-        }
-      }
-      for (const [op, deps] of Object.entries(matrix2)) {
-        const resultDeps = result[op] ?? /* @__PURE__ */ new Map();
-        for (const [obj, objDeps] of deps) {
-          const resultObjDeps = resultDeps.get(obj) ?? /* @__PURE__ */ new Set();
-          for (const dep of objDeps) {
-            resultObjDeps.add(dep);
-          }
-          resultDeps.set(obj, resultObjDeps);
-        }
-        result[op] = resultDeps;
-      }
-      return result;
-    }
-    __name(mergeLiftDeps, "mergeLiftDeps");
-    exports2.mergeLiftDeps = mergeLiftDeps;
-    function parseMatrix(data) {
-      const result = {};
-      for (const [op, pairs] of Object.entries(data)) {
-        result[op] = /* @__PURE__ */ new Map();
-        for (const [obj, objDeps] of pairs) {
-          if (!result[op].has(obj)) {
-            result[op].set(obj, /* @__PURE__ */ new Set());
-          }
-          const depSet = result[op].get(obj);
-          for (const dep of objDeps) {
-            depSet.add(dep);
-          }
-        }
-      }
-      return result;
-    }
-    __name(parseMatrix, "parseMatrix");
-    function collectLifts(initialObj, initialOps) {
-      if (initialOps.includes(exports2.INFLIGHT_INIT_METHOD_NAME)) {
-        throw new Error(`The operation ${exports2.INFLIGHT_INIT_METHOD_NAME} is implicit and should not be requested explicitly.`);
-      }
-      const explored = /* @__PURE__ */ new Map();
-      const queue = new Array([initialObj, [...initialOps]]);
-      const matrixCache = /* @__PURE__ */ new Map();
-      while (queue.length > 0) {
-        let [obj, ops] = queue.shift();
-        let newObj = false;
-        if (!explored.has(obj)) {
-          explored.set(obj, /* @__PURE__ */ new Set());
-          newObj = true;
-        }
-        let existingOps = explored.get(obj);
-        ops = ops.filter((op) => !existingOps.has(op));
-        if (ops.length === 0 && !newObj) {
-          continue;
-        }
-        for (const op of ops) {
-          existingOps.add(op);
-        }
-        let matrix;
-        if (matrixCache.has(obj)) {
-          matrix = matrixCache.get(obj);
-        } else if (typeof obj === "object" && obj._liftMap !== void 0) {
-          matrix = parseMatrix(obj._liftMap ?? {});
-          matrixCache.set(obj, matrix);
-        } else if (typeof obj === "function" && typeof obj._liftTypeMap !== void 0) {
-          matrix = parseMatrix(obj._liftTypeMap ?? {});
-          matrixCache.set(obj, matrix);
-        } else {
-          let items_to_explore = [];
-          if (Array.isArray(obj)) {
-            items_to_explore = obj;
-          } else if (obj instanceof Set) {
-            items_to_explore = obj;
-          } else if (obj instanceof Map) {
-            items_to_explore = obj.values();
-          } else if (typeof obj === "object" && obj.constructor.name === "Object") {
-            items_to_explore = Object.values(obj);
-          }
-          for (const item of items_to_explore) {
-            if (!explored.has(item)) {
-              let item_ops = [];
-              if (isInflightClosureObject(item)) {
-                item_ops.push(INFLIGHT_CLOSURE_HANDLE_METHOD);
-              }
-              queue.push([item, item_ops]);
-            }
-          }
-          continue;
-        }
-        for (const op of [...ops, exports2.INFLIGHT_INIT_METHOD_NAME]) {
-          const objDeps = matrix[op];
-          if (op === exports2.INFLIGHT_INIT_METHOD_NAME && !objDeps) {
-            continue;
-          }
-          if (!objDeps) {
-            if (constructs_1.Construct.isConstruct(obj)) {
-              throw new errors_1.NotImplementedError(`Resource ${obj.node.path} does not support inflight operation ${op}.
-It might not be implemented yet.`, { resource: obj.constructor.name, operation: op });
-            } else {
-              throw new Error(`Unknown operation ${op} requested for object ${obj} (${obj.constructor.name})`);
-            }
-          }
-          for (const [depObj, depOps] of objDeps.entries()) {
-            if (depOps.has(exports2.INFLIGHT_INIT_METHOD_NAME)) {
-              throw new Error(`The operation ${exports2.INFLIGHT_INIT_METHOD_NAME} is implicit and should not be requested explicitly.`);
-            }
-            queue.push([depObj, [...depOps]]);
-          }
-        }
-      }
-      return explored;
-    }
-    __name(collectLifts, "collectLifts");
-    exports2.collectLifts = collectLifts;
-    function isInflightClosureObject(item) {
-      return typeof item === "object" && typeof item.constructor === "function" && typeof item.constructor.name === "string" && item.constructor.name.startsWith(INFLIGHT_CLOSURE_TYPE_PREFIX) && item._liftMap !== void 0 && item._liftMap[INFLIGHT_CLOSURE_HANDLE_METHOD] !== void 0;
-    }
-    __name(isInflightClosureObject, "isInflightClosureObject");
-    var Lifting = class {
-      static {
-        __name(this, "Lifting");
-      }
-      /**
-       * Perform the full lifting process on an object.
-       *
-       * Use this instead of calling `onLift` since it will also lift all of the
-       * object's dependencies, and it will ensure that the onLift methods of
-       * all objects are all called at most once.
-       */
-      static lift(obj, host, ops) {
-        const lifts = collectLifts(obj, ops);
-        for (const [liftedObj, liftedOps] of lifts) {
-          const tokens = (0, tokens_1.getTokenResolver)(liftedObj);
-          if (tokens) {
-            tokens.onLiftValue(host, liftedObj);
-            continue;
-          }
-          if (typeof liftedObj === "object" && typeof liftedObj.onLift === "function") {
-            liftedObj.onLift(host, [...liftedOps]);
-            continue;
-          }
-          if (typeof liftedObj === "function" && typeof liftedObj.onLiftType === "function") {
-            liftedObj.onLiftType(host, [...liftedOps]);
-            continue;
-          }
-        }
-      }
-    };
-    exports2.Lifting = Lifting;
-    _a = JSII_RTTI_SYMBOL_1;
-    Lifting[_a] = { fqn: "@winglang/sdk.core.Lifting", version: "0.0.0" };
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/types.js
-var require_types = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/types.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.SECRET_SYMBOL = exports2.INFLIGHT_SYMBOL = exports2.Construct = void 0;
-    var constructs_1 = require_lib();
-    Object.defineProperty(exports2, "Construct", { enumerable: true, get: function() {
-      return constructs_1.Construct;
-    } });
-    exports2.INFLIGHT_SYMBOL = Symbol("@winglang/sdk.inflight");
-    exports2.SECRET_SYMBOL = Symbol("@winglang/sdk.cloud.Secret");
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/shared/misc.js
-var require_misc = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/shared/misc.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.isPath = exports2.shell = exports2.runCommand = exports2.normalPath = exports2.readJsonSync = void 0;
-    var child_process_1 = require("child_process");
-    var fs_1 = require("fs");
-    var util_1 = require("util");
-    var execPromise = (0, util_1.promisify)(child_process_1.exec);
-    var execFilePromise = (0, util_1.promisify)(child_process_1.execFile);
-    function readJsonSync(file) {
-      return JSON.parse((0, fs_1.readFileSync)(file, "utf-8"));
-    }
-    __name(readJsonSync, "readJsonSync");
-    exports2.readJsonSync = readJsonSync;
-    function normalPath2(path2) {
-      if (process.platform === "win32") {
-        return path2.replace(/\\+/g, "/");
-      } else {
-        return path2;
-      }
-    }
-    __name(normalPath2, "normalPath");
-    exports2.normalPath = normalPath2;
-    async function runCommand(cmd, args, options) {
-      const { stdout } = await execFilePromise(cmd, args, options);
-      return stdout;
-    }
-    __name(runCommand, "runCommand");
-    exports2.runCommand = runCommand;
-    async function shell(cmd, args, options) {
-      const { stdout } = await execPromise(cmd + " " + args.join(" "), options);
-      return stdout;
-    }
-    __name(shell, "shell");
-    exports2.shell = shell;
-    function isPath(s) {
-      s = normalPath2(s);
-      return s.startsWith("./") || s.startsWith("../") || s.startsWith("/");
-    }
-    __name(isPath, "isPath");
-    exports2.isPath = isPath;
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/inflight.js
-var require_inflight = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/inflight.js"(exports2) {
-    "use strict";
-    var _a;
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.importInflight = exports2.inflight = exports2.lift = exports2.InflightClient = exports2.closureId = void 0;
-    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var path_1 = require("path");
-    var lifting_1 = require_lifting();
-    var types_1 = require_types();
-    var misc_1 = require_misc();
-    var closureCount = 0;
-    function closureId() {
-      return closureCount++;
-    }
-    __name(closureId, "closureId");
-    exports2.closureId = closureId;
-    var InflightClient = class {
-      static {
-        __name(this, "InflightClient");
-      }
-      /**
-       * Returns code for creating an inflight client.
-       */
-      static for(dirname2, filename, clientClass, args) {
-        const inflightDir = dirname2;
-        const inflightFile = (0, path_1.basename)(filename).split(".")[0] + ".inflight";
-        return `new (require("${(0, misc_1.normalPath)(`${inflightDir}/${inflightFile}`)}")).${clientClass}(${args.join(", ")})`;
-      }
-      /**
-       * Returns code for implementing `_toInflightType()`.
-       */
-      static forType(filename, clientClass) {
-        return `require("${(0, misc_1.normalPath)(filename)}").${clientClass}`;
-      }
-      constructor() {
-      }
-    };
-    exports2.InflightClient = InflightClient;
-    _a = JSII_RTTI_SYMBOL_1;
-    InflightClient[_a] = { fqn: "@winglang/sdk.core.InflightClient", version: "0.0.0" };
-    function lift(captures) {
-      return new Lifter().lift(captures);
-    }
-    __name(lift, "lift");
-    exports2.lift = lift;
-    function inflight(fn) {
-      return new Lifter().inflight(fn);
-    }
-    __name(inflight, "inflight");
-    exports2.inflight = inflight;
-    function importInflight(inflightText, lifts) {
-      const newLifts = {};
-      const newGrants = {};
-      for (const liftAnnotation of lifts ?? []) {
-        if (liftAnnotation.alias === void 0) {
-          throw new Error("The alias field is required for all lifts");
-        }
-        newLifts[liftAnnotation.alias] = liftAnnotation.obj;
-        if (liftAnnotation.ops) {
-          newGrants[liftAnnotation.alias] = liftAnnotation.ops;
-        }
-      }
-      return lift(newLifts).grant(newGrants).inflight(inflightText);
-    }
-    __name(importInflight, "importInflight");
-    exports2.importInflight = importInflight;
-    var Lifter = class _Lifter {
-      static {
-        __name(this, "Lifter");
-      }
-      constructor(lifts = {}, grants = {}) {
-        this.lifts = lifts;
-        this.grants = grants;
-      }
-      /**
-       * Add additional liftable objects to the scope of the inflight function.
-       * Any existing liftable objects with the same name will be overwritten.
-       *
-       * Conventionally, this is used by passing in a `const` object to bind it with the same name
-       *
-       * ```ts
-       * const bucket = new cloud.Bucket(app, "Bucket");
-       * const number = 5;
-       *
-       * lift({ bucket, number })
-       *   .inflight(({ bucket, number }) => { ... }))
-       * ```
-       *
-       * However, the name is not required to match the variable in the current scope.
-       *
-       * This is especially useful/necessary when lifting data via a reference or some other expression
-       *
-       * ```ts
-       * const bucket = new cloud.Bucket(app, "Bucket");
-       *
-       * lift({ bkt: bucket, sum: 2 + 2, field: bucket.field })
-       *   .inflight(({ bkt, sum, field }) => { ... }))
-       * ```
-       */
-      lift(captures) {
-        return new _Lifter({
-          ...this.lifts,
-          ...captures
-        }, this.grants);
-      }
-      /**
-       * Grant permissions for lifted resources.
-       *
-       * By default, all all possible methods are granted to lifted resources.
-       * This function restricts those:
-       *
-       * ```ts
-       * const bucket = new cloud.Bucket(app, "Bucket");
-       *
-       * lift({ bucket })
-       *   .grant({ bucket: ["get"] })
-       *   .inflight(({ bucket }) => {
-       *     await bucket.get("key");
-       *     await bucket.set("key", "value"); // Error: set is not granted
-       *   });
-       * ```
-       *
-       * fields are always accessible, even if not granted.
-       */
-      grant(grants) {
-        return new _Lifter(this.lifts, {
-          ...this.grants,
-          ...grants
-        });
-      }
-      /**
-       * Create an inflight function with the available lifted data.
-       *
-       * This function must not reference any variables outside of its scope.
-       * If needed, use `lift` again to bind variables to the scope of the function.
-       * Bound variables will be available as properties on the `ctx` object passed as the first argument to the function.
-       *
-       * Built-in NodeJS globals are available, such as `console` and `process`.
-       * @wing inflight
-       */
-      inflight(fn) {
-        const _liftMap = { handle: [] };
-        for (const [key, obj] of Object.entries(this.lifts)) {
-          const knownOps = this.grants[key] ?? Object.keys(obj._liftMap ?? {}).filter(
-            (x) => x !== lifting_1.INFLIGHT_INIT_METHOD_NAME
-            // filter "$inflight_init"
-          );
-          _liftMap.handle.push([obj, knownOps]);
-        }
-        return {
-          _id: closureId(),
-          _toInflight: () => {
-            const serializedFunction = fn.toString();
-            return `(await (async () => {
-  const $func = ${serializedFunction}
-  const $ctx = {
-  ${Object.entries(this.lifts).map(([name, liftable]) => `${name}: ${(0, lifting_1.liftObject)(liftable)}`).join(",\n")}
-  };
-  let newFunction = async (...args) => {
-    return $func($ctx, ...args);
-  };
-  newFunction.handle = newFunction;
-  return newFunction;
-}
-)())`;
-          },
-          _liftMap,
-          // @ts-expect-error This function's type doesn't actually match, but it will just throw anyways
-          [types_1.INFLIGHT_SYMBOL]: () => {
-            throw new Error("This is a inflight function and can only be invoked while inflight");
-          }
-        };
-      }
-    };
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/datetime.js
-var require_datetime = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/datetime.js"(exports2) {
-    "use strict";
-    var _a;
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.Datetime = void 0;
-    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var inflight_1 = require_inflight();
-    var misc_1 = require_misc();
-    var Datetime = class _Datetime {
-      static {
-        __name(this, "Datetime");
-      }
-      /**
-       * @internal
-       */
-      static _toInflightType() {
-        return inflight_1.InflightClient.forType(__filename, this.name);
-      }
-      /**
-       * Create a Datetime from UTC timezone
-       *
-       * @returns a new `Datetime` from current time in UTC timezone
-       */
-      static utcNow() {
-        return new _Datetime();
-      }
-      /**
-       * Create a Datetime from local system timezone
-       *
-       * @returns a new `Datetime` from current time in system timezone
-       */
-      static systemNow() {
-        const date = /* @__PURE__ */ new Date();
-        date.setTime(date.getTime() - date.getTimezoneOffset() * 60 * 1e3);
-        return new _Datetime(date, date.getTimezoneOffset());
-      }
-      /**
-       * Create a Datetime from an ISO-8601 string
-       *
-       * @returns a new `Datetime` in UTC timezone
-       * @param iso ISO-8601 string
-       */
-      static fromIso(iso) {
-        return new _Datetime(new Date(iso));
-      }
-      /**
-       * Create a Datetime from a JavaScript Date object.
-       *
-       * @param date The JavaScript Date object.
-       * @returns a new `Datetime` instance.
-       */
-      static fromDate(date) {
-        return this.fromIso(date.toISOString());
-      }
-      /**
-       * Create a Datetime from Datetime components
-       *
-       * @param c DatetimeComponents
-       * @returns a new `Datetime`
-       */
-      static fromComponents(c) {
-        const date = new Date(Date.UTC(c.year, c.month, c.day, c.hour, c.min, c.sec, c.ms));
-        return new _Datetime(date, c.tz);
-      }
-      constructor(date = /* @__PURE__ */ new Date(), timezoneOffset = 0) {
-        this._timezoneOffset = 0;
-        this._date = date;
-        this._timezoneOffset = timezoneOffset;
-      }
-      /** @internal */
-      _toInflight() {
-        return `(require("${(0, misc_1.normalPath)(__filename)}").Datetime.fromIso("${this.toIso()}"))`;
-      }
-      /**
-       * Return a timestamp of non-leap year seconds since epoch
-       *
-       * @returns a number representing the current timestamp in seconds
-       */
-      get timestamp() {
-        return this.timestampMs / 1e3;
-      }
-      /**
-       * Return a timestamp of non-leap year milliseconds since epoch
-       *
-       * @returns a number representing the current timestamp in milliseconds
-       */
-      get timestampMs() {
-        return this._date.valueOf() + this._timezoneOffset * 60 * 1e3;
-      }
-      /**
-       * Returns the hour of the local machine time or in utc
-       *
-       * @returns a number representing the datetime's hour
-       */
-      get hours() {
-        return this._date.getUTCHours();
-      }
-      /**
-       * Returns the minute of the local machine time or in utc
-       *
-       * @returns a number representing the datetime's minute
-       */
-      get min() {
-        return this._date.getUTCMinutes();
-      }
-      /**
-       * Returns the seconds of the local machine time or in utc
-       *
-       * @returns a number representing the datetime's seconds
-       */
-      get sec() {
-        return this._date.getUTCSeconds();
-      }
-      /**
-       * Returns the milliseconds of the local machine time or in utc
-       *  *
-       * @returns a number representing the datetime's milliseconds
-       */
-      get ms() {
-        return this._date.getUTCMilliseconds();
-      }
-      /**
-       * Returns the day of month in the local machine time or in utc (1 - 31)
-       *
-       * @returns a number representing the datetime's day of month
-       */
-      get dayOfMonth() {
-        return this._date.getUTCDate();
-      }
-      /**
-       * Returns the day in month of the local machine time or in utc (0 - 6)
-       *
-       * @returns a number representing the datetime's day of week
-       */
-      get dayOfWeek() {
-        return this._date.getUTCDay();
-      }
-      /**
-       * Returns the month of the local machine time or in utc (0 - 11)
-       *
-       * @returns a number representing the datetime's month
-       */
-      get month() {
-        return this._date.getUTCMonth();
-      }
-      /**
-       * Returns the year of the local machine time or in utc
-       *
-       * @returns a number representing the datetime's year
-       */
-      get year() {
-        return this._date.getUTCFullYear();
-      }
-      /**
-       * Returns the offset in minutes from UTC
-       *
-       * @returns a number representing the datetime's offset in minutes from UTC
-       */
-      get timezone() {
-        return this._timezoneOffset;
-      }
-      /**
-       * Returns a Datetime represents the same date in utc
-       *
-       * @returns a datetime representing the datetime's date in UTC
-       */
-      toUtc() {
-        return new _Datetime(new Date(this.timestampMs));
-      }
-      /**
-       * Returns ISO-8601 string
-       *
-       * @returns a ISO-8601 string representation of the datetime
-       */
-      toIso() {
-        return new Date(this.timestampMs).toISOString();
-      }
-    };
-    exports2.Datetime = Datetime;
-    _a = JSII_RTTI_SYMBOL_1;
-    Datetime[_a] = { fqn: "@winglang/sdk.std.Datetime", version: "0.0.0" };
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/simulator/serialization.js
-var require_serialization = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/simulator/serialization.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.deserialize = exports2.serialize = void 0;
-    var datetime_1 = require_datetime();
-    function serialize(input) {
-      return JSON.stringify(input, (_key, value) => {
-        if (value instanceof datetime_1.Datetime) {
-          return {
-            $kind: "datetime",
-            day: value.dayOfMonth,
-            hour: value.hours,
-            min: value.min,
-            month: value.month,
-            sec: value.sec,
-            year: value.year,
-            ms: value.ms,
-            tz: value.timezone
-          };
-        }
-        return value;
-      });
-    }
-    __name(serialize, "serialize");
-    exports2.serialize = serialize;
-    function deserialize(input) {
-      return JSON.parse(input, (_key, value) => {
-        if (value === null) {
-          return void 0;
-        }
-        if (value.$kind === "datetime") {
-          return datetime_1.Datetime.fromComponents({
-            day: value.day,
-            hour: value.hour,
-            min: value.min,
-            month: value.month,
-            sec: value.sec,
-            year: value.year,
-            ms: value.ms,
-            tz: value.tz
-          });
-        }
-        return value;
-      });
-    }
-    __name(deserialize, "deserialize");
-    exports2.deserialize = deserialize;
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/simulator/client.js
-var require_client = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/simulator/client.js"(exports2) {
-    "use strict";
-    var __createBinding2 = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
-      if (k2 === void 0)
-        k2 = k;
-      var desc = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-        desc = { enumerable: true, get: function() {
-          return m[k];
-        } };
-      }
-      Object.defineProperty(o, k2, desc);
-    } : function(o, m, k, k2) {
-      if (k2 === void 0)
-        k2 = k;
-      o[k2] = m[k];
-    });
-    var __setModuleDefault2 = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
-      Object.defineProperty(o, "default", { enumerable: true, value: v });
-    } : function(o, v) {
-      o["default"] = v;
-    });
-    var __importStar2 = exports2 && exports2.__importStar || function(mod) {
-      if (mod && mod.__esModule)
-        return mod;
-      var result = {};
-      if (mod != null) {
-        for (var k in mod)
-          if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
-            __createBinding2(result, mod, k);
-      }
-      __setModuleDefault2(result, mod);
-      return result;
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.makeSimulatorClient = void 0;
-    var http2 = __importStar2(require("http"));
-    var serialization_1 = require_serialization();
-    function makeHttpRequest(options) {
-      return new Promise((resolve, reject) => {
-        const req = http2.request(options, (res) => {
-          let data = "";
-          res.on("data", (chunk) => {
-            data += chunk;
-          });
-          res.on("end", () => {
-            resolve(data);
-          });
-        });
-        req.on("error", (e) => {
-          reject(e);
-        });
-        if (options.body !== void 0) {
-          req.write(options.body);
-        }
-        req.end();
-      });
-    }
-    __name(makeHttpRequest, "makeHttpRequest");
-    function makeSimulatorClient(url, handle, caller) {
-      let proxy;
-      let hasThenMethod = true;
-      const get = /* @__PURE__ */ __name((_target, method, _receiver) => {
-        if (method === "then" && !hasThenMethod) {
-          return void 0;
-        }
-        return async function(...args) {
-          const body = { caller, handle, method, args };
-          const parsedUrl = new URL(url);
-          const resp = await makeHttpRequest({
-            hostname: parsedUrl.hostname,
-            port: parsedUrl.port,
-            path: "/v1/call",
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body)
-          });
-          let parsed = (0, serialization_1.deserialize)(resp);
-          if (parsed.error) {
-            if (method === "then" && parsed.error?.message?.startsWith('Method "then" not found on resource')) {
-              hasThenMethod = false;
-              return args[0](proxy);
-            }
-            let err = new Error();
-            err.message = parsed.error?.message;
-            err.name = parsed.error?.name;
-            if (parsed.error?.stack) {
-              err.stack = `${parsed.error.stack}
-${err.stack}`;
-            }
-            throw err;
-          }
-          return parsed.result;
-        };
-      }, "get");
-      proxy = new Proxy({}, { get });
-      return proxy;
-    }
-    __name(makeSimulatorClient, "makeSimulatorClient");
-    exports2.makeSimulatorClient = makeSimulatorClient;
-  }
-});
-
-// target/test/main.wsim/.wing/inflight.Broadcaster-8.cjs
-var require_inflight_Broadcaster_8 = __commonJS({
-  "target/test/main.wsim/.wing/inflight.Broadcaster-8.cjs"(exports2, module2) {
+// target/test/main.wsim/.wing/inflight.NotificationStorage-16.cjs
+var require_inflight_NotificationStorage_16 = __commonJS({
+  "target/test/main.wsim/.wing/inflight.NotificationStorage-16.cjs"(exports2, module2) {
     "use strict";
     var $helpers = require_helpers();
-    module2.exports = function({}) {
-      class Broadcaster {
+    module2.exports = function({ $Notification }) {
+      class NotificationStorage {
         static {
-          __name(this, "Broadcaster");
+          __name(this, "NotificationStorage");
         }
-        constructor({ $this_clients, $this_server }) {
-          this.$this_clients = $this_clients;
-          this.$this_server = $this_server;
+        constructor({ $this_counter, $this_db }) {
+          this.$this_counter = $this_counter;
+          this.$this_db = $this_db;
         }
-        async broadcast(messgae) {
-          for (const id of await this.$this_clients.list()) {
-            await this.$this_server.sendMessage(id, messgae);
-          }
+        async _add(id, j) {
+          await this.$this_db.insert(id, j);
+        }
+        async add(notification) {
+          const id = String.raw({ raw: ["", ""] }, await this.$this_counter.inc());
+          const notificationJson = { "id": id, "name": ((obj, args) => {
+            if (obj[args] === void 0)
+              throw new Error(`Json property "${args}" does not exist`);
+            return obj[args];
+          })(notification, "name"), "description": ((obj, args) => {
+            if (obj[args] === void 0)
+              throw new Error(`Json property "${args}" does not exist`);
+            return obj[args];
+          })(notification, "description") };
+          await this._add(id, notificationJson);
+          console.log(String.raw({ raw: ["adding task ", " with data: ", ""] }, id, JSON.stringify(notificationJson)));
+          return String.raw({ raw: ["Product with id ", " added successfully"] }, id);
+        }
+        async remove(id) {
+          await this.$this_db.delete(id);
+          console.log(String.raw({ raw: ["deleting notification ", ""] }, id));
+        }
+        async get(id) {
+          const notificationJson = await this.$this_db.tryGet(id);
+          return $Notification._fromJson(notificationJson);
+        }
+        async list() {
+          const notificationJson = await this.$this_db.list();
+          console.log(String.raw({ raw: ["", ""] }, notificationJson.length));
+          return notificationJson;
         }
       }
-      return Broadcaster;
+      return NotificationStorage;
     };
-  }
-});
-
-// target/test/main.wsim/.wing/inflight.WebSocket-7.cjs
-var require_inflight_WebSocket_7 = __commonJS({
-  "target/test/main.wsim/.wing/inflight.WebSocket-7.cjs"(exports2, module2) {
-    "use strict";
-    var $helpers = require_helpers();
-    module2.exports = function({}) {
-      class WebSocket2 {
-        static {
-          __name(this, "WebSocket");
-        }
-        constructor({ $this_inner }) {
-          this.$this_inner = $this_inner;
-        }
-        async sendMessage(connectionId, message) {
-          await this.$this_inner.sendMessage(connectionId, message);
-        }
-      }
-      return WebSocket2;
-    };
-  }
-});
-
-// ../node_modules/ws/lib/stream.js
-var require_stream = __commonJS({
-  "../node_modules/ws/lib/stream.js"(exports2, module2) {
-    "use strict";
-    var { Duplex } = require("stream");
-    function emitClose(stream) {
-      stream.emit("close");
-    }
-    __name(emitClose, "emitClose");
-    function duplexOnEnd() {
-      if (!this.destroyed && this._writableState.finished) {
-        this.destroy();
-      }
-    }
-    __name(duplexOnEnd, "duplexOnEnd");
-    function duplexOnError(err) {
-      this.removeListener("error", duplexOnError);
-      this.destroy();
-      if (this.listenerCount("error") === 0) {
-        this.emit("error", err);
-      }
-    }
-    __name(duplexOnError, "duplexOnError");
-    function createWebSocketStream2(ws, options) {
-      let terminateOnDestroy = true;
-      const duplex = new Duplex({
-        ...options,
-        autoDestroy: false,
-        emitClose: false,
-        objectMode: false,
-        writableObjectMode: false
-      });
-      ws.on("message", /* @__PURE__ */ __name(function message(msg, isBinary) {
-        const data = !isBinary && duplex._readableState.objectMode ? msg.toString() : msg;
-        if (!duplex.push(data))
-          ws.pause();
-      }, "message"));
-      ws.once("error", /* @__PURE__ */ __name(function error(err) {
-        if (duplex.destroyed)
-          return;
-        terminateOnDestroy = false;
-        duplex.destroy(err);
-      }, "error"));
-      ws.once("close", /* @__PURE__ */ __name(function close() {
-        if (duplex.destroyed)
-          return;
-        duplex.push(null);
-      }, "close"));
-      duplex._destroy = function(err, callback) {
-        if (ws.readyState === ws.CLOSED) {
-          callback(err);
-          process.nextTick(emitClose, duplex);
-          return;
-        }
-        let called = false;
-        ws.once("error", /* @__PURE__ */ __name(function error(err2) {
-          called = true;
-          callback(err2);
-        }, "error"));
-        ws.once("close", /* @__PURE__ */ __name(function close() {
-          if (!called)
-            callback(err);
-          process.nextTick(emitClose, duplex);
-        }, "close"));
-        if (terminateOnDestroy)
-          ws.terminate();
-      };
-      duplex._final = function(callback) {
-        if (ws.readyState === ws.CONNECTING) {
-          ws.once("open", /* @__PURE__ */ __name(function open() {
-            duplex._final(callback);
-          }, "open"));
-          return;
-        }
-        if (ws._socket === null)
-          return;
-        if (ws._socket._writableState.finished) {
-          callback();
-          if (duplex._readableState.endEmitted)
-            duplex.destroy();
-        } else {
-          ws._socket.once("finish", /* @__PURE__ */ __name(function finish() {
-            callback();
-          }, "finish"));
-          ws.close();
-        }
-      };
-      duplex._read = function() {
-        if (ws.isPaused)
-          ws.resume();
-      };
-      duplex._write = function(chunk, encoding, callback) {
-        if (ws.readyState === ws.CONNECTING) {
-          ws.once("open", /* @__PURE__ */ __name(function open() {
-            duplex._write(chunk, encoding, callback);
-          }, "open"));
-          return;
-        }
-        ws.send(chunk, callback);
-      };
-      duplex.on("end", duplexOnEnd);
-      duplex.on("error", duplexOnError);
-      return duplex;
-    }
-    __name(createWebSocketStream2, "createWebSocketStream");
-    module2.exports = createWebSocketStream2;
-  }
-});
-
-// ../node_modules/ws/lib/constants.js
-var require_constants = __commonJS({
-  "../node_modules/ws/lib/constants.js"(exports2, module2) {
-    "use strict";
-    module2.exports = {
-      BINARY_TYPES: ["nodebuffer", "arraybuffer", "fragments"],
-      EMPTY_BUFFER: Buffer.alloc(0),
-      GUID: "258EAFA5-E914-47DA-95CA-C5AB0DC85B11",
-      kForOnEventAttribute: Symbol("kIsForOnEventAttribute"),
-      kListener: Symbol("kListener"),
-      kStatusCode: Symbol("status-code"),
-      kWebSocket: Symbol("websocket"),
-      NOOP: () => {
-      }
-    };
-  }
-});
-
-// ../node_modules/ws/lib/buffer-util.js
-var require_buffer_util = __commonJS({
-  "../node_modules/ws/lib/buffer-util.js"(exports2, module2) {
-    "use strict";
-    var { EMPTY_BUFFER } = require_constants();
-    var FastBuffer = Buffer[Symbol.species];
-    function concat(list, totalLength) {
-      if (list.length === 0)
-        return EMPTY_BUFFER;
-      if (list.length === 1)
-        return list[0];
-      const target = Buffer.allocUnsafe(totalLength);
-      let offset = 0;
-      for (let i = 0; i < list.length; i++) {
-        const buf = list[i];
-        target.set(buf, offset);
-        offset += buf.length;
-      }
-      if (offset < totalLength) {
-        return new FastBuffer(target.buffer, target.byteOffset, offset);
-      }
-      return target;
-    }
-    __name(concat, "concat");
-    function _mask(source, mask, output, offset, length) {
-      for (let i = 0; i < length; i++) {
-        output[offset + i] = source[i] ^ mask[i & 3];
-      }
-    }
-    __name(_mask, "_mask");
-    function _unmask(buffer, mask) {
-      for (let i = 0; i < buffer.length; i++) {
-        buffer[i] ^= mask[i & 3];
-      }
-    }
-    __name(_unmask, "_unmask");
-    function toArrayBuffer(buf) {
-      if (buf.length === buf.buffer.byteLength) {
-        return buf.buffer;
-      }
-      return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.length);
-    }
-    __name(toArrayBuffer, "toArrayBuffer");
-    function toBuffer(data) {
-      toBuffer.readOnly = true;
-      if (Buffer.isBuffer(data))
-        return data;
-      let buf;
-      if (data instanceof ArrayBuffer) {
-        buf = new FastBuffer(data);
-      } else if (ArrayBuffer.isView(data)) {
-        buf = new FastBuffer(data.buffer, data.byteOffset, data.byteLength);
-      } else {
-        buf = Buffer.from(data);
-        toBuffer.readOnly = false;
-      }
-      return buf;
-    }
-    __name(toBuffer, "toBuffer");
-    module2.exports = {
-      concat,
-      mask: _mask,
-      toArrayBuffer,
-      toBuffer,
-      unmask: _unmask
-    };
-    if (!process.env.WS_NO_BUFFER_UTIL) {
-      try {
-        const bufferUtil = require("bufferutil");
-        module2.exports.mask = function(source, mask, output, offset, length) {
-          if (length < 48)
-            _mask(source, mask, output, offset, length);
-          else
-            bufferUtil.mask(source, mask, output, offset, length);
-        };
-        module2.exports.unmask = function(buffer, mask) {
-          if (buffer.length < 32)
-            _unmask(buffer, mask);
-          else
-            bufferUtil.unmask(buffer, mask);
-        };
-      } catch (e) {
-      }
-    }
-  }
-});
-
-// ../node_modules/ws/lib/limiter.js
-var require_limiter = __commonJS({
-  "../node_modules/ws/lib/limiter.js"(exports2, module2) {
-    "use strict";
-    var kDone = Symbol("kDone");
-    var kRun = Symbol("kRun");
-    var Limiter = class {
-      static {
-        __name(this, "Limiter");
-      }
-      /**
-       * Creates a new `Limiter`.
-       *
-       * @param {Number} [concurrency=Infinity] The maximum number of jobs allowed
-       *     to run concurrently
-       */
-      constructor(concurrency) {
-        this[kDone] = () => {
-          this.pending--;
-          this[kRun]();
-        };
-        this.concurrency = concurrency || Infinity;
-        this.jobs = [];
-        this.pending = 0;
-      }
-      /**
-       * Adds a job to the queue.
-       *
-       * @param {Function} job The job to run
-       * @public
-       */
-      add(job) {
-        this.jobs.push(job);
-        this[kRun]();
-      }
-      /**
-       * Removes a job from the queue and runs it if possible.
-       *
-       * @private
-       */
-      [kRun]() {
-        if (this.pending === this.concurrency)
-          return;
-        if (this.jobs.length) {
-          const job = this.jobs.shift();
-          this.pending++;
-          job(this[kDone]);
-        }
-      }
-    };
-    module2.exports = Limiter;
-  }
-});
-
-// ../node_modules/ws/lib/permessage-deflate.js
-var require_permessage_deflate = __commonJS({
-  "../node_modules/ws/lib/permessage-deflate.js"(exports2, module2) {
-    "use strict";
-    var zlib = require("zlib");
-    var bufferUtil = require_buffer_util();
-    var Limiter = require_limiter();
-    var { kStatusCode } = require_constants();
-    var FastBuffer = Buffer[Symbol.species];
-    var TRAILER = Buffer.from([0, 0, 255, 255]);
-    var kPerMessageDeflate = Symbol("permessage-deflate");
-    var kTotalLength = Symbol("total-length");
-    var kCallback = Symbol("callback");
-    var kBuffers = Symbol("buffers");
-    var kError = Symbol("error");
-    var zlibLimiter;
-    var PerMessageDeflate = class {
-      static {
-        __name(this, "PerMessageDeflate");
-      }
-      /**
-       * Creates a PerMessageDeflate instance.
-       *
-       * @param {Object} [options] Configuration options
-       * @param {(Boolean|Number)} [options.clientMaxWindowBits] Advertise support
-       *     for, or request, a custom client window size
-       * @param {Boolean} [options.clientNoContextTakeover=false] Advertise/
-       *     acknowledge disabling of client context takeover
-       * @param {Number} [options.concurrencyLimit=10] The number of concurrent
-       *     calls to zlib
-       * @param {(Boolean|Number)} [options.serverMaxWindowBits] Request/confirm the
-       *     use of a custom server window size
-       * @param {Boolean} [options.serverNoContextTakeover=false] Request/accept
-       *     disabling of server context takeover
-       * @param {Number} [options.threshold=1024] Size (in bytes) below which
-       *     messages should not be compressed if context takeover is disabled
-       * @param {Object} [options.zlibDeflateOptions] Options to pass to zlib on
-       *     deflate
-       * @param {Object} [options.zlibInflateOptions] Options to pass to zlib on
-       *     inflate
-       * @param {Boolean} [isServer=false] Create the instance in either server or
-       *     client mode
-       * @param {Number} [maxPayload=0] The maximum allowed message length
-       */
-      constructor(options, isServer, maxPayload) {
-        this._maxPayload = maxPayload | 0;
-        this._options = options || {};
-        this._threshold = this._options.threshold !== void 0 ? this._options.threshold : 1024;
-        this._isServer = !!isServer;
-        this._deflate = null;
-        this._inflate = null;
-        this.params = null;
-        if (!zlibLimiter) {
-          const concurrency = this._options.concurrencyLimit !== void 0 ? this._options.concurrencyLimit : 10;
-          zlibLimiter = new Limiter(concurrency);
-        }
-      }
-      /**
-       * @type {String}
-       */
-      static get extensionName() {
-        return "permessage-deflate";
-      }
-      /**
-       * Create an extension negotiation offer.
-       *
-       * @return {Object} Extension parameters
-       * @public
-       */
-      offer() {
-        const params = {};
-        if (this._options.serverNoContextTakeover) {
-          params.server_no_context_takeover = true;
-        }
-        if (this._options.clientNoContextTakeover) {
-          params.client_no_context_takeover = true;
-        }
-        if (this._options.serverMaxWindowBits) {
-          params.server_max_window_bits = this._options.serverMaxWindowBits;
-        }
-        if (this._options.clientMaxWindowBits) {
-          params.client_max_window_bits = this._options.clientMaxWindowBits;
-        } else if (this._options.clientMaxWindowBits == null) {
-          params.client_max_window_bits = true;
-        }
-        return params;
-      }
-      /**
-       * Accept an extension negotiation offer/response.
-       *
-       * @param {Array} configurations The extension negotiation offers/reponse
-       * @return {Object} Accepted configuration
-       * @public
-       */
-      accept(configurations) {
-        configurations = this.normalizeParams(configurations);
-        this.params = this._isServer ? this.acceptAsServer(configurations) : this.acceptAsClient(configurations);
-        return this.params;
-      }
-      /**
-       * Releases all resources used by the extension.
-       *
-       * @public
-       */
-      cleanup() {
-        if (this._inflate) {
-          this._inflate.close();
-          this._inflate = null;
-        }
-        if (this._deflate) {
-          const callback = this._deflate[kCallback];
-          this._deflate.close();
-          this._deflate = null;
-          if (callback) {
-            callback(
-              new Error(
-                "The deflate stream was closed while data was being processed"
-              )
-            );
-          }
-        }
-      }
-      /**
-       *  Accept an extension negotiation offer.
-       *
-       * @param {Array} offers The extension negotiation offers
-       * @return {Object} Accepted configuration
-       * @private
-       */
-      acceptAsServer(offers) {
-        const opts = this._options;
-        const accepted = offers.find((params) => {
-          if (opts.serverNoContextTakeover === false && params.server_no_context_takeover || params.server_max_window_bits && (opts.serverMaxWindowBits === false || typeof opts.serverMaxWindowBits === "number" && opts.serverMaxWindowBits > params.server_max_window_bits) || typeof opts.clientMaxWindowBits === "number" && !params.client_max_window_bits) {
-            return false;
-          }
-          return true;
-        });
-        if (!accepted) {
-          throw new Error("None of the extension offers can be accepted");
-        }
-        if (opts.serverNoContextTakeover) {
-          accepted.server_no_context_takeover = true;
-        }
-        if (opts.clientNoContextTakeover) {
-          accepted.client_no_context_takeover = true;
-        }
-        if (typeof opts.serverMaxWindowBits === "number") {
-          accepted.server_max_window_bits = opts.serverMaxWindowBits;
-        }
-        if (typeof opts.clientMaxWindowBits === "number") {
-          accepted.client_max_window_bits = opts.clientMaxWindowBits;
-        } else if (accepted.client_max_window_bits === true || opts.clientMaxWindowBits === false) {
-          delete accepted.client_max_window_bits;
-        }
-        return accepted;
-      }
-      /**
-       * Accept the extension negotiation response.
-       *
-       * @param {Array} response The extension negotiation response
-       * @return {Object} Accepted configuration
-       * @private
-       */
-      acceptAsClient(response) {
-        const params = response[0];
-        if (this._options.clientNoContextTakeover === false && params.client_no_context_takeover) {
-          throw new Error('Unexpected parameter "client_no_context_takeover"');
-        }
-        if (!params.client_max_window_bits) {
-          if (typeof this._options.clientMaxWindowBits === "number") {
-            params.client_max_window_bits = this._options.clientMaxWindowBits;
-          }
-        } else if (this._options.clientMaxWindowBits === false || typeof this._options.clientMaxWindowBits === "number" && params.client_max_window_bits > this._options.clientMaxWindowBits) {
-          throw new Error(
-            'Unexpected or invalid parameter "client_max_window_bits"'
-          );
-        }
-        return params;
-      }
-      /**
-       * Normalize parameters.
-       *
-       * @param {Array} configurations The extension negotiation offers/reponse
-       * @return {Array} The offers/response with normalized parameters
-       * @private
-       */
-      normalizeParams(configurations) {
-        configurations.forEach((params) => {
-          Object.keys(params).forEach((key) => {
-            let value = params[key];
-            if (value.length > 1) {
-              throw new Error(`Parameter "${key}" must have only a single value`);
-            }
-            value = value[0];
-            if (key === "client_max_window_bits") {
-              if (value !== true) {
-                const num = +value;
-                if (!Number.isInteger(num) || num < 8 || num > 15) {
-                  throw new TypeError(
-                    `Invalid value for parameter "${key}": ${value}`
-                  );
-                }
-                value = num;
-              } else if (!this._isServer) {
-                throw new TypeError(
-                  `Invalid value for parameter "${key}": ${value}`
-                );
-              }
-            } else if (key === "server_max_window_bits") {
-              const num = +value;
-              if (!Number.isInteger(num) || num < 8 || num > 15) {
-                throw new TypeError(
-                  `Invalid value for parameter "${key}": ${value}`
-                );
-              }
-              value = num;
-            } else if (key === "client_no_context_takeover" || key === "server_no_context_takeover") {
-              if (value !== true) {
-                throw new TypeError(
-                  `Invalid value for parameter "${key}": ${value}`
-                );
-              }
-            } else {
-              throw new Error(`Unknown parameter "${key}"`);
-            }
-            params[key] = value;
-          });
-        });
-        return configurations;
-      }
-      /**
-       * Decompress data. Concurrency limited.
-       *
-       * @param {Buffer} data Compressed data
-       * @param {Boolean} fin Specifies whether or not this is the last fragment
-       * @param {Function} callback Callback
-       * @public
-       */
-      decompress(data, fin, callback) {
-        zlibLimiter.add((done) => {
-          this._decompress(data, fin, (err, result) => {
-            done();
-            callback(err, result);
-          });
-        });
-      }
-      /**
-       * Compress data. Concurrency limited.
-       *
-       * @param {(Buffer|String)} data Data to compress
-       * @param {Boolean} fin Specifies whether or not this is the last fragment
-       * @param {Function} callback Callback
-       * @public
-       */
-      compress(data, fin, callback) {
-        zlibLimiter.add((done) => {
-          this._compress(data, fin, (err, result) => {
-            done();
-            callback(err, result);
-          });
-        });
-      }
-      /**
-       * Decompress data.
-       *
-       * @param {Buffer} data Compressed data
-       * @param {Boolean} fin Specifies whether or not this is the last fragment
-       * @param {Function} callback Callback
-       * @private
-       */
-      _decompress(data, fin, callback) {
-        const endpoint = this._isServer ? "client" : "server";
-        if (!this._inflate) {
-          const key = `${endpoint}_max_window_bits`;
-          const windowBits = typeof this.params[key] !== "number" ? zlib.Z_DEFAULT_WINDOWBITS : this.params[key];
-          this._inflate = zlib.createInflateRaw({
-            ...this._options.zlibInflateOptions,
-            windowBits
-          });
-          this._inflate[kPerMessageDeflate] = this;
-          this._inflate[kTotalLength] = 0;
-          this._inflate[kBuffers] = [];
-          this._inflate.on("error", inflateOnError);
-          this._inflate.on("data", inflateOnData);
-        }
-        this._inflate[kCallback] = callback;
-        this._inflate.write(data);
-        if (fin)
-          this._inflate.write(TRAILER);
-        this._inflate.flush(() => {
-          const err = this._inflate[kError];
-          if (err) {
-            this._inflate.close();
-            this._inflate = null;
-            callback(err);
-            return;
-          }
-          const data2 = bufferUtil.concat(
-            this._inflate[kBuffers],
-            this._inflate[kTotalLength]
-          );
-          if (this._inflate._readableState.endEmitted) {
-            this._inflate.close();
-            this._inflate = null;
-          } else {
-            this._inflate[kTotalLength] = 0;
-            this._inflate[kBuffers] = [];
-            if (fin && this.params[`${endpoint}_no_context_takeover`]) {
-              this._inflate.reset();
-            }
-          }
-          callback(null, data2);
-        });
-      }
-      /**
-       * Compress data.
-       *
-       * @param {(Buffer|String)} data Data to compress
-       * @param {Boolean} fin Specifies whether or not this is the last fragment
-       * @param {Function} callback Callback
-       * @private
-       */
-      _compress(data, fin, callback) {
-        const endpoint = this._isServer ? "server" : "client";
-        if (!this._deflate) {
-          const key = `${endpoint}_max_window_bits`;
-          const windowBits = typeof this.params[key] !== "number" ? zlib.Z_DEFAULT_WINDOWBITS : this.params[key];
-          this._deflate = zlib.createDeflateRaw({
-            ...this._options.zlibDeflateOptions,
-            windowBits
-          });
-          this._deflate[kTotalLength] = 0;
-          this._deflate[kBuffers] = [];
-          this._deflate.on("data", deflateOnData);
-        }
-        this._deflate[kCallback] = callback;
-        this._deflate.write(data);
-        this._deflate.flush(zlib.Z_SYNC_FLUSH, () => {
-          if (!this._deflate) {
-            return;
-          }
-          let data2 = bufferUtil.concat(
-            this._deflate[kBuffers],
-            this._deflate[kTotalLength]
-          );
-          if (fin) {
-            data2 = new FastBuffer(data2.buffer, data2.byteOffset, data2.length - 4);
-          }
-          this._deflate[kCallback] = null;
-          this._deflate[kTotalLength] = 0;
-          this._deflate[kBuffers] = [];
-          if (fin && this.params[`${endpoint}_no_context_takeover`]) {
-            this._deflate.reset();
-          }
-          callback(null, data2);
-        });
-      }
-    };
-    module2.exports = PerMessageDeflate;
-    function deflateOnData(chunk) {
-      this[kBuffers].push(chunk);
-      this[kTotalLength] += chunk.length;
-    }
-    __name(deflateOnData, "deflateOnData");
-    function inflateOnData(chunk) {
-      this[kTotalLength] += chunk.length;
-      if (this[kPerMessageDeflate]._maxPayload < 1 || this[kTotalLength] <= this[kPerMessageDeflate]._maxPayload) {
-        this[kBuffers].push(chunk);
-        return;
-      }
-      this[kError] = new RangeError("Max payload size exceeded");
-      this[kError].code = "WS_ERR_UNSUPPORTED_MESSAGE_LENGTH";
-      this[kError][kStatusCode] = 1009;
-      this.removeListener("data", inflateOnData);
-      this.reset();
-    }
-    __name(inflateOnData, "inflateOnData");
-    function inflateOnError(err) {
-      this[kPerMessageDeflate]._inflate = null;
-      err[kStatusCode] = 1007;
-      this[kCallback](err);
-    }
-    __name(inflateOnError, "inflateOnError");
-  }
-});
-
-// ../node_modules/ws/lib/validation.js
-var require_validation = __commonJS({
-  "../node_modules/ws/lib/validation.js"(exports2, module2) {
-    "use strict";
-    var { isUtf8 } = require("buffer");
-    var tokenChars = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      // 0 - 15
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      // 16 - 31
-      0,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      1,
-      1,
-      0,
-      1,
-      1,
-      0,
-      // 32 - 47
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      // 48 - 63
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      // 64 - 79
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      1,
-      1,
-      // 80 - 95
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      // 96 - 111
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      1,
-      0,
-      1,
-      0
-      // 112 - 127
-    ];
-    function isValidStatusCode(code) {
-      return code >= 1e3 && code <= 1014 && code !== 1004 && code !== 1005 && code !== 1006 || code >= 3e3 && code <= 4999;
-    }
-    __name(isValidStatusCode, "isValidStatusCode");
-    function _isValidUTF8(buf) {
-      const len = buf.length;
-      let i = 0;
-      while (i < len) {
-        if ((buf[i] & 128) === 0) {
-          i++;
-        } else if ((buf[i] & 224) === 192) {
-          if (i + 1 === len || (buf[i + 1] & 192) !== 128 || (buf[i] & 254) === 192) {
-            return false;
-          }
-          i += 2;
-        } else if ((buf[i] & 240) === 224) {
-          if (i + 2 >= len || (buf[i + 1] & 192) !== 128 || (buf[i + 2] & 192) !== 128 || buf[i] === 224 && (buf[i + 1] & 224) === 128 || // Overlong
-          buf[i] === 237 && (buf[i + 1] & 224) === 160) {
-            return false;
-          }
-          i += 3;
-        } else if ((buf[i] & 248) === 240) {
-          if (i + 3 >= len || (buf[i + 1] & 192) !== 128 || (buf[i + 2] & 192) !== 128 || (buf[i + 3] & 192) !== 128 || buf[i] === 240 && (buf[i + 1] & 240) === 128 || // Overlong
-          buf[i] === 244 && buf[i + 1] > 143 || buf[i] > 244) {
-            return false;
-          }
-          i += 4;
-        } else {
-          return false;
-        }
-      }
-      return true;
-    }
-    __name(_isValidUTF8, "_isValidUTF8");
-    module2.exports = {
-      isValidStatusCode,
-      isValidUTF8: _isValidUTF8,
-      tokenChars
-    };
-    if (isUtf8) {
-      module2.exports.isValidUTF8 = function(buf) {
-        return buf.length < 24 ? _isValidUTF8(buf) : isUtf8(buf);
-      };
-    } else if (!process.env.WS_NO_UTF_8_VALIDATE) {
-      try {
-        const isValidUTF8 = require("utf-8-validate");
-        module2.exports.isValidUTF8 = function(buf) {
-          return buf.length < 32 ? _isValidUTF8(buf) : isValidUTF8(buf);
-        };
-      } catch (e) {
-      }
-    }
-  }
-});
-
-// ../node_modules/ws/lib/receiver.js
-var require_receiver = __commonJS({
-  "../node_modules/ws/lib/receiver.js"(exports2, module2) {
-    "use strict";
-    var { Writable } = require("stream");
-    var PerMessageDeflate = require_permessage_deflate();
-    var {
-      BINARY_TYPES,
-      EMPTY_BUFFER,
-      kStatusCode,
-      kWebSocket
-    } = require_constants();
-    var { concat, toArrayBuffer, unmask } = require_buffer_util();
-    var { isValidStatusCode, isValidUTF8 } = require_validation();
-    var FastBuffer = Buffer[Symbol.species];
-    var GET_INFO = 0;
-    var GET_PAYLOAD_LENGTH_16 = 1;
-    var GET_PAYLOAD_LENGTH_64 = 2;
-    var GET_MASK = 3;
-    var GET_DATA = 4;
-    var INFLATING = 5;
-    var DEFER_EVENT = 6;
-    var Receiver2 = class extends Writable {
-      static {
-        __name(this, "Receiver");
-      }
-      /**
-       * Creates a Receiver instance.
-       *
-       * @param {Object} [options] Options object
-       * @param {Boolean} [options.allowSynchronousEvents=true] Specifies whether
-       *     any of the `'message'`, `'ping'`, and `'pong'` events can be emitted
-       *     multiple times in the same tick
-       * @param {String} [options.binaryType=nodebuffer] The type for binary data
-       * @param {Object} [options.extensions] An object containing the negotiated
-       *     extensions
-       * @param {Boolean} [options.isServer=false] Specifies whether to operate in
-       *     client or server mode
-       * @param {Number} [options.maxPayload=0] The maximum allowed message length
-       * @param {Boolean} [options.skipUTF8Validation=false] Specifies whether or
-       *     not to skip UTF-8 validation for text and close messages
-       */
-      constructor(options = {}) {
-        super();
-        this._allowSynchronousEvents = options.allowSynchronousEvents !== void 0 ? options.allowSynchronousEvents : true;
-        this._binaryType = options.binaryType || BINARY_TYPES[0];
-        this._extensions = options.extensions || {};
-        this._isServer = !!options.isServer;
-        this._maxPayload = options.maxPayload | 0;
-        this._skipUTF8Validation = !!options.skipUTF8Validation;
-        this[kWebSocket] = void 0;
-        this._bufferedBytes = 0;
-        this._buffers = [];
-        this._compressed = false;
-        this._payloadLength = 0;
-        this._mask = void 0;
-        this._fragmented = 0;
-        this._masked = false;
-        this._fin = false;
-        this._opcode = 0;
-        this._totalPayloadLength = 0;
-        this._messageLength = 0;
-        this._fragments = [];
-        this._errored = false;
-        this._loop = false;
-        this._state = GET_INFO;
-      }
-      /**
-       * Implements `Writable.prototype._write()`.
-       *
-       * @param {Buffer} chunk The chunk of data to write
-       * @param {String} encoding The character encoding of `chunk`
-       * @param {Function} cb Callback
-       * @private
-       */
-      _write(chunk, encoding, cb) {
-        if (this._opcode === 8 && this._state == GET_INFO)
-          return cb();
-        this._bufferedBytes += chunk.length;
-        this._buffers.push(chunk);
-        this.startLoop(cb);
-      }
-      /**
-       * Consumes `n` bytes from the buffered data.
-       *
-       * @param {Number} n The number of bytes to consume
-       * @return {Buffer} The consumed bytes
-       * @private
-       */
-      consume(n) {
-        this._bufferedBytes -= n;
-        if (n === this._buffers[0].length)
-          return this._buffers.shift();
-        if (n < this._buffers[0].length) {
-          const buf = this._buffers[0];
-          this._buffers[0] = new FastBuffer(
-            buf.buffer,
-            buf.byteOffset + n,
-            buf.length - n
-          );
-          return new FastBuffer(buf.buffer, buf.byteOffset, n);
-        }
-        const dst = Buffer.allocUnsafe(n);
-        do {
-          const buf = this._buffers[0];
-          const offset = dst.length - n;
-          if (n >= buf.length) {
-            dst.set(this._buffers.shift(), offset);
-          } else {
-            dst.set(new Uint8Array(buf.buffer, buf.byteOffset, n), offset);
-            this._buffers[0] = new FastBuffer(
-              buf.buffer,
-              buf.byteOffset + n,
-              buf.length - n
-            );
-          }
-          n -= buf.length;
-        } while (n > 0);
-        return dst;
-      }
-      /**
-       * Starts the parsing loop.
-       *
-       * @param {Function} cb Callback
-       * @private
-       */
-      startLoop(cb) {
-        this._loop = true;
-        do {
-          switch (this._state) {
-            case GET_INFO:
-              this.getInfo(cb);
-              break;
-            case GET_PAYLOAD_LENGTH_16:
-              this.getPayloadLength16(cb);
-              break;
-            case GET_PAYLOAD_LENGTH_64:
-              this.getPayloadLength64(cb);
-              break;
-            case GET_MASK:
-              this.getMask();
-              break;
-            case GET_DATA:
-              this.getData(cb);
-              break;
-            case INFLATING:
-            case DEFER_EVENT:
-              this._loop = false;
-              return;
-          }
-        } while (this._loop);
-        if (!this._errored)
-          cb();
-      }
-      /**
-       * Reads the first two bytes of a frame.
-       *
-       * @param {Function} cb Callback
-       * @private
-       */
-      getInfo(cb) {
-        if (this._bufferedBytes < 2) {
-          this._loop = false;
-          return;
-        }
-        const buf = this.consume(2);
-        if ((buf[0] & 48) !== 0) {
-          const error = this.createError(
-            RangeError,
-            "RSV2 and RSV3 must be clear",
-            true,
-            1002,
-            "WS_ERR_UNEXPECTED_RSV_2_3"
-          );
-          cb(error);
-          return;
-        }
-        const compressed = (buf[0] & 64) === 64;
-        if (compressed && !this._extensions[PerMessageDeflate.extensionName]) {
-          const error = this.createError(
-            RangeError,
-            "RSV1 must be clear",
-            true,
-            1002,
-            "WS_ERR_UNEXPECTED_RSV_1"
-          );
-          cb(error);
-          return;
-        }
-        this._fin = (buf[0] & 128) === 128;
-        this._opcode = buf[0] & 15;
-        this._payloadLength = buf[1] & 127;
-        if (this._opcode === 0) {
-          if (compressed) {
-            const error = this.createError(
-              RangeError,
-              "RSV1 must be clear",
-              true,
-              1002,
-              "WS_ERR_UNEXPECTED_RSV_1"
-            );
-            cb(error);
-            return;
-          }
-          if (!this._fragmented) {
-            const error = this.createError(
-              RangeError,
-              "invalid opcode 0",
-              true,
-              1002,
-              "WS_ERR_INVALID_OPCODE"
-            );
-            cb(error);
-            return;
-          }
-          this._opcode = this._fragmented;
-        } else if (this._opcode === 1 || this._opcode === 2) {
-          if (this._fragmented) {
-            const error = this.createError(
-              RangeError,
-              `invalid opcode ${this._opcode}`,
-              true,
-              1002,
-              "WS_ERR_INVALID_OPCODE"
-            );
-            cb(error);
-            return;
-          }
-          this._compressed = compressed;
-        } else if (this._opcode > 7 && this._opcode < 11) {
-          if (!this._fin) {
-            const error = this.createError(
-              RangeError,
-              "FIN must be set",
-              true,
-              1002,
-              "WS_ERR_EXPECTED_FIN"
-            );
-            cb(error);
-            return;
-          }
-          if (compressed) {
-            const error = this.createError(
-              RangeError,
-              "RSV1 must be clear",
-              true,
-              1002,
-              "WS_ERR_UNEXPECTED_RSV_1"
-            );
-            cb(error);
-            return;
-          }
-          if (this._payloadLength > 125 || this._opcode === 8 && this._payloadLength === 1) {
-            const error = this.createError(
-              RangeError,
-              `invalid payload length ${this._payloadLength}`,
-              true,
-              1002,
-              "WS_ERR_INVALID_CONTROL_PAYLOAD_LENGTH"
-            );
-            cb(error);
-            return;
-          }
-        } else {
-          const error = this.createError(
-            RangeError,
-            `invalid opcode ${this._opcode}`,
-            true,
-            1002,
-            "WS_ERR_INVALID_OPCODE"
-          );
-          cb(error);
-          return;
-        }
-        if (!this._fin && !this._fragmented)
-          this._fragmented = this._opcode;
-        this._masked = (buf[1] & 128) === 128;
-        if (this._isServer) {
-          if (!this._masked) {
-            const error = this.createError(
-              RangeError,
-              "MASK must be set",
-              true,
-              1002,
-              "WS_ERR_EXPECTED_MASK"
-            );
-            cb(error);
-            return;
-          }
-        } else if (this._masked) {
-          const error = this.createError(
-            RangeError,
-            "MASK must be clear",
-            true,
-            1002,
-            "WS_ERR_UNEXPECTED_MASK"
-          );
-          cb(error);
-          return;
-        }
-        if (this._payloadLength === 126)
-          this._state = GET_PAYLOAD_LENGTH_16;
-        else if (this._payloadLength === 127)
-          this._state = GET_PAYLOAD_LENGTH_64;
-        else
-          this.haveLength(cb);
-      }
-      /**
-       * Gets extended payload length (7+16).
-       *
-       * @param {Function} cb Callback
-       * @private
-       */
-      getPayloadLength16(cb) {
-        if (this._bufferedBytes < 2) {
-          this._loop = false;
-          return;
-        }
-        this._payloadLength = this.consume(2).readUInt16BE(0);
-        this.haveLength(cb);
-      }
-      /**
-       * Gets extended payload length (7+64).
-       *
-       * @param {Function} cb Callback
-       * @private
-       */
-      getPayloadLength64(cb) {
-        if (this._bufferedBytes < 8) {
-          this._loop = false;
-          return;
-        }
-        const buf = this.consume(8);
-        const num = buf.readUInt32BE(0);
-        if (num > Math.pow(2, 53 - 32) - 1) {
-          const error = this.createError(
-            RangeError,
-            "Unsupported WebSocket frame: payload length > 2^53 - 1",
-            false,
-            1009,
-            "WS_ERR_UNSUPPORTED_DATA_PAYLOAD_LENGTH"
-          );
-          cb(error);
-          return;
-        }
-        this._payloadLength = num * Math.pow(2, 32) + buf.readUInt32BE(4);
-        this.haveLength(cb);
-      }
-      /**
-       * Payload length has been read.
-       *
-       * @param {Function} cb Callback
-       * @private
-       */
-      haveLength(cb) {
-        if (this._payloadLength && this._opcode < 8) {
-          this._totalPayloadLength += this._payloadLength;
-          if (this._totalPayloadLength > this._maxPayload && this._maxPayload > 0) {
-            const error = this.createError(
-              RangeError,
-              "Max payload size exceeded",
-              false,
-              1009,
-              "WS_ERR_UNSUPPORTED_MESSAGE_LENGTH"
-            );
-            cb(error);
-            return;
-          }
-        }
-        if (this._masked)
-          this._state = GET_MASK;
-        else
-          this._state = GET_DATA;
-      }
-      /**
-       * Reads mask bytes.
-       *
-       * @private
-       */
-      getMask() {
-        if (this._bufferedBytes < 4) {
-          this._loop = false;
-          return;
-        }
-        this._mask = this.consume(4);
-        this._state = GET_DATA;
-      }
-      /**
-       * Reads data bytes.
-       *
-       * @param {Function} cb Callback
-       * @private
-       */
-      getData(cb) {
-        let data = EMPTY_BUFFER;
-        if (this._payloadLength) {
-          if (this._bufferedBytes < this._payloadLength) {
-            this._loop = false;
-            return;
-          }
-          data = this.consume(this._payloadLength);
-          if (this._masked && (this._mask[0] | this._mask[1] | this._mask[2] | this._mask[3]) !== 0) {
-            unmask(data, this._mask);
-          }
-        }
-        if (this._opcode > 7) {
-          this.controlMessage(data, cb);
-          return;
-        }
-        if (this._compressed) {
-          this._state = INFLATING;
-          this.decompress(data, cb);
-          return;
-        }
-        if (data.length) {
-          this._messageLength = this._totalPayloadLength;
-          this._fragments.push(data);
-        }
-        this.dataMessage(cb);
-      }
-      /**
-       * Decompresses data.
-       *
-       * @param {Buffer} data Compressed data
-       * @param {Function} cb Callback
-       * @private
-       */
-      decompress(data, cb) {
-        const perMessageDeflate = this._extensions[PerMessageDeflate.extensionName];
-        perMessageDeflate.decompress(data, this._fin, (err, buf) => {
-          if (err)
-            return cb(err);
-          if (buf.length) {
-            this._messageLength += buf.length;
-            if (this._messageLength > this._maxPayload && this._maxPayload > 0) {
-              const error = this.createError(
-                RangeError,
-                "Max payload size exceeded",
-                false,
-                1009,
-                "WS_ERR_UNSUPPORTED_MESSAGE_LENGTH"
-              );
-              cb(error);
-              return;
-            }
-            this._fragments.push(buf);
-          }
-          this.dataMessage(cb);
-          if (this._state === GET_INFO)
-            this.startLoop(cb);
-        });
-      }
-      /**
-       * Handles a data message.
-       *
-       * @param {Function} cb Callback
-       * @private
-       */
-      dataMessage(cb) {
-        if (!this._fin) {
-          this._state = GET_INFO;
-          return;
-        }
-        const messageLength = this._messageLength;
-        const fragments = this._fragments;
-        this._totalPayloadLength = 0;
-        this._messageLength = 0;
-        this._fragmented = 0;
-        this._fragments = [];
-        if (this._opcode === 2) {
-          let data;
-          if (this._binaryType === "nodebuffer") {
-            data = concat(fragments, messageLength);
-          } else if (this._binaryType === "arraybuffer") {
-            data = toArrayBuffer(concat(fragments, messageLength));
-          } else {
-            data = fragments;
-          }
-          if (this._allowSynchronousEvents) {
-            this.emit("message", data, true);
-            this._state = GET_INFO;
-          } else {
-            this._state = DEFER_EVENT;
-            setImmediate(() => {
-              this.emit("message", data, true);
-              this._state = GET_INFO;
-              this.startLoop(cb);
-            });
-          }
-        } else {
-          const buf = concat(fragments, messageLength);
-          if (!this._skipUTF8Validation && !isValidUTF8(buf)) {
-            const error = this.createError(
-              Error,
-              "invalid UTF-8 sequence",
-              true,
-              1007,
-              "WS_ERR_INVALID_UTF8"
-            );
-            cb(error);
-            return;
-          }
-          if (this._state === INFLATING || this._allowSynchronousEvents) {
-            this.emit("message", buf, false);
-            this._state = GET_INFO;
-          } else {
-            this._state = DEFER_EVENT;
-            setImmediate(() => {
-              this.emit("message", buf, false);
-              this._state = GET_INFO;
-              this.startLoop(cb);
-            });
-          }
-        }
-      }
-      /**
-       * Handles a control message.
-       *
-       * @param {Buffer} data Data to handle
-       * @return {(Error|RangeError|undefined)} A possible error
-       * @private
-       */
-      controlMessage(data, cb) {
-        if (this._opcode === 8) {
-          if (data.length === 0) {
-            this._loop = false;
-            this.emit("conclude", 1005, EMPTY_BUFFER);
-            this.end();
-          } else {
-            const code = data.readUInt16BE(0);
-            if (!isValidStatusCode(code)) {
-              const error = this.createError(
-                RangeError,
-                `invalid status code ${code}`,
-                true,
-                1002,
-                "WS_ERR_INVALID_CLOSE_CODE"
-              );
-              cb(error);
-              return;
-            }
-            const buf = new FastBuffer(
-              data.buffer,
-              data.byteOffset + 2,
-              data.length - 2
-            );
-            if (!this._skipUTF8Validation && !isValidUTF8(buf)) {
-              const error = this.createError(
-                Error,
-                "invalid UTF-8 sequence",
-                true,
-                1007,
-                "WS_ERR_INVALID_UTF8"
-              );
-              cb(error);
-              return;
-            }
-            this._loop = false;
-            this.emit("conclude", code, buf);
-            this.end();
-          }
-          this._state = GET_INFO;
-          return;
-        }
-        if (this._allowSynchronousEvents) {
-          this.emit(this._opcode === 9 ? "ping" : "pong", data);
-          this._state = GET_INFO;
-        } else {
-          this._state = DEFER_EVENT;
-          setImmediate(() => {
-            this.emit(this._opcode === 9 ? "ping" : "pong", data);
-            this._state = GET_INFO;
-            this.startLoop(cb);
-          });
-        }
-      }
-      /**
-       * Builds an error object.
-       *
-       * @param {function(new:Error|RangeError)} ErrorCtor The error constructor
-       * @param {String} message The error message
-       * @param {Boolean} prefix Specifies whether or not to add a default prefix to
-       *     `message`
-       * @param {Number} statusCode The status code
-       * @param {String} errorCode The exposed error code
-       * @return {(Error|RangeError)} The error
-       * @private
-       */
-      createError(ErrorCtor, message, prefix, statusCode, errorCode) {
-        this._loop = false;
-        this._errored = true;
-        const err = new ErrorCtor(
-          prefix ? `Invalid WebSocket frame: ${message}` : message
-        );
-        Error.captureStackTrace(err, this.createError);
-        err.code = errorCode;
-        err[kStatusCode] = statusCode;
-        return err;
-      }
-    };
-    module2.exports = Receiver2;
-  }
-});
-
-// ../node_modules/ws/lib/sender.js
-var require_sender = __commonJS({
-  "../node_modules/ws/lib/sender.js"(exports2, module2) {
-    "use strict";
-    var { Duplex } = require("stream");
-    var { randomFillSync } = require("crypto");
-    var PerMessageDeflate = require_permessage_deflate();
-    var { EMPTY_BUFFER } = require_constants();
-    var { isValidStatusCode } = require_validation();
-    var { mask: applyMask, toBuffer } = require_buffer_util();
-    var kByteLength = Symbol("kByteLength");
-    var maskBuffer = Buffer.alloc(4);
-    var RANDOM_POOL_SIZE = 8 * 1024;
-    var randomPool;
-    var randomPoolPointer = RANDOM_POOL_SIZE;
-    var Sender2 = class _Sender {
-      static {
-        __name(this, "Sender");
-      }
-      /**
-       * Creates a Sender instance.
-       *
-       * @param {Duplex} socket The connection socket
-       * @param {Object} [extensions] An object containing the negotiated extensions
-       * @param {Function} [generateMask] The function used to generate the masking
-       *     key
-       */
-      constructor(socket, extensions, generateMask) {
-        this._extensions = extensions || {};
-        if (generateMask) {
-          this._generateMask = generateMask;
-          this._maskBuffer = Buffer.alloc(4);
-        }
-        this._socket = socket;
-        this._firstFragment = true;
-        this._compress = false;
-        this._bufferedBytes = 0;
-        this._deflating = false;
-        this._queue = [];
-      }
-      /**
-       * Frames a piece of data according to the HyBi WebSocket protocol.
-       *
-       * @param {(Buffer|String)} data The data to frame
-       * @param {Object} options Options object
-       * @param {Boolean} [options.fin=false] Specifies whether or not to set the
-       *     FIN bit
-       * @param {Function} [options.generateMask] The function used to generate the
-       *     masking key
-       * @param {Boolean} [options.mask=false] Specifies whether or not to mask
-       *     `data`
-       * @param {Buffer} [options.maskBuffer] The buffer used to store the masking
-       *     key
-       * @param {Number} options.opcode The opcode
-       * @param {Boolean} [options.readOnly=false] Specifies whether `data` can be
-       *     modified
-       * @param {Boolean} [options.rsv1=false] Specifies whether or not to set the
-       *     RSV1 bit
-       * @return {(Buffer|String)[]} The framed data
-       * @public
-       */
-      static frame(data, options) {
-        let mask;
-        let merge = false;
-        let offset = 2;
-        let skipMasking = false;
-        if (options.mask) {
-          mask = options.maskBuffer || maskBuffer;
-          if (options.generateMask) {
-            options.generateMask(mask);
-          } else {
-            if (randomPoolPointer === RANDOM_POOL_SIZE) {
-              if (randomPool === void 0) {
-                randomPool = Buffer.alloc(RANDOM_POOL_SIZE);
-              }
-              randomFillSync(randomPool, 0, RANDOM_POOL_SIZE);
-              randomPoolPointer = 0;
-            }
-            mask[0] = randomPool[randomPoolPointer++];
-            mask[1] = randomPool[randomPoolPointer++];
-            mask[2] = randomPool[randomPoolPointer++];
-            mask[3] = randomPool[randomPoolPointer++];
-          }
-          skipMasking = (mask[0] | mask[1] | mask[2] | mask[3]) === 0;
-          offset = 6;
-        }
-        let dataLength;
-        if (typeof data === "string") {
-          if ((!options.mask || skipMasking) && options[kByteLength] !== void 0) {
-            dataLength = options[kByteLength];
-          } else {
-            data = Buffer.from(data);
-            dataLength = data.length;
-          }
-        } else {
-          dataLength = data.length;
-          merge = options.mask && options.readOnly && !skipMasking;
-        }
-        let payloadLength = dataLength;
-        if (dataLength >= 65536) {
-          offset += 8;
-          payloadLength = 127;
-        } else if (dataLength > 125) {
-          offset += 2;
-          payloadLength = 126;
-        }
-        const target = Buffer.allocUnsafe(merge ? dataLength + offset : offset);
-        target[0] = options.fin ? options.opcode | 128 : options.opcode;
-        if (options.rsv1)
-          target[0] |= 64;
-        target[1] = payloadLength;
-        if (payloadLength === 126) {
-          target.writeUInt16BE(dataLength, 2);
-        } else if (payloadLength === 127) {
-          target[2] = target[3] = 0;
-          target.writeUIntBE(dataLength, 4, 6);
-        }
-        if (!options.mask)
-          return [target, data];
-        target[1] |= 128;
-        target[offset - 4] = mask[0];
-        target[offset - 3] = mask[1];
-        target[offset - 2] = mask[2];
-        target[offset - 1] = mask[3];
-        if (skipMasking)
-          return [target, data];
-        if (merge) {
-          applyMask(data, mask, target, offset, dataLength);
-          return [target];
-        }
-        applyMask(data, mask, data, 0, dataLength);
-        return [target, data];
-      }
-      /**
-       * Sends a close message to the other peer.
-       *
-       * @param {Number} [code] The status code component of the body
-       * @param {(String|Buffer)} [data] The message component of the body
-       * @param {Boolean} [mask=false] Specifies whether or not to mask the message
-       * @param {Function} [cb] Callback
-       * @public
-       */
-      close(code, data, mask, cb) {
-        let buf;
-        if (code === void 0) {
-          buf = EMPTY_BUFFER;
-        } else if (typeof code !== "number" || !isValidStatusCode(code)) {
-          throw new TypeError("First argument must be a valid error code number");
-        } else if (data === void 0 || !data.length) {
-          buf = Buffer.allocUnsafe(2);
-          buf.writeUInt16BE(code, 0);
-        } else {
-          const length = Buffer.byteLength(data);
-          if (length > 123) {
-            throw new RangeError("The message must not be greater than 123 bytes");
-          }
-          buf = Buffer.allocUnsafe(2 + length);
-          buf.writeUInt16BE(code, 0);
-          if (typeof data === "string") {
-            buf.write(data, 2);
-          } else {
-            buf.set(data, 2);
-          }
-        }
-        const options = {
-          [kByteLength]: buf.length,
-          fin: true,
-          generateMask: this._generateMask,
-          mask,
-          maskBuffer: this._maskBuffer,
-          opcode: 8,
-          readOnly: false,
-          rsv1: false
-        };
-        if (this._deflating) {
-          this.enqueue([this.dispatch, buf, false, options, cb]);
-        } else {
-          this.sendFrame(_Sender.frame(buf, options), cb);
-        }
-      }
-      /**
-       * Sends a ping message to the other peer.
-       *
-       * @param {*} data The message to send
-       * @param {Boolean} [mask=false] Specifies whether or not to mask `data`
-       * @param {Function} [cb] Callback
-       * @public
-       */
-      ping(data, mask, cb) {
-        let byteLength;
-        let readOnly;
-        if (typeof data === "string") {
-          byteLength = Buffer.byteLength(data);
-          readOnly = false;
-        } else {
-          data = toBuffer(data);
-          byteLength = data.length;
-          readOnly = toBuffer.readOnly;
-        }
-        if (byteLength > 125) {
-          throw new RangeError("The data size must not be greater than 125 bytes");
-        }
-        const options = {
-          [kByteLength]: byteLength,
-          fin: true,
-          generateMask: this._generateMask,
-          mask,
-          maskBuffer: this._maskBuffer,
-          opcode: 9,
-          readOnly,
-          rsv1: false
-        };
-        if (this._deflating) {
-          this.enqueue([this.dispatch, data, false, options, cb]);
-        } else {
-          this.sendFrame(_Sender.frame(data, options), cb);
-        }
-      }
-      /**
-       * Sends a pong message to the other peer.
-       *
-       * @param {*} data The message to send
-       * @param {Boolean} [mask=false] Specifies whether or not to mask `data`
-       * @param {Function} [cb] Callback
-       * @public
-       */
-      pong(data, mask, cb) {
-        let byteLength;
-        let readOnly;
-        if (typeof data === "string") {
-          byteLength = Buffer.byteLength(data);
-          readOnly = false;
-        } else {
-          data = toBuffer(data);
-          byteLength = data.length;
-          readOnly = toBuffer.readOnly;
-        }
-        if (byteLength > 125) {
-          throw new RangeError("The data size must not be greater than 125 bytes");
-        }
-        const options = {
-          [kByteLength]: byteLength,
-          fin: true,
-          generateMask: this._generateMask,
-          mask,
-          maskBuffer: this._maskBuffer,
-          opcode: 10,
-          readOnly,
-          rsv1: false
-        };
-        if (this._deflating) {
-          this.enqueue([this.dispatch, data, false, options, cb]);
-        } else {
-          this.sendFrame(_Sender.frame(data, options), cb);
-        }
-      }
-      /**
-       * Sends a data message to the other peer.
-       *
-       * @param {*} data The message to send
-       * @param {Object} options Options object
-       * @param {Boolean} [options.binary=false] Specifies whether `data` is binary
-       *     or text
-       * @param {Boolean} [options.compress=false] Specifies whether or not to
-       *     compress `data`
-       * @param {Boolean} [options.fin=false] Specifies whether the fragment is the
-       *     last one
-       * @param {Boolean} [options.mask=false] Specifies whether or not to mask
-       *     `data`
-       * @param {Function} [cb] Callback
-       * @public
-       */
-      send(data, options, cb) {
-        const perMessageDeflate = this._extensions[PerMessageDeflate.extensionName];
-        let opcode = options.binary ? 2 : 1;
-        let rsv1 = options.compress;
-        let byteLength;
-        let readOnly;
-        if (typeof data === "string") {
-          byteLength = Buffer.byteLength(data);
-          readOnly = false;
-        } else {
-          data = toBuffer(data);
-          byteLength = data.length;
-          readOnly = toBuffer.readOnly;
-        }
-        if (this._firstFragment) {
-          this._firstFragment = false;
-          if (rsv1 && perMessageDeflate && perMessageDeflate.params[perMessageDeflate._isServer ? "server_no_context_takeover" : "client_no_context_takeover"]) {
-            rsv1 = byteLength >= perMessageDeflate._threshold;
-          }
-          this._compress = rsv1;
-        } else {
-          rsv1 = false;
-          opcode = 0;
-        }
-        if (options.fin)
-          this._firstFragment = true;
-        if (perMessageDeflate) {
-          const opts = {
-            [kByteLength]: byteLength,
-            fin: options.fin,
-            generateMask: this._generateMask,
-            mask: options.mask,
-            maskBuffer: this._maskBuffer,
-            opcode,
-            readOnly,
-            rsv1
-          };
-          if (this._deflating) {
-            this.enqueue([this.dispatch, data, this._compress, opts, cb]);
-          } else {
-            this.dispatch(data, this._compress, opts, cb);
-          }
-        } else {
-          this.sendFrame(
-            _Sender.frame(data, {
-              [kByteLength]: byteLength,
-              fin: options.fin,
-              generateMask: this._generateMask,
-              mask: options.mask,
-              maskBuffer: this._maskBuffer,
-              opcode,
-              readOnly,
-              rsv1: false
-            }),
-            cb
-          );
-        }
-      }
-      /**
-       * Dispatches a message.
-       *
-       * @param {(Buffer|String)} data The message to send
-       * @param {Boolean} [compress=false] Specifies whether or not to compress
-       *     `data`
-       * @param {Object} options Options object
-       * @param {Boolean} [options.fin=false] Specifies whether or not to set the
-       *     FIN bit
-       * @param {Function} [options.generateMask] The function used to generate the
-       *     masking key
-       * @param {Boolean} [options.mask=false] Specifies whether or not to mask
-       *     `data`
-       * @param {Buffer} [options.maskBuffer] The buffer used to store the masking
-       *     key
-       * @param {Number} options.opcode The opcode
-       * @param {Boolean} [options.readOnly=false] Specifies whether `data` can be
-       *     modified
-       * @param {Boolean} [options.rsv1=false] Specifies whether or not to set the
-       *     RSV1 bit
-       * @param {Function} [cb] Callback
-       * @private
-       */
-      dispatch(data, compress, options, cb) {
-        if (!compress) {
-          this.sendFrame(_Sender.frame(data, options), cb);
-          return;
-        }
-        const perMessageDeflate = this._extensions[PerMessageDeflate.extensionName];
-        this._bufferedBytes += options[kByteLength];
-        this._deflating = true;
-        perMessageDeflate.compress(data, options.fin, (_, buf) => {
-          if (this._socket.destroyed) {
-            const err = new Error(
-              "The socket was closed while data was being compressed"
-            );
-            if (typeof cb === "function")
-              cb(err);
-            for (let i = 0; i < this._queue.length; i++) {
-              const params = this._queue[i];
-              const callback = params[params.length - 1];
-              if (typeof callback === "function")
-                callback(err);
-            }
-            return;
-          }
-          this._bufferedBytes -= options[kByteLength];
-          this._deflating = false;
-          options.readOnly = false;
-          this.sendFrame(_Sender.frame(buf, options), cb);
-          this.dequeue();
-        });
-      }
-      /**
-       * Executes queued send operations.
-       *
-       * @private
-       */
-      dequeue() {
-        while (!this._deflating && this._queue.length) {
-          const params = this._queue.shift();
-          this._bufferedBytes -= params[3][kByteLength];
-          Reflect.apply(params[0], this, params.slice(1));
-        }
-      }
-      /**
-       * Enqueues a send operation.
-       *
-       * @param {Array} params Send operation parameters.
-       * @private
-       */
-      enqueue(params) {
-        this._bufferedBytes += params[3][kByteLength];
-        this._queue.push(params);
-      }
-      /**
-       * Sends a frame.
-       *
-       * @param {Buffer[]} list The frame to send
-       * @param {Function} [cb] Callback
-       * @private
-       */
-      sendFrame(list, cb) {
-        if (list.length === 2) {
-          this._socket.cork();
-          this._socket.write(list[0]);
-          this._socket.write(list[1], cb);
-          this._socket.uncork();
-        } else {
-          this._socket.write(list[0], cb);
-        }
-      }
-    };
-    module2.exports = Sender2;
-  }
-});
-
-// ../node_modules/ws/lib/event-target.js
-var require_event_target = __commonJS({
-  "../node_modules/ws/lib/event-target.js"(exports2, module2) {
-    "use strict";
-    var { kForOnEventAttribute, kListener } = require_constants();
-    var kCode = Symbol("kCode");
-    var kData = Symbol("kData");
-    var kError = Symbol("kError");
-    var kMessage = Symbol("kMessage");
-    var kReason = Symbol("kReason");
-    var kTarget = Symbol("kTarget");
-    var kType = Symbol("kType");
-    var kWasClean = Symbol("kWasClean");
-    var Event = class {
-      static {
-        __name(this, "Event");
-      }
-      /**
-       * Create a new `Event`.
-       *
-       * @param {String} type The name of the event
-       * @throws {TypeError} If the `type` argument is not specified
-       */
-      constructor(type) {
-        this[kTarget] = null;
-        this[kType] = type;
-      }
-      /**
-       * @type {*}
-       */
-      get target() {
-        return this[kTarget];
-      }
-      /**
-       * @type {String}
-       */
-      get type() {
-        return this[kType];
-      }
-    };
-    Object.defineProperty(Event.prototype, "target", { enumerable: true });
-    Object.defineProperty(Event.prototype, "type", { enumerable: true });
-    var CloseEvent = class extends Event {
-      static {
-        __name(this, "CloseEvent");
-      }
-      /**
-       * Create a new `CloseEvent`.
-       *
-       * @param {String} type The name of the event
-       * @param {Object} [options] A dictionary object that allows for setting
-       *     attributes via object members of the same name
-       * @param {Number} [options.code=0] The status code explaining why the
-       *     connection was closed
-       * @param {String} [options.reason=''] A human-readable string explaining why
-       *     the connection was closed
-       * @param {Boolean} [options.wasClean=false] Indicates whether or not the
-       *     connection was cleanly closed
-       */
-      constructor(type, options = {}) {
-        super(type);
-        this[kCode] = options.code === void 0 ? 0 : options.code;
-        this[kReason] = options.reason === void 0 ? "" : options.reason;
-        this[kWasClean] = options.wasClean === void 0 ? false : options.wasClean;
-      }
-      /**
-       * @type {Number}
-       */
-      get code() {
-        return this[kCode];
-      }
-      /**
-       * @type {String}
-       */
-      get reason() {
-        return this[kReason];
-      }
-      /**
-       * @type {Boolean}
-       */
-      get wasClean() {
-        return this[kWasClean];
-      }
-    };
-    Object.defineProperty(CloseEvent.prototype, "code", { enumerable: true });
-    Object.defineProperty(CloseEvent.prototype, "reason", { enumerable: true });
-    Object.defineProperty(CloseEvent.prototype, "wasClean", { enumerable: true });
-    var ErrorEvent = class extends Event {
-      static {
-        __name(this, "ErrorEvent");
-      }
-      /**
-       * Create a new `ErrorEvent`.
-       *
-       * @param {String} type The name of the event
-       * @param {Object} [options] A dictionary object that allows for setting
-       *     attributes via object members of the same name
-       * @param {*} [options.error=null] The error that generated this event
-       * @param {String} [options.message=''] The error message
-       */
-      constructor(type, options = {}) {
-        super(type);
-        this[kError] = options.error === void 0 ? null : options.error;
-        this[kMessage] = options.message === void 0 ? "" : options.message;
-      }
-      /**
-       * @type {*}
-       */
-      get error() {
-        return this[kError];
-      }
-      /**
-       * @type {String}
-       */
-      get message() {
-        return this[kMessage];
-      }
-    };
-    Object.defineProperty(ErrorEvent.prototype, "error", { enumerable: true });
-    Object.defineProperty(ErrorEvent.prototype, "message", { enumerable: true });
-    var MessageEvent = class extends Event {
-      static {
-        __name(this, "MessageEvent");
-      }
-      /**
-       * Create a new `MessageEvent`.
-       *
-       * @param {String} type The name of the event
-       * @param {Object} [options] A dictionary object that allows for setting
-       *     attributes via object members of the same name
-       * @param {*} [options.data=null] The message content
-       */
-      constructor(type, options = {}) {
-        super(type);
-        this[kData] = options.data === void 0 ? null : options.data;
-      }
-      /**
-       * @type {*}
-       */
-      get data() {
-        return this[kData];
-      }
-    };
-    Object.defineProperty(MessageEvent.prototype, "data", { enumerable: true });
-    var EventTarget = {
-      /**
-       * Register an event listener.
-       *
-       * @param {String} type A string representing the event type to listen for
-       * @param {(Function|Object)} handler The listener to add
-       * @param {Object} [options] An options object specifies characteristics about
-       *     the event listener
-       * @param {Boolean} [options.once=false] A `Boolean` indicating that the
-       *     listener should be invoked at most once after being added. If `true`,
-       *     the listener would be automatically removed when invoked.
-       * @public
-       */
-      addEventListener(type, handler, options = {}) {
-        for (const listener of this.listeners(type)) {
-          if (!options[kForOnEventAttribute] && listener[kListener] === handler && !listener[kForOnEventAttribute]) {
-            return;
-          }
-        }
-        let wrapper;
-        if (type === "message") {
-          wrapper = /* @__PURE__ */ __name(function onMessage(data, isBinary) {
-            const event = new MessageEvent("message", {
-              data: isBinary ? data : data.toString()
-            });
-            event[kTarget] = this;
-            callListener(handler, this, event);
-          }, "onMessage");
-        } else if (type === "close") {
-          wrapper = /* @__PURE__ */ __name(function onClose(code, message) {
-            const event = new CloseEvent("close", {
-              code,
-              reason: message.toString(),
-              wasClean: this._closeFrameReceived && this._closeFrameSent
-            });
-            event[kTarget] = this;
-            callListener(handler, this, event);
-          }, "onClose");
-        } else if (type === "error") {
-          wrapper = /* @__PURE__ */ __name(function onError(error) {
-            const event = new ErrorEvent("error", {
-              error,
-              message: error.message
-            });
-            event[kTarget] = this;
-            callListener(handler, this, event);
-          }, "onError");
-        } else if (type === "open") {
-          wrapper = /* @__PURE__ */ __name(function onOpen() {
-            const event = new Event("open");
-            event[kTarget] = this;
-            callListener(handler, this, event);
-          }, "onOpen");
-        } else {
-          return;
-        }
-        wrapper[kForOnEventAttribute] = !!options[kForOnEventAttribute];
-        wrapper[kListener] = handler;
-        if (options.once) {
-          this.once(type, wrapper);
-        } else {
-          this.on(type, wrapper);
-        }
-      },
-      /**
-       * Remove an event listener.
-       *
-       * @param {String} type A string representing the event type to remove
-       * @param {(Function|Object)} handler The listener to remove
-       * @public
-       */
-      removeEventListener(type, handler) {
-        for (const listener of this.listeners(type)) {
-          if (listener[kListener] === handler && !listener[kForOnEventAttribute]) {
-            this.removeListener(type, listener);
-            break;
-          }
-        }
-      }
-    };
-    module2.exports = {
-      CloseEvent,
-      ErrorEvent,
-      Event,
-      EventTarget,
-      MessageEvent
-    };
-    function callListener(listener, thisArg, event) {
-      if (typeof listener === "object" && listener.handleEvent) {
-        listener.handleEvent.call(listener, event);
-      } else {
-        listener.call(thisArg, event);
-      }
-    }
-    __name(callListener, "callListener");
-  }
-});
-
-// ../node_modules/ws/lib/extension.js
-var require_extension = __commonJS({
-  "../node_modules/ws/lib/extension.js"(exports2, module2) {
-    "use strict";
-    var { tokenChars } = require_validation();
-    function push(dest, name, elem) {
-      if (dest[name] === void 0)
-        dest[name] = [elem];
-      else
-        dest[name].push(elem);
-    }
-    __name(push, "push");
-    function parse(header) {
-      const offers = /* @__PURE__ */ Object.create(null);
-      let params = /* @__PURE__ */ Object.create(null);
-      let mustUnescape = false;
-      let isEscaping = false;
-      let inQuotes = false;
-      let extensionName;
-      let paramName;
-      let start = -1;
-      let code = -1;
-      let end = -1;
-      let i = 0;
-      for (; i < header.length; i++) {
-        code = header.charCodeAt(i);
-        if (extensionName === void 0) {
-          if (end === -1 && tokenChars[code] === 1) {
-            if (start === -1)
-              start = i;
-          } else if (i !== 0 && (code === 32 || code === 9)) {
-            if (end === -1 && start !== -1)
-              end = i;
-          } else if (code === 59 || code === 44) {
-            if (start === -1) {
-              throw new SyntaxError(`Unexpected character at index ${i}`);
-            }
-            if (end === -1)
-              end = i;
-            const name = header.slice(start, end);
-            if (code === 44) {
-              push(offers, name, params);
-              params = /* @__PURE__ */ Object.create(null);
-            } else {
-              extensionName = name;
-            }
-            start = end = -1;
-          } else {
-            throw new SyntaxError(`Unexpected character at index ${i}`);
-          }
-        } else if (paramName === void 0) {
-          if (end === -1 && tokenChars[code] === 1) {
-            if (start === -1)
-              start = i;
-          } else if (code === 32 || code === 9) {
-            if (end === -1 && start !== -1)
-              end = i;
-          } else if (code === 59 || code === 44) {
-            if (start === -1) {
-              throw new SyntaxError(`Unexpected character at index ${i}`);
-            }
-            if (end === -1)
-              end = i;
-            push(params, header.slice(start, end), true);
-            if (code === 44) {
-              push(offers, extensionName, params);
-              params = /* @__PURE__ */ Object.create(null);
-              extensionName = void 0;
-            }
-            start = end = -1;
-          } else if (code === 61 && start !== -1 && end === -1) {
-            paramName = header.slice(start, i);
-            start = end = -1;
-          } else {
-            throw new SyntaxError(`Unexpected character at index ${i}`);
-          }
-        } else {
-          if (isEscaping) {
-            if (tokenChars[code] !== 1) {
-              throw new SyntaxError(`Unexpected character at index ${i}`);
-            }
-            if (start === -1)
-              start = i;
-            else if (!mustUnescape)
-              mustUnescape = true;
-            isEscaping = false;
-          } else if (inQuotes) {
-            if (tokenChars[code] === 1) {
-              if (start === -1)
-                start = i;
-            } else if (code === 34 && start !== -1) {
-              inQuotes = false;
-              end = i;
-            } else if (code === 92) {
-              isEscaping = true;
-            } else {
-              throw new SyntaxError(`Unexpected character at index ${i}`);
-            }
-          } else if (code === 34 && header.charCodeAt(i - 1) === 61) {
-            inQuotes = true;
-          } else if (end === -1 && tokenChars[code] === 1) {
-            if (start === -1)
-              start = i;
-          } else if (start !== -1 && (code === 32 || code === 9)) {
-            if (end === -1)
-              end = i;
-          } else if (code === 59 || code === 44) {
-            if (start === -1) {
-              throw new SyntaxError(`Unexpected character at index ${i}`);
-            }
-            if (end === -1)
-              end = i;
-            let value = header.slice(start, end);
-            if (mustUnescape) {
-              value = value.replace(/\\/g, "");
-              mustUnescape = false;
-            }
-            push(params, paramName, value);
-            if (code === 44) {
-              push(offers, extensionName, params);
-              params = /* @__PURE__ */ Object.create(null);
-              extensionName = void 0;
-            }
-            paramName = void 0;
-            start = end = -1;
-          } else {
-            throw new SyntaxError(`Unexpected character at index ${i}`);
-          }
-        }
-      }
-      if (start === -1 || inQuotes || code === 32 || code === 9) {
-        throw new SyntaxError("Unexpected end of input");
-      }
-      if (end === -1)
-        end = i;
-      const token = header.slice(start, end);
-      if (extensionName === void 0) {
-        push(offers, token, params);
-      } else {
-        if (paramName === void 0) {
-          push(params, token, true);
-        } else if (mustUnescape) {
-          push(params, paramName, token.replace(/\\/g, ""));
-        } else {
-          push(params, paramName, token);
-        }
-        push(offers, extensionName, params);
-      }
-      return offers;
-    }
-    __name(parse, "parse");
-    function format(extensions) {
-      return Object.keys(extensions).map((extension) => {
-        let configurations = extensions[extension];
-        if (!Array.isArray(configurations))
-          configurations = [configurations];
-        return configurations.map((params) => {
-          return [extension].concat(
-            Object.keys(params).map((k) => {
-              let values = params[k];
-              if (!Array.isArray(values))
-                values = [values];
-              return values.map((v) => v === true ? k : `${k}=${v}`).join("; ");
-            })
-          ).join("; ");
-        }).join(", ");
-      }).join(", ");
-    }
-    __name(format, "format");
-    module2.exports = { format, parse };
-  }
-});
-
-// ../node_modules/ws/lib/websocket.js
-var require_websocket = __commonJS({
-  "../node_modules/ws/lib/websocket.js"(exports2, module2) {
-    "use strict";
-    var EventEmitter = require("events");
-    var https = require("https");
-    var http2 = require("http");
-    var net2 = require("net");
-    var tls = require("tls");
-    var { randomBytes, createHash } = require("crypto");
-    var { Duplex, Readable } = require("stream");
-    var { URL: URL2 } = require("url");
-    var PerMessageDeflate = require_permessage_deflate();
-    var Receiver2 = require_receiver();
-    var Sender2 = require_sender();
-    var {
-      BINARY_TYPES,
-      EMPTY_BUFFER,
-      GUID,
-      kForOnEventAttribute,
-      kListener,
-      kStatusCode,
-      kWebSocket,
-      NOOP
-    } = require_constants();
-    var {
-      EventTarget: { addEventListener, removeEventListener }
-    } = require_event_target();
-    var { format, parse } = require_extension();
-    var { toBuffer } = require_buffer_util();
-    var closeTimeout = 30 * 1e3;
-    var kAborted = Symbol("kAborted");
-    var protocolVersions = [8, 13];
-    var readyStates = ["CONNECTING", "OPEN", "CLOSING", "CLOSED"];
-    var subprotocolRegex = /^[!#$%&'*+\-.0-9A-Z^_`|a-z~]+$/;
-    var WebSocket2 = class _WebSocket extends EventEmitter {
-      static {
-        __name(this, "WebSocket");
-      }
-      /**
-       * Create a new `WebSocket`.
-       *
-       * @param {(String|URL)} address The URL to which to connect
-       * @param {(String|String[])} [protocols] The subprotocols
-       * @param {Object} [options] Connection options
-       */
-      constructor(address, protocols, options) {
-        super();
-        this._binaryType = BINARY_TYPES[0];
-        this._closeCode = 1006;
-        this._closeFrameReceived = false;
-        this._closeFrameSent = false;
-        this._closeMessage = EMPTY_BUFFER;
-        this._closeTimer = null;
-        this._extensions = {};
-        this._paused = false;
-        this._protocol = "";
-        this._readyState = _WebSocket.CONNECTING;
-        this._receiver = null;
-        this._sender = null;
-        this._socket = null;
-        if (address !== null) {
-          this._bufferedAmount = 0;
-          this._isServer = false;
-          this._redirects = 0;
-          if (protocols === void 0) {
-            protocols = [];
-          } else if (!Array.isArray(protocols)) {
-            if (typeof protocols === "object" && protocols !== null) {
-              options = protocols;
-              protocols = [];
-            } else {
-              protocols = [protocols];
-            }
-          }
-          initAsClient(this, address, protocols, options);
-        } else {
-          this._autoPong = options.autoPong;
-          this._isServer = true;
-        }
-      }
-      /**
-       * This deviates from the WHATWG interface since ws doesn't support the
-       * required default "blob" type (instead we define a custom "nodebuffer"
-       * type).
-       *
-       * @type {String}
-       */
-      get binaryType() {
-        return this._binaryType;
-      }
-      set binaryType(type) {
-        if (!BINARY_TYPES.includes(type))
-          return;
-        this._binaryType = type;
-        if (this._receiver)
-          this._receiver._binaryType = type;
-      }
-      /**
-       * @type {Number}
-       */
-      get bufferedAmount() {
-        if (!this._socket)
-          return this._bufferedAmount;
-        return this._socket._writableState.length + this._sender._bufferedBytes;
-      }
-      /**
-       * @type {String}
-       */
-      get extensions() {
-        return Object.keys(this._extensions).join();
-      }
-      /**
-       * @type {Boolean}
-       */
-      get isPaused() {
-        return this._paused;
-      }
-      /**
-       * @type {Function}
-       */
-      /* istanbul ignore next */
-      get onclose() {
-        return null;
-      }
-      /**
-       * @type {Function}
-       */
-      /* istanbul ignore next */
-      get onerror() {
-        return null;
-      }
-      /**
-       * @type {Function}
-       */
-      /* istanbul ignore next */
-      get onopen() {
-        return null;
-      }
-      /**
-       * @type {Function}
-       */
-      /* istanbul ignore next */
-      get onmessage() {
-        return null;
-      }
-      /**
-       * @type {String}
-       */
-      get protocol() {
-        return this._protocol;
-      }
-      /**
-       * @type {Number}
-       */
-      get readyState() {
-        return this._readyState;
-      }
-      /**
-       * @type {String}
-       */
-      get url() {
-        return this._url;
-      }
-      /**
-       * Set up the socket and the internal resources.
-       *
-       * @param {Duplex} socket The network socket between the server and client
-       * @param {Buffer} head The first packet of the upgraded stream
-       * @param {Object} options Options object
-       * @param {Boolean} [options.allowSynchronousEvents=false] Specifies whether
-       *     any of the `'message'`, `'ping'`, and `'pong'` events can be emitted
-       *     multiple times in the same tick
-       * @param {Function} [options.generateMask] The function used to generate the
-       *     masking key
-       * @param {Number} [options.maxPayload=0] The maximum allowed message size
-       * @param {Boolean} [options.skipUTF8Validation=false] Specifies whether or
-       *     not to skip UTF-8 validation for text and close messages
-       * @private
-       */
-      setSocket(socket, head, options) {
-        const receiver = new Receiver2({
-          allowSynchronousEvents: options.allowSynchronousEvents,
-          binaryType: this.binaryType,
-          extensions: this._extensions,
-          isServer: this._isServer,
-          maxPayload: options.maxPayload,
-          skipUTF8Validation: options.skipUTF8Validation
-        });
-        this._sender = new Sender2(socket, this._extensions, options.generateMask);
-        this._receiver = receiver;
-        this._socket = socket;
-        receiver[kWebSocket] = this;
-        socket[kWebSocket] = this;
-        receiver.on("conclude", receiverOnConclude);
-        receiver.on("drain", receiverOnDrain);
-        receiver.on("error", receiverOnError);
-        receiver.on("message", receiverOnMessage);
-        receiver.on("ping", receiverOnPing);
-        receiver.on("pong", receiverOnPong);
-        if (socket.setTimeout)
-          socket.setTimeout(0);
-        if (socket.setNoDelay)
-          socket.setNoDelay();
-        if (head.length > 0)
-          socket.unshift(head);
-        socket.on("close", socketOnClose);
-        socket.on("data", socketOnData);
-        socket.on("end", socketOnEnd);
-        socket.on("error", socketOnError);
-        this._readyState = _WebSocket.OPEN;
-        this.emit("open");
-      }
-      /**
-       * Emit the `'close'` event.
-       *
-       * @private
-       */
-      emitClose() {
-        if (!this._socket) {
-          this._readyState = _WebSocket.CLOSED;
-          this.emit("close", this._closeCode, this._closeMessage);
-          return;
-        }
-        if (this._extensions[PerMessageDeflate.extensionName]) {
-          this._extensions[PerMessageDeflate.extensionName].cleanup();
-        }
-        this._receiver.removeAllListeners();
-        this._readyState = _WebSocket.CLOSED;
-        this.emit("close", this._closeCode, this._closeMessage);
-      }
-      /**
-       * Start a closing handshake.
-       *
-       *          +----------+   +-----------+   +----------+
-       *     - - -|ws.close()|-->|close frame|-->|ws.close()|- - -
-       *    |     +----------+   +-----------+   +----------+     |
-       *          +----------+   +-----------+         |
-       * CLOSING  |ws.close()|<--|close frame|<--+-----+       CLOSING
-       *          +----------+   +-----------+   |
-       *    |           |                        |   +---+        |
-       *                +------------------------+-->|fin| - - - -
-       *    |         +---+                      |   +---+
-       *     - - - - -|fin|<---------------------+
-       *              +---+
-       *
-       * @param {Number} [code] Status code explaining why the connection is closing
-       * @param {(String|Buffer)} [data] The reason why the connection is
-       *     closing
-       * @public
-       */
-      close(code, data) {
-        if (this.readyState === _WebSocket.CLOSED)
-          return;
-        if (this.readyState === _WebSocket.CONNECTING) {
-          const msg = "WebSocket was closed before the connection was established";
-          abortHandshake(this, this._req, msg);
-          return;
-        }
-        if (this.readyState === _WebSocket.CLOSING) {
-          if (this._closeFrameSent && (this._closeFrameReceived || this._receiver._writableState.errorEmitted)) {
-            this._socket.end();
-          }
-          return;
-        }
-        this._readyState = _WebSocket.CLOSING;
-        this._sender.close(code, data, !this._isServer, (err) => {
-          if (err)
-            return;
-          this._closeFrameSent = true;
-          if (this._closeFrameReceived || this._receiver._writableState.errorEmitted) {
-            this._socket.end();
-          }
-        });
-        this._closeTimer = setTimeout(
-          this._socket.destroy.bind(this._socket),
-          closeTimeout
-        );
-      }
-      /**
-       * Pause the socket.
-       *
-       * @public
-       */
-      pause() {
-        if (this.readyState === _WebSocket.CONNECTING || this.readyState === _WebSocket.CLOSED) {
-          return;
-        }
-        this._paused = true;
-        this._socket.pause();
-      }
-      /**
-       * Send a ping.
-       *
-       * @param {*} [data] The data to send
-       * @param {Boolean} [mask] Indicates whether or not to mask `data`
-       * @param {Function} [cb] Callback which is executed when the ping is sent
-       * @public
-       */
-      ping(data, mask, cb) {
-        if (this.readyState === _WebSocket.CONNECTING) {
-          throw new Error("WebSocket is not open: readyState 0 (CONNECTING)");
-        }
-        if (typeof data === "function") {
-          cb = data;
-          data = mask = void 0;
-        } else if (typeof mask === "function") {
-          cb = mask;
-          mask = void 0;
-        }
-        if (typeof data === "number")
-          data = data.toString();
-        if (this.readyState !== _WebSocket.OPEN) {
-          sendAfterClose(this, data, cb);
-          return;
-        }
-        if (mask === void 0)
-          mask = !this._isServer;
-        this._sender.ping(data || EMPTY_BUFFER, mask, cb);
-      }
-      /**
-       * Send a pong.
-       *
-       * @param {*} [data] The data to send
-       * @param {Boolean} [mask] Indicates whether or not to mask `data`
-       * @param {Function} [cb] Callback which is executed when the pong is sent
-       * @public
-       */
-      pong(data, mask, cb) {
-        if (this.readyState === _WebSocket.CONNECTING) {
-          throw new Error("WebSocket is not open: readyState 0 (CONNECTING)");
-        }
-        if (typeof data === "function") {
-          cb = data;
-          data = mask = void 0;
-        } else if (typeof mask === "function") {
-          cb = mask;
-          mask = void 0;
-        }
-        if (typeof data === "number")
-          data = data.toString();
-        if (this.readyState !== _WebSocket.OPEN) {
-          sendAfterClose(this, data, cb);
-          return;
-        }
-        if (mask === void 0)
-          mask = !this._isServer;
-        this._sender.pong(data || EMPTY_BUFFER, mask, cb);
-      }
-      /**
-       * Resume the socket.
-       *
-       * @public
-       */
-      resume() {
-        if (this.readyState === _WebSocket.CONNECTING || this.readyState === _WebSocket.CLOSED) {
-          return;
-        }
-        this._paused = false;
-        if (!this._receiver._writableState.needDrain)
-          this._socket.resume();
-      }
-      /**
-       * Send a data message.
-       *
-       * @param {*} data The message to send
-       * @param {Object} [options] Options object
-       * @param {Boolean} [options.binary] Specifies whether `data` is binary or
-       *     text
-       * @param {Boolean} [options.compress] Specifies whether or not to compress
-       *     `data`
-       * @param {Boolean} [options.fin=true] Specifies whether the fragment is the
-       *     last one
-       * @param {Boolean} [options.mask] Specifies whether or not to mask `data`
-       * @param {Function} [cb] Callback which is executed when data is written out
-       * @public
-       */
-      send(data, options, cb) {
-        if (this.readyState === _WebSocket.CONNECTING) {
-          throw new Error("WebSocket is not open: readyState 0 (CONNECTING)");
-        }
-        if (typeof options === "function") {
-          cb = options;
-          options = {};
-        }
-        if (typeof data === "number")
-          data = data.toString();
-        if (this.readyState !== _WebSocket.OPEN) {
-          sendAfterClose(this, data, cb);
-          return;
-        }
-        const opts = {
-          binary: typeof data !== "string",
-          mask: !this._isServer,
-          compress: true,
-          fin: true,
-          ...options
-        };
-        if (!this._extensions[PerMessageDeflate.extensionName]) {
-          opts.compress = false;
-        }
-        this._sender.send(data || EMPTY_BUFFER, opts, cb);
-      }
-      /**
-       * Forcibly close the connection.
-       *
-       * @public
-       */
-      terminate() {
-        if (this.readyState === _WebSocket.CLOSED)
-          return;
-        if (this.readyState === _WebSocket.CONNECTING) {
-          const msg = "WebSocket was closed before the connection was established";
-          abortHandshake(this, this._req, msg);
-          return;
-        }
-        if (this._socket) {
-          this._readyState = _WebSocket.CLOSING;
-          this._socket.destroy();
-        }
-      }
-    };
-    Object.defineProperty(WebSocket2, "CONNECTING", {
-      enumerable: true,
-      value: readyStates.indexOf("CONNECTING")
-    });
-    Object.defineProperty(WebSocket2.prototype, "CONNECTING", {
-      enumerable: true,
-      value: readyStates.indexOf("CONNECTING")
-    });
-    Object.defineProperty(WebSocket2, "OPEN", {
-      enumerable: true,
-      value: readyStates.indexOf("OPEN")
-    });
-    Object.defineProperty(WebSocket2.prototype, "OPEN", {
-      enumerable: true,
-      value: readyStates.indexOf("OPEN")
-    });
-    Object.defineProperty(WebSocket2, "CLOSING", {
-      enumerable: true,
-      value: readyStates.indexOf("CLOSING")
-    });
-    Object.defineProperty(WebSocket2.prototype, "CLOSING", {
-      enumerable: true,
-      value: readyStates.indexOf("CLOSING")
-    });
-    Object.defineProperty(WebSocket2, "CLOSED", {
-      enumerable: true,
-      value: readyStates.indexOf("CLOSED")
-    });
-    Object.defineProperty(WebSocket2.prototype, "CLOSED", {
-      enumerable: true,
-      value: readyStates.indexOf("CLOSED")
-    });
-    [
-      "binaryType",
-      "bufferedAmount",
-      "extensions",
-      "isPaused",
-      "protocol",
-      "readyState",
-      "url"
-    ].forEach((property) => {
-      Object.defineProperty(WebSocket2.prototype, property, { enumerable: true });
-    });
-    ["open", "error", "close", "message"].forEach((method) => {
-      Object.defineProperty(WebSocket2.prototype, `on${method}`, {
-        enumerable: true,
-        get() {
-          for (const listener of this.listeners(method)) {
-            if (listener[kForOnEventAttribute])
-              return listener[kListener];
-          }
-          return null;
-        },
-        set(handler) {
-          for (const listener of this.listeners(method)) {
-            if (listener[kForOnEventAttribute]) {
-              this.removeListener(method, listener);
-              break;
-            }
-          }
-          if (typeof handler !== "function")
-            return;
-          this.addEventListener(method, handler, {
-            [kForOnEventAttribute]: true
-          });
-        }
-      });
-    });
-    WebSocket2.prototype.addEventListener = addEventListener;
-    WebSocket2.prototype.removeEventListener = removeEventListener;
-    module2.exports = WebSocket2;
-    function initAsClient(websocket, address, protocols, options) {
-      const opts = {
-        allowSynchronousEvents: true,
-        autoPong: true,
-        protocolVersion: protocolVersions[1],
-        maxPayload: 100 * 1024 * 1024,
-        skipUTF8Validation: false,
-        perMessageDeflate: true,
-        followRedirects: false,
-        maxRedirects: 10,
-        ...options,
-        socketPath: void 0,
-        hostname: void 0,
-        protocol: void 0,
-        timeout: void 0,
-        method: "GET",
-        host: void 0,
-        path: void 0,
-        port: void 0
-      };
-      websocket._autoPong = opts.autoPong;
-      if (!protocolVersions.includes(opts.protocolVersion)) {
-        throw new RangeError(
-          `Unsupported protocol version: ${opts.protocolVersion} (supported versions: ${protocolVersions.join(", ")})`
-        );
-      }
-      let parsedUrl;
-      if (address instanceof URL2) {
-        parsedUrl = address;
-      } else {
-        try {
-          parsedUrl = new URL2(address);
-        } catch (e) {
-          throw new SyntaxError(`Invalid URL: ${address}`);
-        }
-      }
-      if (parsedUrl.protocol === "http:") {
-        parsedUrl.protocol = "ws:";
-      } else if (parsedUrl.protocol === "https:") {
-        parsedUrl.protocol = "wss:";
-      }
-      websocket._url = parsedUrl.href;
-      const isSecure = parsedUrl.protocol === "wss:";
-      const isIpcUrl = parsedUrl.protocol === "ws+unix:";
-      let invalidUrlMessage;
-      if (parsedUrl.protocol !== "ws:" && !isSecure && !isIpcUrl) {
-        invalidUrlMessage = `The URL's protocol must be one of "ws:", "wss:", "http:", "https", or "ws+unix:"`;
-      } else if (isIpcUrl && !parsedUrl.pathname) {
-        invalidUrlMessage = "The URL's pathname is empty";
-      } else if (parsedUrl.hash) {
-        invalidUrlMessage = "The URL contains a fragment identifier";
-      }
-      if (invalidUrlMessage) {
-        const err = new SyntaxError(invalidUrlMessage);
-        if (websocket._redirects === 0) {
-          throw err;
-        } else {
-          emitErrorAndClose(websocket, err);
-          return;
-        }
-      }
-      const defaultPort = isSecure ? 443 : 80;
-      const key = randomBytes(16).toString("base64");
-      const request = isSecure ? https.request : http2.request;
-      const protocolSet = /* @__PURE__ */ new Set();
-      let perMessageDeflate;
-      opts.createConnection = opts.createConnection || (isSecure ? tlsConnect : netConnect);
-      opts.defaultPort = opts.defaultPort || defaultPort;
-      opts.port = parsedUrl.port || defaultPort;
-      opts.host = parsedUrl.hostname.startsWith("[") ? parsedUrl.hostname.slice(1, -1) : parsedUrl.hostname;
-      opts.headers = {
-        ...opts.headers,
-        "Sec-WebSocket-Version": opts.protocolVersion,
-        "Sec-WebSocket-Key": key,
-        Connection: "Upgrade",
-        Upgrade: "websocket"
-      };
-      opts.path = parsedUrl.pathname + parsedUrl.search;
-      opts.timeout = opts.handshakeTimeout;
-      if (opts.perMessageDeflate) {
-        perMessageDeflate = new PerMessageDeflate(
-          opts.perMessageDeflate !== true ? opts.perMessageDeflate : {},
-          false,
-          opts.maxPayload
-        );
-        opts.headers["Sec-WebSocket-Extensions"] = format({
-          [PerMessageDeflate.extensionName]: perMessageDeflate.offer()
-        });
-      }
-      if (protocols.length) {
-        for (const protocol of protocols) {
-          if (typeof protocol !== "string" || !subprotocolRegex.test(protocol) || protocolSet.has(protocol)) {
-            throw new SyntaxError(
-              "An invalid or duplicated subprotocol was specified"
-            );
-          }
-          protocolSet.add(protocol);
-        }
-        opts.headers["Sec-WebSocket-Protocol"] = protocols.join(",");
-      }
-      if (opts.origin) {
-        if (opts.protocolVersion < 13) {
-          opts.headers["Sec-WebSocket-Origin"] = opts.origin;
-        } else {
-          opts.headers.Origin = opts.origin;
-        }
-      }
-      if (parsedUrl.username || parsedUrl.password) {
-        opts.auth = `${parsedUrl.username}:${parsedUrl.password}`;
-      }
-      if (isIpcUrl) {
-        const parts = opts.path.split(":");
-        opts.socketPath = parts[0];
-        opts.path = parts[1];
-      }
-      let req;
-      if (opts.followRedirects) {
-        if (websocket._redirects === 0) {
-          websocket._originalIpc = isIpcUrl;
-          websocket._originalSecure = isSecure;
-          websocket._originalHostOrSocketPath = isIpcUrl ? opts.socketPath : parsedUrl.host;
-          const headers = options && options.headers;
-          options = { ...options, headers: {} };
-          if (headers) {
-            for (const [key2, value] of Object.entries(headers)) {
-              options.headers[key2.toLowerCase()] = value;
-            }
-          }
-        } else if (websocket.listenerCount("redirect") === 0) {
-          const isSameHost = isIpcUrl ? websocket._originalIpc ? opts.socketPath === websocket._originalHostOrSocketPath : false : websocket._originalIpc ? false : parsedUrl.host === websocket._originalHostOrSocketPath;
-          if (!isSameHost || websocket._originalSecure && !isSecure) {
-            delete opts.headers.authorization;
-            delete opts.headers.cookie;
-            if (!isSameHost)
-              delete opts.headers.host;
-            opts.auth = void 0;
-          }
-        }
-        if (opts.auth && !options.headers.authorization) {
-          options.headers.authorization = "Basic " + Buffer.from(opts.auth).toString("base64");
-        }
-        req = websocket._req = request(opts);
-        if (websocket._redirects) {
-          websocket.emit("redirect", websocket.url, req);
-        }
-      } else {
-        req = websocket._req = request(opts);
-      }
-      if (opts.timeout) {
-        req.on("timeout", () => {
-          abortHandshake(websocket, req, "Opening handshake has timed out");
-        });
-      }
-      req.on("error", (err) => {
-        if (req === null || req[kAborted])
-          return;
-        req = websocket._req = null;
-        emitErrorAndClose(websocket, err);
-      });
-      req.on("response", (res) => {
-        const location = res.headers.location;
-        const statusCode = res.statusCode;
-        if (location && opts.followRedirects && statusCode >= 300 && statusCode < 400) {
-          if (++websocket._redirects > opts.maxRedirects) {
-            abortHandshake(websocket, req, "Maximum redirects exceeded");
-            return;
-          }
-          req.abort();
-          let addr;
-          try {
-            addr = new URL2(location, address);
-          } catch (e) {
-            const err = new SyntaxError(`Invalid URL: ${location}`);
-            emitErrorAndClose(websocket, err);
-            return;
-          }
-          initAsClient(websocket, addr, protocols, options);
-        } else if (!websocket.emit("unexpected-response", req, res)) {
-          abortHandshake(
-            websocket,
-            req,
-            `Unexpected server response: ${res.statusCode}`
-          );
-        }
-      });
-      req.on("upgrade", (res, socket, head) => {
-        websocket.emit("upgrade", res);
-        if (websocket.readyState !== WebSocket2.CONNECTING)
-          return;
-        req = websocket._req = null;
-        const upgrade = res.headers.upgrade;
-        if (upgrade === void 0 || upgrade.toLowerCase() !== "websocket") {
-          abortHandshake(websocket, socket, "Invalid Upgrade header");
-          return;
-        }
-        const digest = createHash("sha1").update(key + GUID).digest("base64");
-        if (res.headers["sec-websocket-accept"] !== digest) {
-          abortHandshake(websocket, socket, "Invalid Sec-WebSocket-Accept header");
-          return;
-        }
-        const serverProt = res.headers["sec-websocket-protocol"];
-        let protError;
-        if (serverProt !== void 0) {
-          if (!protocolSet.size) {
-            protError = "Server sent a subprotocol but none was requested";
-          } else if (!protocolSet.has(serverProt)) {
-            protError = "Server sent an invalid subprotocol";
-          }
-        } else if (protocolSet.size) {
-          protError = "Server sent no subprotocol";
-        }
-        if (protError) {
-          abortHandshake(websocket, socket, protError);
-          return;
-        }
-        if (serverProt)
-          websocket._protocol = serverProt;
-        const secWebSocketExtensions = res.headers["sec-websocket-extensions"];
-        if (secWebSocketExtensions !== void 0) {
-          if (!perMessageDeflate) {
-            const message = "Server sent a Sec-WebSocket-Extensions header but no extension was requested";
-            abortHandshake(websocket, socket, message);
-            return;
-          }
-          let extensions;
-          try {
-            extensions = parse(secWebSocketExtensions);
-          } catch (err) {
-            const message = "Invalid Sec-WebSocket-Extensions header";
-            abortHandshake(websocket, socket, message);
-            return;
-          }
-          const extensionNames = Object.keys(extensions);
-          if (extensionNames.length !== 1 || extensionNames[0] !== PerMessageDeflate.extensionName) {
-            const message = "Server indicated an extension that was not requested";
-            abortHandshake(websocket, socket, message);
-            return;
-          }
-          try {
-            perMessageDeflate.accept(extensions[PerMessageDeflate.extensionName]);
-          } catch (err) {
-            const message = "Invalid Sec-WebSocket-Extensions header";
-            abortHandshake(websocket, socket, message);
-            return;
-          }
-          websocket._extensions[PerMessageDeflate.extensionName] = perMessageDeflate;
-        }
-        websocket.setSocket(socket, head, {
-          allowSynchronousEvents: opts.allowSynchronousEvents,
-          generateMask: opts.generateMask,
-          maxPayload: opts.maxPayload,
-          skipUTF8Validation: opts.skipUTF8Validation
-        });
-      });
-      if (opts.finishRequest) {
-        opts.finishRequest(req, websocket);
-      } else {
-        req.end();
-      }
-    }
-    __name(initAsClient, "initAsClient");
-    function emitErrorAndClose(websocket, err) {
-      websocket._readyState = WebSocket2.CLOSING;
-      websocket.emit("error", err);
-      websocket.emitClose();
-    }
-    __name(emitErrorAndClose, "emitErrorAndClose");
-    function netConnect(options) {
-      options.path = options.socketPath;
-      return net2.connect(options);
-    }
-    __name(netConnect, "netConnect");
-    function tlsConnect(options) {
-      options.path = void 0;
-      if (!options.servername && options.servername !== "") {
-        options.servername = net2.isIP(options.host) ? "" : options.host;
-      }
-      return tls.connect(options);
-    }
-    __name(tlsConnect, "tlsConnect");
-    function abortHandshake(websocket, stream, message) {
-      websocket._readyState = WebSocket2.CLOSING;
-      const err = new Error(message);
-      Error.captureStackTrace(err, abortHandshake);
-      if (stream.setHeader) {
-        stream[kAborted] = true;
-        stream.abort();
-        if (stream.socket && !stream.socket.destroyed) {
-          stream.socket.destroy();
-        }
-        process.nextTick(emitErrorAndClose, websocket, err);
-      } else {
-        stream.destroy(err);
-        stream.once("error", websocket.emit.bind(websocket, "error"));
-        stream.once("close", websocket.emitClose.bind(websocket));
-      }
-    }
-    __name(abortHandshake, "abortHandshake");
-    function sendAfterClose(websocket, data, cb) {
-      if (data) {
-        const length = toBuffer(data).length;
-        if (websocket._socket)
-          websocket._sender._bufferedBytes += length;
-        else
-          websocket._bufferedAmount += length;
-      }
-      if (cb) {
-        const err = new Error(
-          `WebSocket is not open: readyState ${websocket.readyState} (${readyStates[websocket.readyState]})`
-        );
-        process.nextTick(cb, err);
-      }
-    }
-    __name(sendAfterClose, "sendAfterClose");
-    function receiverOnConclude(code, reason) {
-      const websocket = this[kWebSocket];
-      websocket._closeFrameReceived = true;
-      websocket._closeMessage = reason;
-      websocket._closeCode = code;
-      if (websocket._socket[kWebSocket] === void 0)
-        return;
-      websocket._socket.removeListener("data", socketOnData);
-      process.nextTick(resume, websocket._socket);
-      if (code === 1005)
-        websocket.close();
-      else
-        websocket.close(code, reason);
-    }
-    __name(receiverOnConclude, "receiverOnConclude");
-    function receiverOnDrain() {
-      const websocket = this[kWebSocket];
-      if (!websocket.isPaused)
-        websocket._socket.resume();
-    }
-    __name(receiverOnDrain, "receiverOnDrain");
-    function receiverOnError(err) {
-      const websocket = this[kWebSocket];
-      if (websocket._socket[kWebSocket] !== void 0) {
-        websocket._socket.removeListener("data", socketOnData);
-        process.nextTick(resume, websocket._socket);
-        websocket.close(err[kStatusCode]);
-      }
-      websocket.emit("error", err);
-    }
-    __name(receiverOnError, "receiverOnError");
-    function receiverOnFinish() {
-      this[kWebSocket].emitClose();
-    }
-    __name(receiverOnFinish, "receiverOnFinish");
-    function receiverOnMessage(data, isBinary) {
-      this[kWebSocket].emit("message", data, isBinary);
-    }
-    __name(receiverOnMessage, "receiverOnMessage");
-    function receiverOnPing(data) {
-      const websocket = this[kWebSocket];
-      if (websocket._autoPong)
-        websocket.pong(data, !this._isServer, NOOP);
-      websocket.emit("ping", data);
-    }
-    __name(receiverOnPing, "receiverOnPing");
-    function receiverOnPong(data) {
-      this[kWebSocket].emit("pong", data);
-    }
-    __name(receiverOnPong, "receiverOnPong");
-    function resume(stream) {
-      stream.resume();
-    }
-    __name(resume, "resume");
-    function socketOnClose() {
-      const websocket = this[kWebSocket];
-      this.removeListener("close", socketOnClose);
-      this.removeListener("data", socketOnData);
-      this.removeListener("end", socketOnEnd);
-      websocket._readyState = WebSocket2.CLOSING;
-      let chunk;
-      if (!this._readableState.endEmitted && !websocket._closeFrameReceived && !websocket._receiver._writableState.errorEmitted && (chunk = websocket._socket.read()) !== null) {
-        websocket._receiver.write(chunk);
-      }
-      websocket._receiver.end();
-      this[kWebSocket] = void 0;
-      clearTimeout(websocket._closeTimer);
-      if (websocket._receiver._writableState.finished || websocket._receiver._writableState.errorEmitted) {
-        websocket.emitClose();
-      } else {
-        websocket._receiver.on("error", receiverOnFinish);
-        websocket._receiver.on("finish", receiverOnFinish);
-      }
-    }
-    __name(socketOnClose, "socketOnClose");
-    function socketOnData(chunk) {
-      if (!this[kWebSocket]._receiver.write(chunk)) {
-        this.pause();
-      }
-    }
-    __name(socketOnData, "socketOnData");
-    function socketOnEnd() {
-      const websocket = this[kWebSocket];
-      websocket._readyState = WebSocket2.CLOSING;
-      websocket._receiver.end();
-      this.end();
-    }
-    __name(socketOnEnd, "socketOnEnd");
-    function socketOnError() {
-      const websocket = this[kWebSocket];
-      this.removeListener("error", socketOnError);
-      this.on("error", NOOP);
-      if (websocket) {
-        websocket._readyState = WebSocket2.CLOSING;
-        this.destroy();
-      }
-    }
-    __name(socketOnError, "socketOnError");
-  }
-});
-
-// ../node_modules/ws/lib/subprotocol.js
-var require_subprotocol = __commonJS({
-  "../node_modules/ws/lib/subprotocol.js"(exports2, module2) {
-    "use strict";
-    var { tokenChars } = require_validation();
-    function parse(header) {
-      const protocols = /* @__PURE__ */ new Set();
-      let start = -1;
-      let end = -1;
-      let i = 0;
-      for (i; i < header.length; i++) {
-        const code = header.charCodeAt(i);
-        if (end === -1 && tokenChars[code] === 1) {
-          if (start === -1)
-            start = i;
-        } else if (i !== 0 && (code === 32 || code === 9)) {
-          if (end === -1 && start !== -1)
-            end = i;
-        } else if (code === 44) {
-          if (start === -1) {
-            throw new SyntaxError(`Unexpected character at index ${i}`);
-          }
-          if (end === -1)
-            end = i;
-          const protocol2 = header.slice(start, end);
-          if (protocols.has(protocol2)) {
-            throw new SyntaxError(`The "${protocol2}" subprotocol is duplicated`);
-          }
-          protocols.add(protocol2);
-          start = end = -1;
-        } else {
-          throw new SyntaxError(`Unexpected character at index ${i}`);
-        }
-      }
-      if (start === -1 || end !== -1) {
-        throw new SyntaxError("Unexpected end of input");
-      }
-      const protocol = header.slice(start, i);
-      if (protocols.has(protocol)) {
-        throw new SyntaxError(`The "${protocol}" subprotocol is duplicated`);
-      }
-      protocols.add(protocol);
-      return protocols;
-    }
-    __name(parse, "parse");
-    module2.exports = { parse };
-  }
-});
-
-// ../node_modules/ws/lib/websocket-server.js
-var require_websocket_server = __commonJS({
-  "../node_modules/ws/lib/websocket-server.js"(exports2, module2) {
-    "use strict";
-    var EventEmitter = require("events");
-    var http2 = require("http");
-    var { Duplex } = require("stream");
-    var { createHash } = require("crypto");
-    var extension = require_extension();
-    var PerMessageDeflate = require_permessage_deflate();
-    var subprotocol = require_subprotocol();
-    var WebSocket2 = require_websocket();
-    var { GUID, kWebSocket } = require_constants();
-    var keyRegex = /^[+/0-9A-Za-z]{22}==$/;
-    var RUNNING = 0;
-    var CLOSING = 1;
-    var CLOSED = 2;
-    var WebSocketServer2 = class extends EventEmitter {
-      static {
-        __name(this, "WebSocketServer");
-      }
-      /**
-       * Create a `WebSocketServer` instance.
-       *
-       * @param {Object} options Configuration options
-       * @param {Boolean} [options.allowSynchronousEvents=true] Specifies whether
-       *     any of the `'message'`, `'ping'`, and `'pong'` events can be emitted
-       *     multiple times in the same tick
-       * @param {Boolean} [options.autoPong=true] Specifies whether or not to
-       *     automatically send a pong in response to a ping
-       * @param {Number} [options.backlog=511] The maximum length of the queue of
-       *     pending connections
-       * @param {Boolean} [options.clientTracking=true] Specifies whether or not to
-       *     track clients
-       * @param {Function} [options.handleProtocols] A hook to handle protocols
-       * @param {String} [options.host] The hostname where to bind the server
-       * @param {Number} [options.maxPayload=104857600] The maximum allowed message
-       *     size
-       * @param {Boolean} [options.noServer=false] Enable no server mode
-       * @param {String} [options.path] Accept only connections matching this path
-       * @param {(Boolean|Object)} [options.perMessageDeflate=false] Enable/disable
-       *     permessage-deflate
-       * @param {Number} [options.port] The port where to bind the server
-       * @param {(http.Server|https.Server)} [options.server] A pre-created HTTP/S
-       *     server to use
-       * @param {Boolean} [options.skipUTF8Validation=false] Specifies whether or
-       *     not to skip UTF-8 validation for text and close messages
-       * @param {Function} [options.verifyClient] A hook to reject connections
-       * @param {Function} [options.WebSocket=WebSocket] Specifies the `WebSocket`
-       *     class to use. It must be the `WebSocket` class or class that extends it
-       * @param {Function} [callback] A listener for the `listening` event
-       */
-      constructor(options, callback) {
-        super();
-        options = {
-          allowSynchronousEvents: true,
-          autoPong: true,
-          maxPayload: 100 * 1024 * 1024,
-          skipUTF8Validation: false,
-          perMessageDeflate: false,
-          handleProtocols: null,
-          clientTracking: true,
-          verifyClient: null,
-          noServer: false,
-          backlog: null,
-          // use default (511 as implemented in net.js)
-          server: null,
-          host: null,
-          path: null,
-          port: null,
-          WebSocket: WebSocket2,
-          ...options
-        };
-        if (options.port == null && !options.server && !options.noServer || options.port != null && (options.server || options.noServer) || options.server && options.noServer) {
-          throw new TypeError(
-            'One and only one of the "port", "server", or "noServer" options must be specified'
-          );
-        }
-        if (options.port != null) {
-          this._server = http2.createServer((req, res) => {
-            const body = http2.STATUS_CODES[426];
-            res.writeHead(426, {
-              "Content-Length": body.length,
-              "Content-Type": "text/plain"
-            });
-            res.end(body);
-          });
-          this._server.listen(
-            options.port,
-            options.host,
-            options.backlog,
-            callback
-          );
-        } else if (options.server) {
-          this._server = options.server;
-        }
-        if (this._server) {
-          const emitConnection = this.emit.bind(this, "connection");
-          this._removeListeners = addListeners(this._server, {
-            listening: this.emit.bind(this, "listening"),
-            error: this.emit.bind(this, "error"),
-            upgrade: (req, socket, head) => {
-              this.handleUpgrade(req, socket, head, emitConnection);
-            }
-          });
-        }
-        if (options.perMessageDeflate === true)
-          options.perMessageDeflate = {};
-        if (options.clientTracking) {
-          this.clients = /* @__PURE__ */ new Set();
-          this._shouldEmitClose = false;
-        }
-        this.options = options;
-        this._state = RUNNING;
-      }
-      /**
-       * Returns the bound address, the address family name, and port of the server
-       * as reported by the operating system if listening on an IP socket.
-       * If the server is listening on a pipe or UNIX domain socket, the name is
-       * returned as a string.
-       *
-       * @return {(Object|String|null)} The address of the server
-       * @public
-       */
-      address() {
-        if (this.options.noServer) {
-          throw new Error('The server is operating in "noServer" mode');
-        }
-        if (!this._server)
-          return null;
-        return this._server.address();
-      }
-      /**
-       * Stop the server from accepting new connections and emit the `'close'` event
-       * when all existing connections are closed.
-       *
-       * @param {Function} [cb] A one-time listener for the `'close'` event
-       * @public
-       */
-      close(cb) {
-        if (this._state === CLOSED) {
-          if (cb) {
-            this.once("close", () => {
-              cb(new Error("The server is not running"));
-            });
-          }
-          process.nextTick(emitClose, this);
-          return;
-        }
-        if (cb)
-          this.once("close", cb);
-        if (this._state === CLOSING)
-          return;
-        this._state = CLOSING;
-        if (this.options.noServer || this.options.server) {
-          if (this._server) {
-            this._removeListeners();
-            this._removeListeners = this._server = null;
-          }
-          if (this.clients) {
-            if (!this.clients.size) {
-              process.nextTick(emitClose, this);
-            } else {
-              this._shouldEmitClose = true;
-            }
-          } else {
-            process.nextTick(emitClose, this);
-          }
-        } else {
-          const server = this._server;
-          this._removeListeners();
-          this._removeListeners = this._server = null;
-          server.close(() => {
-            emitClose(this);
-          });
-        }
-      }
-      /**
-       * See if a given request should be handled by this server instance.
-       *
-       * @param {http.IncomingMessage} req Request object to inspect
-       * @return {Boolean} `true` if the request is valid, else `false`
-       * @public
-       */
-      shouldHandle(req) {
-        if (this.options.path) {
-          const index = req.url.indexOf("?");
-          const pathname = index !== -1 ? req.url.slice(0, index) : req.url;
-          if (pathname !== this.options.path)
-            return false;
-        }
-        return true;
-      }
-      /**
-       * Handle a HTTP Upgrade request.
-       *
-       * @param {http.IncomingMessage} req The request object
-       * @param {Duplex} socket The network socket between the server and client
-       * @param {Buffer} head The first packet of the upgraded stream
-       * @param {Function} cb Callback
-       * @public
-       */
-      handleUpgrade(req, socket, head, cb) {
-        socket.on("error", socketOnError);
-        const key = req.headers["sec-websocket-key"];
-        const upgrade = req.headers.upgrade;
-        const version = +req.headers["sec-websocket-version"];
-        if (req.method !== "GET") {
-          const message = "Invalid HTTP method";
-          abortHandshakeOrEmitwsClientError(this, req, socket, 405, message);
-          return;
-        }
-        if (upgrade === void 0 || upgrade.toLowerCase() !== "websocket") {
-          const message = "Invalid Upgrade header";
-          abortHandshakeOrEmitwsClientError(this, req, socket, 400, message);
-          return;
-        }
-        if (key === void 0 || !keyRegex.test(key)) {
-          const message = "Missing or invalid Sec-WebSocket-Key header";
-          abortHandshakeOrEmitwsClientError(this, req, socket, 400, message);
-          return;
-        }
-        if (version !== 8 && version !== 13) {
-          const message = "Missing or invalid Sec-WebSocket-Version header";
-          abortHandshakeOrEmitwsClientError(this, req, socket, 400, message);
-          return;
-        }
-        if (!this.shouldHandle(req)) {
-          abortHandshake(socket, 400);
-          return;
-        }
-        const secWebSocketProtocol = req.headers["sec-websocket-protocol"];
-        let protocols = /* @__PURE__ */ new Set();
-        if (secWebSocketProtocol !== void 0) {
-          try {
-            protocols = subprotocol.parse(secWebSocketProtocol);
-          } catch (err) {
-            const message = "Invalid Sec-WebSocket-Protocol header";
-            abortHandshakeOrEmitwsClientError(this, req, socket, 400, message);
-            return;
-          }
-        }
-        const secWebSocketExtensions = req.headers["sec-websocket-extensions"];
-        const extensions = {};
-        if (this.options.perMessageDeflate && secWebSocketExtensions !== void 0) {
-          const perMessageDeflate = new PerMessageDeflate(
-            this.options.perMessageDeflate,
-            true,
-            this.options.maxPayload
-          );
-          try {
-            const offers = extension.parse(secWebSocketExtensions);
-            if (offers[PerMessageDeflate.extensionName]) {
-              perMessageDeflate.accept(offers[PerMessageDeflate.extensionName]);
-              extensions[PerMessageDeflate.extensionName] = perMessageDeflate;
-            }
-          } catch (err) {
-            const message = "Invalid or unacceptable Sec-WebSocket-Extensions header";
-            abortHandshakeOrEmitwsClientError(this, req, socket, 400, message);
-            return;
-          }
-        }
-        if (this.options.verifyClient) {
-          const info = {
-            origin: req.headers[`${version === 8 ? "sec-websocket-origin" : "origin"}`],
-            secure: !!(req.socket.authorized || req.socket.encrypted),
-            req
-          };
-          if (this.options.verifyClient.length === 2) {
-            this.options.verifyClient(info, (verified, code, message, headers) => {
-              if (!verified) {
-                return abortHandshake(socket, code || 401, message, headers);
-              }
-              this.completeUpgrade(
-                extensions,
-                key,
-                protocols,
-                req,
-                socket,
-                head,
-                cb
-              );
-            });
-            return;
-          }
-          if (!this.options.verifyClient(info))
-            return abortHandshake(socket, 401);
-        }
-        this.completeUpgrade(extensions, key, protocols, req, socket, head, cb);
-      }
-      /**
-       * Upgrade the connection to WebSocket.
-       *
-       * @param {Object} extensions The accepted extensions
-       * @param {String} key The value of the `Sec-WebSocket-Key` header
-       * @param {Set} protocols The subprotocols
-       * @param {http.IncomingMessage} req The request object
-       * @param {Duplex} socket The network socket between the server and client
-       * @param {Buffer} head The first packet of the upgraded stream
-       * @param {Function} cb Callback
-       * @throws {Error} If called more than once with the same socket
-       * @private
-       */
-      completeUpgrade(extensions, key, protocols, req, socket, head, cb) {
-        if (!socket.readable || !socket.writable)
-          return socket.destroy();
-        if (socket[kWebSocket]) {
-          throw new Error(
-            "server.handleUpgrade() was called more than once with the same socket, possibly due to a misconfiguration"
-          );
-        }
-        if (this._state > RUNNING)
-          return abortHandshake(socket, 503);
-        const digest = createHash("sha1").update(key + GUID).digest("base64");
-        const headers = [
-          "HTTP/1.1 101 Switching Protocols",
-          "Upgrade: websocket",
-          "Connection: Upgrade",
-          `Sec-WebSocket-Accept: ${digest}`
-        ];
-        const ws = new this.options.WebSocket(null, void 0, this.options);
-        if (protocols.size) {
-          const protocol = this.options.handleProtocols ? this.options.handleProtocols(protocols, req) : protocols.values().next().value;
-          if (protocol) {
-            headers.push(`Sec-WebSocket-Protocol: ${protocol}`);
-            ws._protocol = protocol;
-          }
-        }
-        if (extensions[PerMessageDeflate.extensionName]) {
-          const params = extensions[PerMessageDeflate.extensionName].params;
-          const value = extension.format({
-            [PerMessageDeflate.extensionName]: [params]
-          });
-          headers.push(`Sec-WebSocket-Extensions: ${value}`);
-          ws._extensions = extensions;
-        }
-        this.emit("headers", headers, req);
-        socket.write(headers.concat("\r\n").join("\r\n"));
-        socket.removeListener("error", socketOnError);
-        ws.setSocket(socket, head, {
-          allowSynchronousEvents: this.options.allowSynchronousEvents,
-          maxPayload: this.options.maxPayload,
-          skipUTF8Validation: this.options.skipUTF8Validation
-        });
-        if (this.clients) {
-          this.clients.add(ws);
-          ws.on("close", () => {
-            this.clients.delete(ws);
-            if (this._shouldEmitClose && !this.clients.size) {
-              process.nextTick(emitClose, this);
-            }
-          });
-        }
-        cb(ws, req);
-      }
-    };
-    module2.exports = WebSocketServer2;
-    function addListeners(server, map) {
-      for (const event of Object.keys(map))
-        server.on(event, map[event]);
-      return /* @__PURE__ */ __name(function removeListeners() {
-        for (const event of Object.keys(map)) {
-          server.removeListener(event, map[event]);
-        }
-      }, "removeListeners");
-    }
-    __name(addListeners, "addListeners");
-    function emitClose(server) {
-      server._state = CLOSED;
-      server.emit("close");
-    }
-    __name(emitClose, "emitClose");
-    function socketOnError() {
-      this.destroy();
-    }
-    __name(socketOnError, "socketOnError");
-    function abortHandshake(socket, code, message, headers) {
-      message = message || http2.STATUS_CODES[code];
-      headers = {
-        Connection: "close",
-        "Content-Type": "text/html",
-        "Content-Length": Buffer.byteLength(message),
-        ...headers
-      };
-      socket.once("finish", socket.destroy);
-      socket.end(
-        `HTTP/1.1 ${code} ${http2.STATUS_CODES[code]}\r
-` + Object.keys(headers).map((h) => `${h}: ${headers[h]}`).join("\r\n") + "\r\n\r\n" + message
-      );
-    }
-    __name(abortHandshake, "abortHandshake");
-    function abortHandshakeOrEmitwsClientError(server, req, socket, code, message) {
-      if (server.listenerCount("wsClientError")) {
-        const err = new Error(message);
-        Error.captureStackTrace(err, abortHandshakeOrEmitwsClientError);
-        server.emit("wsClientError", err, socket, req);
-      } else {
-        abortHandshake(socket, code, message);
-      }
-    }
-    __name(abortHandshakeOrEmitwsClientError, "abortHandshakeOrEmitwsClientError");
-  }
-});
-
-// ../node_modules/ws/wrapper.mjs
-var import_stream, import_receiver, import_sender, import_websocket, import_websocket_server;
-var init_wrapper = __esm({
-  "../node_modules/ws/wrapper.mjs"() {
-    import_stream = __toESM(require_stream(), 1);
-    import_receiver = __toESM(require_receiver(), 1);
-    import_sender = __toESM(require_sender(), 1);
-    import_websocket = __toESM(require_websocket(), 1);
-    import_websocket_server = __toESM(require_websocket_server(), 1);
-  }
-});
-
-// ../node_modules/get-port/index.js
-async function getPorts(options) {
-  let ports;
-  let exclude = /* @__PURE__ */ new Set();
-  if (options) {
-    if (options.port) {
-      ports = typeof options.port === "number" ? [options.port] : options.port;
-    }
-    if (options.exclude) {
-      const excludeIterable = options.exclude;
-      if (typeof excludeIterable[Symbol.iterator] !== "function") {
-        throw new TypeError("The `exclude` option must be an iterable.");
-      }
-      for (const element of excludeIterable) {
-        if (typeof element !== "number") {
-          throw new TypeError("Each item in the `exclude` option must be a number corresponding to the port you want excluded.");
-        }
-        if (!Number.isSafeInteger(element)) {
-          throw new TypeError(`Number ${element} in the exclude option is not a safe integer and can't be used`);
-        }
-      }
-      exclude = new Set(excludeIterable);
-    }
-  }
-  if (timeout === void 0) {
-    timeout = setTimeout(() => {
-      timeout = void 0;
-      lockedPorts.old = lockedPorts.young;
-      lockedPorts.young = /* @__PURE__ */ new Set();
-    }, releaseOldLockedPortsIntervalMs);
-    if (timeout.unref) {
-      timeout.unref();
-    }
-  }
-  const hosts = getLocalHosts();
-  for (const port of portCheckSequence(ports)) {
-    try {
-      if (exclude.has(port)) {
-        continue;
-      }
-      let availablePort = await getAvailablePort({ ...options, port }, hosts);
-      while (lockedPorts.old.has(availablePort) || lockedPorts.young.has(availablePort)) {
-        if (port !== 0) {
-          throw new Locked(port);
-        }
-        availablePort = await getAvailablePort({ ...options, port }, hosts);
-      }
-      lockedPorts.young.add(availablePort);
-      return availablePort;
-    } catch (error) {
-      if (!["EADDRINUSE", "EACCES"].includes(error.code) && !(error instanceof Locked)) {
-        throw error;
-      }
-    }
-  }
-  throw new Error("No available ports found");
-}
-var import_node_net, import_node_os, Locked, lockedPorts, releaseOldLockedPortsIntervalMs, timeout, getLocalHosts, checkAvailablePort, getAvailablePort, portCheckSequence;
-var init_get_port = __esm({
-  "../node_modules/get-port/index.js"() {
-    import_node_net = __toESM(require("node:net"), 1);
-    import_node_os = __toESM(require("node:os"), 1);
-    Locked = class extends Error {
-      static {
-        __name(this, "Locked");
-      }
-      constructor(port) {
-        super(`${port} is locked`);
-      }
-    };
-    lockedPorts = {
-      old: /* @__PURE__ */ new Set(),
-      young: /* @__PURE__ */ new Set()
-    };
-    releaseOldLockedPortsIntervalMs = 1e3 * 15;
-    getLocalHosts = /* @__PURE__ */ __name(() => {
-      const interfaces = import_node_os.default.networkInterfaces();
-      const results = /* @__PURE__ */ new Set([void 0, "0.0.0.0"]);
-      for (const _interface of Object.values(interfaces)) {
-        for (const config of _interface) {
-          results.add(config.address);
-        }
-      }
-      return results;
-    }, "getLocalHosts");
-    checkAvailablePort = /* @__PURE__ */ __name((options) => new Promise((resolve, reject) => {
-      const server = import_node_net.default.createServer();
-      server.unref();
-      server.on("error", reject);
-      server.listen(options, () => {
-        const { port } = server.address();
-        server.close(() => {
-          resolve(port);
-        });
-      });
-    }), "checkAvailablePort");
-    getAvailablePort = /* @__PURE__ */ __name(async (options, hosts) => {
-      if (options.host || options.port === 0) {
-        return checkAvailablePort(options);
-      }
-      for (const host of hosts) {
-        try {
-          await checkAvailablePort({ port: options.port, host });
-        } catch (error) {
-          if (!["EADDRNOTAVAIL", "EINVAL"].includes(error.code)) {
-            throw error;
-          }
-        }
-      }
-      return options.port;
-    }, "getAvailablePort");
-    portCheckSequence = /* @__PURE__ */ __name(function* (ports) {
-      if (ports) {
-        yield* ports;
-      }
-      yield 0;
-    }, "portCheckSequence");
-    __name(getPorts, "getPorts");
-  }
-});
-
-// ../node_modules/@winglibs/websockets/platform/sim/wb.js
-var wb_exports = {};
-__export(wb_exports, {
-  _startWebSocketApi: () => _startWebSocketApi
-});
-var http, _startWebSocketApi;
-var init_wb = __esm({
-  "../node_modules/@winglibs/websockets/platform/sim/wb.js"() {
-    init_wrapper();
-    init_get_port();
-    http = __toESM(require("http"));
-    _startWebSocketApi = /* @__PURE__ */ __name(async (onConnect, onDisconnect, onMessage) => {
-      const port = await getPorts();
-      const wss = new import_websocket_server.default({ port });
-      wss.on("connection", /* @__PURE__ */ __name(function connection(ws) {
-        ws.id = Date.now().toString().slice(-6);
-        ws.on("error", console.error);
-        ws.on("message", /* @__PURE__ */ __name(function message(data) {
-          onMessage(ws.id, data.toString("utf8"));
-        }, "message"));
-        ws.on("close", function() {
-          onDisconnect(ws.id);
-        });
-        onConnect(ws.id);
-      }, "connection"));
-      const server = http.createServer((req, res) => {
-        const body = [];
-        req.on("data", (chunk) => body.push(chunk)).on("end", () => {
-          try {
-            const jsonBody = JSON.parse(Buffer.concat(body).toString());
-            const { connectionId, message } = jsonBody;
-            if (!connectionId) {
-              console.error("No connectionId in body:", body);
-              res.statusCode = 400;
-              return res.end();
-            }
-            for (const ws of wss.clients) {
-              if (ws.id === connectionId) {
-                ws.send(message);
-              }
-            }
-            return res.end();
-          } catch (e) {
-            console.error("Failed to parse body as JSON:", body, e.message);
-            res.statusCode = 400;
-            return res.end();
-          }
-        });
-      });
-      return new Promise((ok, ko) => {
-        server.listen(() => {
-          return ok({
-            close: () => {
-              console.log("closing...");
-              wss.close();
-              server.close();
-            },
-            url: () => `ws://127.0.0.1:${port}`,
-            local: () => `http://127.0.0.1:${server.address().port}`
-          });
-        });
-      });
-    }, "_startWebSocketApi");
-  }
-});
-
-// target/test/main.wsim/.wing/inflight.WebSocket_sim-6.cjs
-var require_inflight_WebSocket_sim_6 = __commonJS({
-  "target/test/main.wsim/.wing/inflight.WebSocket_sim-6.cjs"(exports2, module2) {
-    "use strict";
-    var $helpers = require_helpers();
-    module2.exports = function({ $http_Util, $std_Json }) {
-      class WebSocket_sim {
-        static {
-          __name(this, "WebSocket_sim");
-        }
-        constructor({ $this_localStateKey, $this_state }) {
-          this.$this_localStateKey = $this_localStateKey;
-          this.$this_state = $this_state;
-        }
-        static async _startWebSocketApi(connectFn, disconnectFn, onmessageFn) {
-          return (init_wb(), __toCommonJS(wb_exports))["_startWebSocketApi"](connectFn, disconnectFn, onmessageFn);
-        }
-        async sendMessage(connectionId, message) {
-          const localUrl = ((arg) => {
-            if (typeof arg !== "string") {
-              throw new Error("unable to parse " + typeof arg + " " + arg + " as a string");
-            }
-            ;
-            return JSON.parse(JSON.stringify(arg));
-          })(await this.$this_state.get(this.$this_localStateKey));
-          await $http_Util.post(localUrl, { body: ((json, opts) => {
-            return JSON.stringify(json, null, opts?.indent);
-          })({ "connectionId": connectionId, "message": message }) });
-        }
-      }
-      return WebSocket_sim;
-    };
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/package.json
-var require_package = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/package.json"(exports2, module2) {
-    module2.exports = {
-      name: "@winglang/sdk",
-      repository: {
-        type: "git",
-        url: "https://github.com/winglang/wing.git",
-        directory: "libs/wingsdk"
-      },
-      author: {
-        name: "Wing Cloud",
-        email: "ping@wing.cloud",
-        organization: true
-      },
-      peerDependencies: {
-        constructs: "^10.3"
-      },
-      dependencies: {
-        "@aws-sdk/client-cloudwatch-logs": "3.577.0",
-        "@aws-sdk/client-dynamodb": "3.577.0",
-        "@aws-sdk/client-elasticache": "3.577.0",
-        "@aws-sdk/client-lambda": "3.577.0",
-        "@aws-sdk/client-s3": "3.577.0",
-        "@aws-sdk/client-secrets-manager": "3.577.0",
-        "@aws-sdk/client-sns": "3.577.0",
-        "@aws-sdk/client-sqs": "3.577.0",
-        "@aws-sdk/s3-request-presigner": "3.577.0",
-        "@aws-sdk/types": "3.449.0",
-        "@aws-sdk/util-dynamodb": "3.577.0",
-        "@azure/core-paging": "^1.5.0",
-        "@azure/data-tables": "13.2.2",
-        "@azure/identity": "4.0.1",
-        "@azure/storage-blob": "12.14.0",
-        "@google-cloud/datastore": "8.4.0",
-        "@google-cloud/storage": "6.9.5",
-        "@smithy/util-stream": "2.0.17",
-        "@smithy/util-utf8": "2.0.0",
-        "@types/aws-lambda": "^8.10.119",
-        "@winglang/wingtunnels": "0.75.4",
-        ajv: "^8.12.0",
-        cdktf: "0.20.3",
-        constructs: "^10.3",
-        "cron-parser": "^4.9.0",
-        "cron-validator": "^1.3.1",
-        express: "^4.19.2",
-        glob: "^8.1.0",
-        "google-auth-library": "^8.9.0",
-        ioredis: "^5.3.2",
-        jiti: "^1.21.0",
-        mime: "^3.0.0",
-        "mime-types": "^2.1.35",
-        nanoid: "^3.3.6",
-        protobufjs: "7.2.5",
-        "safe-stable-stringify": "^2.4.3",
-        stacktracey: "^2.1.8",
-        toml: "^3.0.0",
-        ulid: "^2.3.0",
-        uuid: "^8.3.2",
-        vlq: "^2.0.4",
-        yaml: "^2.3.2"
-      },
-      bundledDependencies: [
-        "@aws-sdk/client-cloudwatch-logs",
-        "@aws-sdk/client-dynamodb",
-        "@aws-sdk/client-elasticache",
-        "@aws-sdk/client-lambda",
-        "@aws-sdk/client-s3",
-        "@aws-sdk/client-secrets-manager",
-        "@aws-sdk/client-sns",
-        "@aws-sdk/client-sqs",
-        "@aws-sdk/s3-request-presigner",
-        "@aws-sdk/types",
-        "@aws-sdk/util-dynamodb",
-        "@azure/core-paging",
-        "@azure/data-tables",
-        "@azure/identity",
-        "@azure/storage-blob",
-        "@google-cloud/datastore",
-        "@google-cloud/storage",
-        "@smithy/util-stream",
-        "@smithy/util-utf8",
-        "@types/aws-lambda",
-        "@winglang/wingtunnels",
-        "ajv",
-        "cdktf",
-        "cron-parser",
-        "cron-validator",
-        "express",
-        "glob",
-        "google-auth-library",
-        "ioredis",
-        "jiti",
-        "mime",
-        "mime-types",
-        "nanoid",
-        "protobufjs",
-        "safe-stable-stringify",
-        "stacktracey",
-        "toml",
-        "ulid",
-        "uuid",
-        "vlq",
-        "yaml"
-      ],
-      engines: {
-        node: ">= 20.0.0"
-      },
-      main: "lib/index.js",
-      license: "MIT",
-      version: "0.75.4",
-      types: "lib/index.d.ts",
-      stability: "experimental",
-      jsii: {
-        outdir: "dist",
-        targets: {},
-        tsc: {
-          outDir: "lib",
-          rootDir: "src"
-        }
-      },
-      optionalDependencies: {
-        esbuild: "^0.19.12"
-      },
-      files: [
-        "lib",
-        ".jsii",
-        "API.md",
-        "patches"
-      ],
-      "//": '~~ Generated by projen. To modify, edit .projenrc.ts and run "npx projen".',
-      scripts: {
-        "api-check": "pnpm exec projen api-check",
-        "api-check:watch": "pnpm exec projen api-check:watch",
-        build: "pnpm exec projen build",
-        bump: "pnpm exec projen bump",
-        clobber: "pnpm exec projen clobber",
-        compat: "pnpm exec projen compat",
-        compile: "pnpm exec projen compile",
-        default: "pnpm exec projen default",
-        docgen: "pnpm exec projen docgen",
-        eject: "pnpm exec projen eject",
-        eslint: "pnpm exec projen eslint",
-        package: "pnpm exec projen package",
-        "package-all": "pnpm exec projen package-all",
-        "package:js": "pnpm exec projen package:js",
-        "post-compile": "pnpm exec projen post-compile",
-        "pre-compile": "pnpm exec projen pre-compile",
-        release: "pnpm exec projen release",
-        test: "pnpm exec projen test",
-        "test:watch": "pnpm exec projen test:watch",
-        unbump: "pnpm exec projen unbump",
-        watch: "pnpm exec projen watch",
-        projen: "pnpm exec projen"
-      }
-    };
-  }
-});
-
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/constants.js
-var require_constants2 = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/constants.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.fqnForType = exports2.SDK_PACKAGE_NAME = exports2.SDK_VERSION = void 0;
-    var PKG = require_package();
-    exports2.SDK_VERSION = PKG.version;
-    exports2.SDK_PACKAGE_NAME = PKG.name;
-    if (!exports2.SDK_VERSION) {
-      throw new Error("SDK_VERSION is not defined");
-    }
-    if (!exports2.SDK_PACKAGE_NAME) {
-      throw new Error("SDK_PACKAGE_NAME is not defined");
-    }
-    function fqnForType(type) {
-      return `${exports2.SDK_PACKAGE_NAME}.${type}`;
-    }
-    __name(fqnForType, "fqnForType");
-    exports2.fqnForType = fqnForType;
   }
 });
 
@@ -6328,11 +782,11 @@ var require_code = __commonJS({
       return typeof x == "number" || typeof x == "boolean" || x === null ? x : safeStringify(Array.isArray(x) ? x.join(",") : x);
     }
     __name(interpolate, "interpolate");
-    function stringify(x) {
+    function stringify2(x) {
       return new _Code(safeStringify(x));
     }
-    __name(stringify, "stringify");
-    exports2.stringify = stringify;
+    __name(stringify2, "stringify");
+    exports2.stringify = stringify2;
     function safeStringify(x) {
       return JSON.stringify(x).replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
     }
@@ -7534,7 +1988,7 @@ var require_names = __commonJS({
 });
 
 // ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/ajv/dist/compile/errors.js
-var require_errors2 = __commonJS({
+var require_errors = __commonJS({
   "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/ajv/dist/compile/errors.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -7671,7 +2125,7 @@ var require_boolSchema = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.boolOrEmptySchema = exports2.topBoolOrEmptySchema = void 0;
-    var errors_1 = require_errors2();
+    var errors_1 = require_errors();
     var codegen_1 = require_codegen();
     var names_1 = require_names();
     var boolError = {
@@ -7786,7 +2240,7 @@ var require_dataType = __commonJS({
     exports2.reportTypeError = exports2.checkDataTypes = exports2.checkDataType = exports2.coerceAndCheckDataType = exports2.getJSONTypes = exports2.getSchemaTypes = exports2.DataType = void 0;
     var rules_1 = require_rules();
     var applicability_1 = require_applicability();
-    var errors_1 = require_errors2();
+    var errors_1 = require_errors();
     var codegen_1 = require_codegen();
     var util_1 = require_util();
     var DataType;
@@ -8169,7 +2623,7 @@ var require_keyword = __commonJS({
     var codegen_1 = require_codegen();
     var names_1 = require_names();
     var code_1 = require_code2();
-    var errors_1 = require_errors2();
+    var errors_1 = require_errors();
     function macroKeywordCode(cxt, def) {
       const { gen, keyword, schema, parentSchema, it } = cxt;
       const macroSchema = def.macro.call(it.self, schema, parentSchema, it);
@@ -8192,8 +2646,8 @@ var require_keyword = __commonJS({
       var _a;
       const { gen, keyword, schema, parentSchema, $data, it } = cxt;
       checkAsyncKeyword(it, def);
-      const validate = !$data && def.compile ? def.compile.call(it.self, schema, parentSchema, it) : def.validate;
-      const validateRef = useKeyword(gen, keyword, validate);
+      const validate2 = !$data && def.compile ? def.compile.call(it.self, schema, parentSchema, it) : def.validate;
+      const validateRef = useKeyword(gen, keyword, validate2);
       const valid = gen.let("valid");
       cxt.block$data(valid, validateKeyword);
       cxt.ok((_a = def.valid) !== null && _a !== void 0 ? _a : valid);
@@ -8698,7 +3152,7 @@ var require_validate = __commonJS({
     var names_1 = require_names();
     var resolve_1 = require_resolve();
     var util_1 = require_util();
-    var errors_1 = require_errors2();
+    var errors_1 = require_errors();
     function validateFunctionCode(it) {
       if (isSchemaObj(it)) {
         checkKeywords(it);
@@ -9353,28 +3807,28 @@ var require_compile = __commonJS({
         if (this.opts.code.process)
           sourceCode = this.opts.code.process(sourceCode, sch);
         const makeValidate = new Function(`${names_1.default.self}`, `${names_1.default.scope}`, sourceCode);
-        const validate = makeValidate(this, this.scope.get());
-        this.scope.value(validateName, { ref: validate });
-        validate.errors = null;
-        validate.schema = sch.schema;
-        validate.schemaEnv = sch;
+        const validate2 = makeValidate(this, this.scope.get());
+        this.scope.value(validateName, { ref: validate2 });
+        validate2.errors = null;
+        validate2.schema = sch.schema;
+        validate2.schemaEnv = sch;
         if (sch.$async)
-          validate.$async = true;
+          validate2.$async = true;
         if (this.opts.code.source === true) {
-          validate.source = { validateName, validateCode, scopeValues: gen._values };
+          validate2.source = { validateName, validateCode, scopeValues: gen._values };
         }
         if (this.opts.unevaluated) {
           const { props, items } = schemaCxt;
-          validate.evaluated = {
+          validate2.evaluated = {
             props: props instanceof codegen_1.Name ? void 0 : props,
             items: items instanceof codegen_1.Name ? void 0 : items,
             dynamicProps: props instanceof codegen_1.Name,
             dynamicItems: items instanceof codegen_1.Name
           };
-          if (validate.source)
-            validate.source.evaluated = (0, codegen_1.stringify)(validate.evaluated);
+          if (validate2.source)
+            validate2.source.evaluated = (0, codegen_1.stringify)(validate2.evaluated);
         }
-        sch.validate = validate;
+        sch.validate = validate2;
         return sch;
       } catch (e) {
         delete sch.validate;
@@ -10076,7 +4530,7 @@ var require_uri_all = __commonJS({
       __name(_normalizeIPv6, "_normalizeIPv6");
       var URI_PARSE = /^(?:([^:\/?#]+):)?(?:\/\/((?:([^\/?#@]*)@)?(\[[^\/?#\]]+\]|[^\/?#:]*)(?:\:(\d*))?))?([^?#]*)(?:\?([^#]*))?(?:#((?:.|\n|\r)*))?/i;
       var NO_MATCH_IS_UNDEFINED = "".match(/(){0}/)[1] === void 0;
-      function parse(uriString) {
+      function parse2(uriString) {
         var options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
         var components = {};
         var protocol = options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
@@ -10143,7 +4597,7 @@ var require_uri_all = __commonJS({
         }
         return components;
       }
-      __name(parse, "parse");
+      __name(parse2, "parse");
       function _recomposeAuthority(components, options) {
         var protocol = options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
         var uriTokens = [];
@@ -10251,8 +4705,8 @@ var require_uri_all = __commonJS({
         var skipNormalization = arguments[3];
         var target = {};
         if (!skipNormalization) {
-          base2 = parse(serialize(base2, options), options);
-          relative = parse(serialize(relative, options), options);
+          base2 = parse2(serialize(base2, options), options);
+          relative = parse2(serialize(relative, options), options);
         }
         options = options || {};
         if (!options.tolerant && relative.scheme) {
@@ -10304,26 +4758,26 @@ var require_uri_all = __commonJS({
       __name(resolveComponents, "resolveComponents");
       function resolve(baseURI, relativeURI, options) {
         var schemelessOptions = assign2({ scheme: "null" }, options);
-        return serialize(resolveComponents(parse(baseURI, schemelessOptions), parse(relativeURI, schemelessOptions), schemelessOptions, true), schemelessOptions);
+        return serialize(resolveComponents(parse2(baseURI, schemelessOptions), parse2(relativeURI, schemelessOptions), schemelessOptions, true), schemelessOptions);
       }
       __name(resolve, "resolve");
       function normalize(uri, options) {
         if (typeof uri === "string") {
-          uri = serialize(parse(uri, options), options);
+          uri = serialize(parse2(uri, options), options);
         } else if (typeOf(uri) === "object") {
-          uri = parse(serialize(uri, options), options);
+          uri = parse2(serialize(uri, options), options);
         }
         return uri;
       }
       __name(normalize, "normalize");
       function equal(uriA, uriB, options) {
         if (typeof uriA === "string") {
-          uriA = serialize(parse(uriA, options), options);
+          uriA = serialize(parse2(uriA, options), options);
         } else if (typeOf(uriA) === "object") {
           uriA = serialize(uriA, options);
         }
         if (typeof uriB === "string") {
-          uriB = serialize(parse(uriB, options), options);
+          uriB = serialize(parse2(uriB, options), options);
         } else if (typeOf(uriB) === "object") {
           uriB = serialize(uriB, options);
         }
@@ -10341,7 +4795,7 @@ var require_uri_all = __commonJS({
       var handler = {
         scheme: "http",
         domainHost: true,
-        parse: /* @__PURE__ */ __name(function parse2(components, options) {
+        parse: /* @__PURE__ */ __name(function parse3(components, options) {
           if (!components.host) {
             components.error = components.error || "HTTP URIs must have a host.";
           }
@@ -10371,7 +4825,7 @@ var require_uri_all = __commonJS({
       var handler$2 = {
         scheme: "ws",
         domainHost: true,
-        parse: /* @__PURE__ */ __name(function parse2(components, options) {
+        parse: /* @__PURE__ */ __name(function parse3(components, options) {
           var wsComponents = components;
           wsComponents.secure = isSecure(wsComponents);
           wsComponents.resourceName = (wsComponents.path || "/") + (wsComponents.query ? "?" + wsComponents.query : "");
@@ -10548,7 +5002,7 @@ var require_uri_all = __commonJS({
       var UUID = /^[0-9A-Fa-f]{8}(?:\-[0-9A-Fa-f]{4}){3}\-[0-9A-Fa-f]{12}$/;
       var handler$6 = {
         scheme: "urn:uuid",
-        parse: /* @__PURE__ */ __name(function parse2(urnComponents, options) {
+        parse: /* @__PURE__ */ __name(function parse3(urnComponents, options) {
           var uuidComponents = urnComponents;
           uuidComponents.uuid = uuidComponents.nss;
           uuidComponents.nss = void 0;
@@ -10573,7 +5027,7 @@ var require_uri_all = __commonJS({
       exports3.SCHEMES = SCHEMES;
       exports3.pctEncChar = pctEncChar;
       exports3.pctDecChars = pctDecChars;
-      exports3.parse = parse;
+      exports3.parse = parse2;
       exports3.removeDotSegments = removeDotSegments;
       exports3.serialize = serialize;
       exports3.resolveComponents = resolveComponents;
@@ -11852,7 +6306,7 @@ var require_enum = __commonJS({
 });
 
 // ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/ajv/dist/vocabularies/validation/index.js
-var require_validation2 = __commonJS({
+var require_validation = __commonJS({
   "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/ajv/dist/vocabularies/validation/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -12923,7 +7377,7 @@ var require_format2 = __commonJS({
 });
 
 // ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/ajv/dist/vocabularies/metadata.js
-var require_metadata2 = __commonJS({
+var require_metadata = __commonJS({
   "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/ajv/dist/vocabularies/metadata.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -12951,10 +7405,10 @@ var require_draft7 = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var core_1 = require_core2();
-    var validation_1 = require_validation2();
+    var validation_1 = require_validation();
     var applicator_1 = require_applicator();
     var format_1 = require_format2();
-    var metadata_1 = require_metadata2();
+    var metadata_1 = require_metadata();
     var draft7Vocabularies = [
       core_1.default,
       validation_1.default,
@@ -12968,7 +7422,7 @@ var require_draft7 = __commonJS({
 });
 
 // ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/ajv/dist/vocabularies/discriminator/types.js
-var require_types2 = __commonJS({
+var require_types = __commonJS({
   "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/ajv/dist/vocabularies/discriminator/types.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -12987,7 +7441,7 @@ var require_discriminator = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var codegen_1 = require_codegen();
-    var types_1 = require_types2();
+    var types_1 = require_types();
     var compile_1 = require_compile();
     var util_1 = require_util();
     var error = {
@@ -13316,6 +7770,836 @@ var require_ajv = __commonJS({
   }
 });
 
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/dependency.js
+var require_dependency = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/dependency.js"(exports2) {
+    "use strict";
+    var _a;
+    var _b;
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.Dependable = exports2.DependencyGroup = void 0;
+    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
+    var DependencyGroup = class {
+      static {
+        __name(this, "DependencyGroup");
+      }
+      constructor(...deps) {
+        this._deps = new Array();
+        const self = this;
+        Dependable.implement(this, {
+          get dependencyRoots() {
+            const result = new Array();
+            for (const d of self._deps) {
+              result.push(...Dependable.of(d).dependencyRoots);
+            }
+            return result;
+          }
+        });
+        this.add(...deps);
+      }
+      /**
+       * Add a construct to the dependency roots
+       */
+      add(...scopes) {
+        this._deps.push(...scopes);
+      }
+    };
+    _a = JSII_RTTI_SYMBOL_1;
+    DependencyGroup[_a] = { fqn: "constructs.DependencyGroup", version: "10.3.0" };
+    exports2.DependencyGroup = DependencyGroup;
+    var DEPENDABLE_SYMBOL = Symbol.for("@aws-cdk/core.DependableTrait");
+    var Dependable = class {
+      static {
+        __name(this, "Dependable");
+      }
+      /**
+       * Turn any object into an IDependable.
+       */
+      static implement(instance, trait) {
+        instance[DEPENDABLE_SYMBOL] = trait;
+      }
+      /**
+       * Return the matching Dependable for the given class instance.
+       */
+      static of(instance) {
+        const ret = instance[DEPENDABLE_SYMBOL];
+        if (!ret) {
+          throw new Error(`${instance} does not implement IDependable. Use "Dependable.implement()" to implement`);
+        }
+        return ret;
+      }
+      /**
+       * Return the matching Dependable for the given class instance.
+       * @deprecated use `of`
+       */
+      static get(instance) {
+        return this.of(instance);
+      }
+    };
+    _b = JSII_RTTI_SYMBOL_1;
+    Dependable[_b] = { fqn: "constructs.Dependable", version: "10.3.0" };
+    exports2.Dependable = Dependable;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/private/stack-trace.js
+var require_stack_trace = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/private/stack-trace.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.captureStackTrace = void 0;
+    function captureStackTrace(below) {
+      below = below || captureStackTrace;
+      const object = { stack: "" };
+      const previousLimit = Error.stackTraceLimit;
+      try {
+        Error.stackTraceLimit = Number.MAX_SAFE_INTEGER;
+        Error.captureStackTrace(object, below);
+      } finally {
+        Error.stackTraceLimit = previousLimit;
+      }
+      if (!object.stack) {
+        return [];
+      }
+      return object.stack.split("\n").slice(1).map((s) => s.replace(/^\s*at\s+/, ""));
+    }
+    __name(captureStackTrace, "captureStackTrace");
+    exports2.captureStackTrace = captureStackTrace;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/private/uniqueid.js
+var require_uniqueid = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/private/uniqueid.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.addressOf = void 0;
+    var crypto4 = require("crypto");
+    var HIDDEN_ID = "Default";
+    function addressOf(components) {
+      const hash = crypto4.createHash("sha1");
+      for (const c of components) {
+        if (c === HIDDEN_ID) {
+          continue;
+        }
+        hash.update(c);
+        hash.update("\n");
+      }
+      return "c8" + hash.digest("hex");
+    }
+    __name(addressOf, "addressOf");
+    exports2.addressOf = addressOf;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/construct.js
+var require_construct = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/construct.js"(exports2) {
+    "use strict";
+    var _a;
+    var _b;
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.ConstructOrder = exports2.Construct = exports2.Node = void 0;
+    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
+    var dependency_1 = require_dependency();
+    var stack_trace_1 = require_stack_trace();
+    var uniqueid_1 = require_uniqueid();
+    var CONSTRUCT_SYM = Symbol.for("constructs.Construct");
+    var Node2 = class _Node {
+      static {
+        __name(this, "Node");
+      }
+      /**
+       * Returns the node associated with a construct.
+       * @param construct the construct
+       *
+       * @deprecated use `construct.node` instead
+       */
+      static of(construct2) {
+        return construct2.node;
+      }
+      constructor(host, scope, id) {
+        this.host = host;
+        this._locked = false;
+        this._children = {};
+        this._context = {};
+        this._metadata = new Array();
+        this._dependencies = /* @__PURE__ */ new Set();
+        this._validations = new Array();
+        id = id ?? "";
+        this.id = sanitizeId(id);
+        this.scope = scope;
+        if (scope && !this.id) {
+          throw new Error("Only root constructs may have an empty ID");
+        }
+        scope?.node.addChild(host, this.id);
+      }
+      /**
+       * The full, absolute path of this construct in the tree.
+       *
+       * Components are separated by '/'.
+       */
+      get path() {
+        const components = [];
+        for (const scope of this.scopes) {
+          if (scope.node.id) {
+            components.push(scope.node.id);
+          }
+        }
+        return components.join(_Node.PATH_SEP);
+      }
+      /**
+       * Returns an opaque tree-unique address for this construct.
+       *
+       * Addresses are 42 characters hexadecimal strings. They begin with "c8"
+       * followed by 40 lowercase hexadecimal characters (0-9a-f).
+       *
+       * Addresses are calculated using a SHA-1 of the components of the construct
+       * path.
+       *
+       * To enable refactorings of construct trees, constructs with the ID `Default`
+       * will be excluded from the calculation. In those cases constructs in the
+       * same tree may have the same addreess.
+       *
+       * @example c83a2846e506bcc5f10682b564084bca2d275709ee
+       */
+      get addr() {
+        if (!this._addr) {
+          this._addr = (0, uniqueid_1.addressOf)(this.scopes.map((c) => c.node.id));
+        }
+        return this._addr;
+      }
+      /**
+       * Return a direct child by id, or undefined
+       *
+       * @param id Identifier of direct child
+       * @returns the child if found, or undefined
+       */
+      tryFindChild(id) {
+        return this._children[sanitizeId(id)];
+      }
+      /**
+       * Return a direct child by id
+       *
+       * Throws an error if the child is not found.
+       *
+       * @param id Identifier of direct child
+       * @returns Child with the given id.
+       */
+      findChild(id) {
+        const ret = this.tryFindChild(id);
+        if (!ret) {
+          throw new Error(`No child with id: '${id}'`);
+        }
+        return ret;
+      }
+      /**
+       * Returns the child construct that has the id `Default` or `Resource"`.
+       * This is usually the construct that provides the bulk of the underlying functionality.
+       * Useful for modifications of the underlying construct that are not available at the higher levels.
+       *
+       * @throws if there is more than one child
+       * @returns a construct or undefined if there is no default child
+       */
+      get defaultChild() {
+        if (this._defaultChild !== void 0) {
+          return this._defaultChild;
+        }
+        const resourceChild = this.tryFindChild("Resource");
+        const defaultChild = this.tryFindChild("Default");
+        if (resourceChild && defaultChild) {
+          throw new Error(`Cannot determine default child for ${this.path}. There is both a child with id "Resource" and id "Default"`);
+        }
+        return defaultChild || resourceChild;
+      }
+      /**
+       * Override the defaultChild property.
+       *
+       * This should only be used in the cases where the correct
+       * default child is not named 'Resource' or 'Default' as it
+       * should be.
+       *
+       * If you set this to undefined, the default behavior of finding
+       * the child named 'Resource' or 'Default' will be used.
+       */
+      set defaultChild(value) {
+        this._defaultChild = value;
+      }
+      /**
+       * All direct children of this construct.
+       */
+      get children() {
+        return Object.values(this._children);
+      }
+      /**
+       * Return this construct and all of its children in the given order
+       */
+      findAll(order = ConstructOrder.PREORDER) {
+        const ret = new Array();
+        visit(this.host);
+        return ret;
+        function visit(c) {
+          if (order === ConstructOrder.PREORDER) {
+            ret.push(c);
+          }
+          for (const child of c.node.children) {
+            visit(child);
+          }
+          if (order === ConstructOrder.POSTORDER) {
+            ret.push(c);
+          }
+        }
+        __name(visit, "visit");
+      }
+      /**
+       * This can be used to set contextual values.
+       * Context must be set before any children are added, since children may consult context info during construction.
+       * If the key already exists, it will be overridden.
+       * @param key The context key
+       * @param value The context value
+       */
+      setContext(key, value) {
+        if (this.children.length > 0) {
+          const names = this.children.map((c) => c.node.id);
+          throw new Error("Cannot set context after children have been added: " + names.join(","));
+        }
+        this._context[key] = value;
+      }
+      /**
+       * Retrieves a value from tree context if present. Otherwise, would throw an error.
+       *
+       * Context is usually initialized at the root, but can be overridden at any point in the tree.
+       *
+       * @param key The context key
+       * @returns The context value or throws error if there is no context value for this key
+       */
+      getContext(key) {
+        const value = this._context[key];
+        if (value !== void 0) {
+          return value;
+        }
+        if (value === void 0 && !this.scope?.node) {
+          throw new Error(`No context value present for ${key} key`);
+        }
+        return this.scope && this.scope.node.getContext(key);
+      }
+      /**
+       * Retrieves the all context of a node from tree context.
+       *
+       * Context is usually initialized at the root, but can be overridden at any point in the tree.
+       *
+       * @param defaults Any keys to override the retrieved context
+       * @returns The context object or an empty object if there is discovered context
+       */
+      getAllContext(defaults) {
+        if (typeof defaults === "undefined") {
+          defaults = {};
+        }
+        if (this.scope === void 0) {
+          return defaults;
+        }
+        const value = { ...this._context, ...defaults };
+        return this.scope && this.scope.node.getAllContext(value);
+      }
+      /**
+       * Retrieves a value from tree context.
+       *
+       * Context is usually initialized at the root, but can be overridden at any point in the tree.
+       *
+       * @param key The context key
+       * @returns The context value or `undefined` if there is no context value for this key.
+       */
+      tryGetContext(key) {
+        const value = this._context[key];
+        if (value !== void 0) {
+          return value;
+        }
+        return this.scope && this.scope.node.tryGetContext(key);
+      }
+      /**
+       * An immutable array of metadata objects associated with this construct.
+       * This can be used, for example, to implement support for deprecation notices, source mapping, etc.
+       */
+      get metadata() {
+        return [...this._metadata];
+      }
+      /**
+       * Adds a metadata entry to this construct.
+       * Entries are arbitrary values and will also include a stack trace to allow tracing back to
+       * the code location for when the entry was added. It can be used, for example, to include source
+       * mapping in CloudFormation templates to improve diagnostics.
+       *
+       * @param type a string denoting the type of metadata
+       * @param data the value of the metadata (can be a Token). If null/undefined, metadata will not be added.
+       * @param options options
+       */
+      addMetadata(type, data, options = {}) {
+        if (data == null) {
+          return;
+        }
+        const shouldTrace = options.stackTrace ?? false;
+        const trace = shouldTrace ? (0, stack_trace_1.captureStackTrace)(options.traceFromFunction ?? this.addMetadata) : void 0;
+        this._metadata.push({ type, data, trace });
+      }
+      /**
+       * All parent scopes of this construct.
+       *
+       * @returns a list of parent scopes. The last element in the list will always
+       * be the current construct and the first element will be the root of the
+       * tree.
+       */
+      get scopes() {
+        const ret = new Array();
+        let curr = this.host;
+        while (curr) {
+          ret.unshift(curr);
+          curr = curr.node.scope;
+        }
+        return ret;
+      }
+      /**
+       * Returns the root of the construct tree.
+       * @returns The root of the construct tree.
+       */
+      get root() {
+        return this.scopes[0];
+      }
+      /**
+       * Returns true if this construct or the scopes in which it is defined are
+       * locked.
+       */
+      get locked() {
+        if (this._locked) {
+          return true;
+        }
+        if (this.scope && this.scope.node.locked) {
+          return true;
+        }
+        return false;
+      }
+      /**
+       * Add an ordering dependency on another construct.
+       *
+       * An `IDependable`
+       */
+      addDependency(...deps) {
+        for (const d of deps) {
+          this._dependencies.add(d);
+        }
+      }
+      /**
+       * Return all dependencies registered on this node (non-recursive).
+       */
+      get dependencies() {
+        const result = new Array();
+        for (const dep of this._dependencies) {
+          for (const root of dependency_1.Dependable.of(dep).dependencyRoots) {
+            result.push(root);
+          }
+        }
+        return result;
+      }
+      /**
+       * Remove the child with the given name, if present.
+       *
+       * @returns Whether a child with the given name was deleted.
+       * @experimental
+       */
+      tryRemoveChild(childName) {
+        if (!(childName in this._children)) {
+          return false;
+        }
+        delete this._children[childName];
+        return true;
+      }
+      /**
+       * Adds a validation to this construct.
+       *
+       * When `node.validate()` is called, the `validate()` method will be called on
+       * all validations and all errors will be returned.
+       *
+       * @param validation The validation object
+       */
+      addValidation(validation) {
+        this._validations.push(validation);
+      }
+      /**
+       * Validates this construct.
+       *
+       * Invokes the `validate()` method on all validations added through
+       * `addValidation()`.
+       *
+       * @returns an array of validation error messages associated with this
+       * construct.
+       */
+      validate() {
+        const deprecated = ["validate", "onValidate", "synthesize", "onSynthesize", "prepare", "onPrepare"];
+        for (const method of deprecated) {
+          if (typeof this.host[method] === "function") {
+            throw new Error(`the construct "${this.path}" has a "${method}()" method which is no longer supported. Use "construct.node.addValidation()" to add validations to a construct`);
+          }
+        }
+        const errors = new Array();
+        for (const v of this._validations) {
+          errors.push(...v.validate());
+        }
+        return errors;
+      }
+      /**
+       * Locks this construct from allowing more children to be added. After this
+       * call, no more children can be added to this construct or to any children.
+       */
+      lock() {
+        this._locked = true;
+      }
+      /**
+       * Adds a child construct to this node.
+       *
+       * @param child The child construct
+       * @param childName The type name of the child construct.
+       * @returns The resolved path part name of the child
+       */
+      addChild(child, childName) {
+        if (this.locked) {
+          if (!this.path) {
+            throw new Error("Cannot add children during synthesis");
+          }
+          throw new Error(`Cannot add children to "${this.path}" during synthesis`);
+        }
+        if (this._children[childName]) {
+          const name = this.id ?? "";
+          const typeName = this.host.constructor.name;
+          throw new Error(`There is already a Construct with name '${childName}' in ${typeName}${name.length > 0 ? " [" + name + "]" : ""}`);
+        }
+        this._children[childName] = child;
+      }
+    };
+    _a = JSII_RTTI_SYMBOL_1;
+    Node2[_a] = { fqn: "constructs.Node", version: "10.3.0" };
+    Node2.PATH_SEP = "/";
+    exports2.Node = Node2;
+    var Construct = class {
+      static {
+        __name(this, "Construct");
+      }
+      /**
+       * Checks if `x` is a construct.
+       *
+       * Use this method instead of `instanceof` to properly detect `Construct`
+       * instances, even when the construct library is symlinked.
+       *
+       * Explanation: in JavaScript, multiple copies of the `constructs` library on
+       * disk are seen as independent, completely different libraries. As a
+       * consequence, the class `Construct` in each copy of the `constructs` library
+       * is seen as a different class, and an instance of one class will not test as
+       * `instanceof` the other class. `npm install` will not create installations
+       * like this, but users may manually symlink construct libraries together or
+       * use a monorepo tool: in those cases, multiple copies of the `constructs`
+       * library can be accidentally installed, and `instanceof` will behave
+       * unpredictably. It is safest to avoid using `instanceof`, and using
+       * this type-testing method instead.
+       *
+       * @returns true if `x` is an object created from a class which extends `Construct`.
+       * @param x Any object
+       */
+      static isConstruct(x) {
+        return x && typeof x === "object" && x[CONSTRUCT_SYM];
+      }
+      /**
+       * Creates a new construct node.
+       *
+       * @param scope The scope in which to define this construct
+       * @param id The scoped construct ID. Must be unique amongst siblings. If
+       * the ID includes a path separator (`/`), then it will be replaced by double
+       * dash `--`.
+       */
+      constructor(scope, id) {
+        this.node = new Node2(this, scope, id);
+        dependency_1.Dependable.implement(this, {
+          dependencyRoots: [this]
+        });
+      }
+      /**
+       * Returns a string representation of this construct.
+       */
+      toString() {
+        return this.node.path || "<root>";
+      }
+    };
+    _b = JSII_RTTI_SYMBOL_1;
+    Construct[_b] = { fqn: "constructs.Construct", version: "10.3.0" };
+    exports2.Construct = Construct;
+    var ConstructOrder;
+    (function(ConstructOrder2) {
+      ConstructOrder2[ConstructOrder2["PREORDER"] = 0] = "PREORDER";
+      ConstructOrder2[ConstructOrder2["POSTORDER"] = 1] = "POSTORDER";
+    })(ConstructOrder = exports2.ConstructOrder || (exports2.ConstructOrder = {}));
+    var PATH_SEP_REGEX = new RegExp(`${Node2.PATH_SEP}`, "g");
+    function sanitizeId(id) {
+      return id.replace(PATH_SEP_REGEX, "--");
+    }
+    __name(sanitizeId, "sanitizeId");
+    Object.defineProperty(Construct.prototype, CONSTRUCT_SYM, {
+      value: true,
+      enumerable: false,
+      writable: false
+    });
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/metadata.js
+var require_metadata2 = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/metadata.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/index.js
+var require_lib = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/constructs/lib/index.js"(exports2) {
+    "use strict";
+    var __createBinding2 = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      var desc = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function() {
+          return m[k];
+        } };
+      }
+      Object.defineProperty(o, k2, desc);
+    } : function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      o[k2] = m[k];
+    });
+    var __exportStar = exports2 && exports2.__exportStar || function(m, exports3) {
+      for (var p in m)
+        if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports3, p))
+          __createBinding2(exports3, m, p);
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    __exportStar(require_construct(), exports2);
+    __exportStar(require_metadata2(), exports2);
+    __exportStar(require_dependency(), exports2);
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/errors.js
+var require_errors2 = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/errors.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.AbstractMemberError = exports2.NotImplementedError = void 0;
+    var NotImplementedError = class extends Error {
+      static {
+        __name(this, "NotImplementedError");
+      }
+      constructor(message, options) {
+        super(`${message}${options?.issue ? `
+For more information see: ${options.issue}.
+Contributions welcome \u2764\uFE0F` : ""}`);
+        this.name = "NotImplementedError";
+        this.resource = options?.resource;
+        this.operation = options?.operation;
+      }
+    };
+    exports2.NotImplementedError = NotImplementedError;
+    var AbstractMemberError = class extends Error {
+      static {
+        __name(this, "AbstractMemberError");
+      }
+      constructor() {
+        super("This member is abstract and must be implemented in a subclass.");
+      }
+    };
+    exports2.AbstractMemberError = AbstractMemberError;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/package.json
+var require_package = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/package.json"(exports2, module2) {
+    module2.exports = {
+      name: "@winglang/sdk",
+      repository: {
+        type: "git",
+        url: "https://github.com/winglang/wing.git",
+        directory: "libs/wingsdk"
+      },
+      author: {
+        name: "Wing Cloud",
+        email: "ping@wing.cloud",
+        organization: true
+      },
+      peerDependencies: {
+        constructs: "^10.3"
+      },
+      dependencies: {
+        "@aws-sdk/client-cloudwatch-logs": "3.577.0",
+        "@aws-sdk/client-dynamodb": "3.577.0",
+        "@aws-sdk/client-elasticache": "3.577.0",
+        "@aws-sdk/client-lambda": "3.577.0",
+        "@aws-sdk/client-s3": "3.577.0",
+        "@aws-sdk/client-secrets-manager": "3.577.0",
+        "@aws-sdk/client-sns": "3.577.0",
+        "@aws-sdk/client-sqs": "3.577.0",
+        "@aws-sdk/s3-request-presigner": "3.577.0",
+        "@aws-sdk/types": "3.449.0",
+        "@aws-sdk/util-dynamodb": "3.577.0",
+        "@azure/core-paging": "^1.5.0",
+        "@azure/data-tables": "13.2.2",
+        "@azure/identity": "4.0.1",
+        "@azure/storage-blob": "12.14.0",
+        "@google-cloud/datastore": "8.4.0",
+        "@google-cloud/storage": "6.9.5",
+        "@smithy/util-stream": "2.0.17",
+        "@smithy/util-utf8": "2.0.0",
+        "@types/aws-lambda": "^8.10.119",
+        "@winglang/wingtunnels": "0.75.4",
+        ajv: "^8.12.0",
+        cdktf: "0.20.3",
+        constructs: "^10.3",
+        "cron-parser": "^4.9.0",
+        "cron-validator": "^1.3.1",
+        express: "^4.19.2",
+        glob: "^8.1.0",
+        "google-auth-library": "^8.9.0",
+        ioredis: "^5.3.2",
+        jiti: "^1.21.0",
+        mime: "^3.0.0",
+        "mime-types": "^2.1.35",
+        nanoid: "^3.3.6",
+        protobufjs: "7.2.5",
+        "safe-stable-stringify": "^2.4.3",
+        stacktracey: "^2.1.8",
+        toml: "^3.0.0",
+        ulid: "^2.3.0",
+        uuid: "^8.3.2",
+        vlq: "^2.0.4",
+        yaml: "^2.3.2"
+      },
+      bundledDependencies: [
+        "@aws-sdk/client-cloudwatch-logs",
+        "@aws-sdk/client-dynamodb",
+        "@aws-sdk/client-elasticache",
+        "@aws-sdk/client-lambda",
+        "@aws-sdk/client-s3",
+        "@aws-sdk/client-secrets-manager",
+        "@aws-sdk/client-sns",
+        "@aws-sdk/client-sqs",
+        "@aws-sdk/s3-request-presigner",
+        "@aws-sdk/types",
+        "@aws-sdk/util-dynamodb",
+        "@azure/core-paging",
+        "@azure/data-tables",
+        "@azure/identity",
+        "@azure/storage-blob",
+        "@google-cloud/datastore",
+        "@google-cloud/storage",
+        "@smithy/util-stream",
+        "@smithy/util-utf8",
+        "@types/aws-lambda",
+        "@winglang/wingtunnels",
+        "ajv",
+        "cdktf",
+        "cron-parser",
+        "cron-validator",
+        "express",
+        "glob",
+        "google-auth-library",
+        "ioredis",
+        "jiti",
+        "mime",
+        "mime-types",
+        "nanoid",
+        "protobufjs",
+        "safe-stable-stringify",
+        "stacktracey",
+        "toml",
+        "ulid",
+        "uuid",
+        "vlq",
+        "yaml"
+      ],
+      engines: {
+        node: ">= 20.0.0"
+      },
+      main: "lib/index.js",
+      license: "MIT",
+      version: "0.75.4",
+      types: "lib/index.d.ts",
+      stability: "experimental",
+      jsii: {
+        outdir: "dist",
+        targets: {},
+        tsc: {
+          outDir: "lib",
+          rootDir: "src"
+        }
+      },
+      optionalDependencies: {
+        esbuild: "^0.19.12"
+      },
+      files: [
+        "lib",
+        ".jsii",
+        "API.md",
+        "patches"
+      ],
+      "//": '~~ Generated by projen. To modify, edit .projenrc.ts and run "npx projen".',
+      scripts: {
+        "api-check": "pnpm exec projen api-check",
+        "api-check:watch": "pnpm exec projen api-check:watch",
+        build: "pnpm exec projen build",
+        bump: "pnpm exec projen bump",
+        clobber: "pnpm exec projen clobber",
+        compat: "pnpm exec projen compat",
+        compile: "pnpm exec projen compile",
+        default: "pnpm exec projen default",
+        docgen: "pnpm exec projen docgen",
+        eject: "pnpm exec projen eject",
+        eslint: "pnpm exec projen eslint",
+        package: "pnpm exec projen package",
+        "package-all": "pnpm exec projen package-all",
+        "package:js": "pnpm exec projen package:js",
+        "post-compile": "pnpm exec projen post-compile",
+        "pre-compile": "pnpm exec projen pre-compile",
+        release: "pnpm exec projen release",
+        test: "pnpm exec projen test",
+        "test:watch": "pnpm exec projen test:watch",
+        unbump: "pnpm exec projen unbump",
+        watch: "pnpm exec projen watch",
+        projen: "pnpm exec projen"
+      }
+    };
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/constants.js
+var require_constants = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/constants.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.fqnForType = exports2.SDK_PACKAGE_NAME = exports2.SDK_VERSION = void 0;
+    var PKG = require_package();
+    exports2.SDK_VERSION = PKG.version;
+    exports2.SDK_PACKAGE_NAME = PKG.name;
+    if (!exports2.SDK_VERSION) {
+      throw new Error("SDK_VERSION is not defined");
+    }
+    if (!exports2.SDK_PACKAGE_NAME) {
+      throw new Error("SDK_PACKAGE_NAME is not defined");
+    }
+    function fqnForType(type) {
+      return `${exports2.SDK_PACKAGE_NAME}.${type}`;
+    }
+    __name(fqnForType, "fqnForType");
+    exports2.fqnForType = fqnForType;
+  }
+});
+
 // ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/toml/lib/parser.js
 var require_parser = __commonJS({
   "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/toml/lib/parser.js"(exports2, module2) {
@@ -13329,7 +8613,7 @@ var require_parser = __commonJS({
         child.prototype = new ctor();
       }
       __name(peg$subclass, "peg$subclass");
-      function SyntaxError2(message, expected, found, offset, line, column) {
+      function SyntaxError(message, expected, found, offset, line, column) {
         this.message = message;
         this.expected = expected;
         this.found = found;
@@ -13338,9 +8622,9 @@ var require_parser = __commonJS({
         this.column = column;
         this.name = "SyntaxError";
       }
-      __name(SyntaxError2, "SyntaxError");
-      peg$subclass(SyntaxError2, Error);
-      function parse(input) {
+      __name(SyntaxError, "SyntaxError");
+      peg$subclass(SyntaxError, Error);
+      function parse2(input) {
         var options = arguments.length > 1 ? arguments[1] : {}, peg$FAILED = {}, peg$startRuleFunctions = { start: peg$parsestart }, peg$startRuleFunction = peg$parsestart, peg$c0 = [], peg$c1 = /* @__PURE__ */ __name(function() {
           return nodes;
         }, "peg$c1"), peg$c2 = peg$FAILED, peg$c3 = "#", peg$c4 = { type: "literal", value: "#", description: '"#"' }, peg$c5 = void 0, peg$c6 = { type: "any", description: "any character" }, peg$c7 = "[", peg$c8 = { type: "literal", value: "[", description: '"["' }, peg$c9 = "]", peg$c10 = { type: "literal", value: "]", description: '"]"' }, peg$c11 = /* @__PURE__ */ __name(function(name) {
@@ -13555,7 +8839,7 @@ var require_parser = __commonJS({
           if (expected2 !== null) {
             cleanupExpected(expected2);
           }
-          return new SyntaxError2(
+          return new SyntaxError(
             message !== null ? message : buildMessage(expected2, found),
             expected2,
             found,
@@ -16943,10 +12227,10 @@ var require_parser = __commonJS({
           throw peg$buildException(null, peg$maxFailExpected, peg$maxFailPos);
         }
       }
-      __name(parse, "parse");
+      __name(parse2, "parse");
       return {
-        SyntaxError: SyntaxError2,
-        parse
+        SyntaxError,
+        parse: parse2
       };
     }();
   }
@@ -17449,13 +12733,13 @@ var require_directives = __commonJS({
               onError(0, "%YAML directive should contain exactly one part");
               return false;
             }
-            const [version] = parts;
-            if (version === "1.1" || version === "1.2") {
-              this.yaml.version = version;
+            const [version2] = parts;
+            if (version2 === "1.1" || version2 === "1.2") {
+              this.yaml.version = version2;
               return true;
             } else {
-              const isValid = /^\d+\.\d+$/.test(version);
-              onError(6, `Unsupported YAML version ${version}`, isValid);
+              const isValid = /^\d+\.\d+$/.test(version2);
+              onError(6, `Unsupported YAML version ${version2}`, isValid);
               return false;
             }
           }
@@ -17621,38 +12905,38 @@ var require_applyReviver = __commonJS({
         if (Array.isArray(val)) {
           for (let i = 0, len = val.length; i < len; ++i) {
             const v0 = val[i];
-            const v1 = applyReviver(reviver, val, String(i), v0);
-            if (v1 === void 0)
+            const v12 = applyReviver(reviver, val, String(i), v0);
+            if (v12 === void 0)
               delete val[i];
-            else if (v1 !== v0)
-              val[i] = v1;
+            else if (v12 !== v0)
+              val[i] = v12;
           }
         } else if (val instanceof Map) {
           for (const k of Array.from(val.keys())) {
             const v0 = val.get(k);
-            const v1 = applyReviver(reviver, val, k, v0);
-            if (v1 === void 0)
+            const v12 = applyReviver(reviver, val, k, v0);
+            if (v12 === void 0)
               val.delete(k);
-            else if (v1 !== v0)
-              val.set(k, v1);
+            else if (v12 !== v0)
+              val.set(k, v12);
           }
         } else if (val instanceof Set) {
           for (const v0 of Array.from(val)) {
-            const v1 = applyReviver(reviver, val, v0, v0);
-            if (v1 === void 0)
+            const v12 = applyReviver(reviver, val, v0, v0);
+            if (v12 === void 0)
               val.delete(v0);
-            else if (v1 !== v0) {
+            else if (v12 !== v0) {
               val.delete(v0);
-              val.add(v1);
+              val.add(v12);
             }
           }
         } else {
           for (const [k, v0] of Object.entries(val)) {
-            const v1 = applyReviver(reviver, val, k, v0);
-            if (v1 === void 0)
+            const v12 = applyReviver(reviver, val, k, v0);
+            if (v12 === void 0)
               delete val[k];
-            else if (v1 !== v0)
-              val[k] = v1;
+            else if (v12 !== v0)
+              val[k] = v12;
           }
         }
       }
@@ -18619,7 +13903,7 @@ var require_stringify = __commonJS({
       return props.join(" ");
     }
     __name(stringifyProps, "stringifyProps");
-    function stringify(item, ctx, onComment, onChompKeep) {
+    function stringify2(item, ctx, onComment, onChompKeep) {
       if (identity.isPair(item))
         return item.toString(ctx, onComment, onChompKeep);
       if (identity.isAlias(item)) {
@@ -18648,9 +13932,9 @@ var require_stringify = __commonJS({
       return identity.isScalar(node) || str[0] === "{" || str[0] === "[" ? `${props} ${str}` : `${props}
 ${ctx.indent}${str}`;
     }
-    __name(stringify, "stringify");
+    __name(stringify2, "stringify");
     exports2.createStringifyContext = createStringifyContext;
-    exports2.stringify = stringify;
+    exports2.stringify = stringify2;
   }
 });
 
@@ -18660,7 +13944,7 @@ var require_stringifyPair = __commonJS({
     "use strict";
     var identity = require_identity();
     var Scalar = require_Scalar();
-    var stringify = require_stringify();
+    var stringify2 = require_stringify();
     var stringifyComment = require_stringifyComment();
     function stringifyPair({ key, value }, ctx, onComment, onChompKeep) {
       const { allNullValues, doc, indent, indentStep, options: { commentString, indentSeq, simpleKeys } } = ctx;
@@ -18682,7 +13966,7 @@ var require_stringifyPair = __commonJS({
       });
       let keyCommentDone = false;
       let chompKeep = false;
-      let str = stringify.stringify(key, ctx, () => keyCommentDone = true, () => chompKeep = true);
+      let str = stringify2.stringify(key, ctx, () => keyCommentDone = true, () => chompKeep = true);
       if (!explicitKey && !ctx.inFlow && str.length > 1024) {
         if (simpleKeys)
           throw new Error("With simple keys, single line scalar must not span more than 1024 characters");
@@ -18734,7 +14018,7 @@ ${indent}:`;
         ctx.indent = ctx.indent.substring(2);
       }
       let valueCommentDone = false;
-      const valueStr = stringify.stringify(value, ctx, () => valueCommentDone = true, () => chompKeep = true);
+      const valueStr = stringify2.stringify(value, ctx, () => valueCommentDone = true, () => chompKeep = true);
       let ws = " ";
       if (keyComment || vsb || vcb) {
         ws = vsb ? "\n" : "";
@@ -18816,7 +14100,7 @@ var require_addPairToJSMap = __commonJS({
   "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/yaml/dist/nodes/addPairToJSMap.js"(exports2) {
     "use strict";
     var log = require_log();
-    var stringify = require_stringify();
+    var stringify2 = require_stringify();
     var identity = require_identity();
     var Scalar = require_Scalar();
     var toJS = require_toJS();
@@ -18885,7 +14169,7 @@ var require_addPairToJSMap = __commonJS({
       if (typeof jsKey !== "object")
         return String(jsKey);
       if (identity.isNode(key) && ctx?.doc) {
-        const strCtx = stringify.createStringifyContext(ctx.doc, {});
+        const strCtx = stringify2.createStringifyContext(ctx.doc, {});
         strCtx.anchors = /* @__PURE__ */ new Set();
         for (const node of ctx.anchors.keys())
           strCtx.anchors.add(node.anchor);
@@ -18958,12 +14242,12 @@ var require_stringifyCollection = __commonJS({
     "use strict";
     var Collection = require_Collection();
     var identity = require_identity();
-    var stringify = require_stringify();
+    var stringify2 = require_stringify();
     var stringifyComment = require_stringifyComment();
     function stringifyCollection(collection, ctx, options) {
       const flow = ctx.inFlow ?? collection.flow;
-      const stringify2 = flow ? stringifyFlowCollection : stringifyBlockCollection;
-      return stringify2(collection, ctx, options);
+      const stringify3 = flow ? stringifyFlowCollection : stringifyBlockCollection;
+      return stringify3(collection, ctx, options);
     }
     __name(stringifyCollection, "stringifyCollection");
     function stringifyBlockCollection({ comment, items }, ctx, { blockItemPrefix, flowChars, itemIndent, onChompKeep, onComment }) {
@@ -18989,7 +14273,7 @@ var require_stringifyCollection = __commonJS({
           }
         }
         chompKeep = false;
-        let str2 = stringify.stringify(item, itemCtx, () => comment2 = null, () => chompKeep = true);
+        let str2 = stringify2.stringify(item, itemCtx, () => comment2 = null, () => chompKeep = true);
         if (comment2)
           str2 += stringifyComment.lineComment(str2, itemIndent, commentString(comment2));
         if (chompKeep && comment2)
@@ -19057,7 +14341,7 @@ ${indent}${line}` : "\n";
         }
         if (comment2)
           reqNewline = true;
-        let str2 = stringify.stringify(item, itemCtx, () => comment2 = null);
+        let str2 = stringify2.stringify(item, itemCtx, () => comment2 = null);
         if (i < items.length - 1)
           str2 += ",";
         if (comment2)
@@ -20433,7 +15717,7 @@ var require_stringifyDocument = __commonJS({
   "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/yaml/dist/stringify/stringifyDocument.js"(exports2) {
     "use strict";
     var identity = require_identity();
-    var stringify = require_stringify();
+    var stringify2 = require_stringify();
     var stringifyComment = require_stringifyComment();
     function stringifyDocument(doc, options) {
       const lines = [];
@@ -20448,7 +15732,7 @@ var require_stringifyDocument = __commonJS({
       }
       if (hasDirectives)
         lines.push("---");
-      const ctx = stringify.createStringifyContext(doc, options);
+      const ctx = stringify2.createStringifyContext(doc, options);
       const { commentString } = ctx.options;
       if (doc.commentBefore) {
         if (lines.length !== 1)
@@ -20470,7 +15754,7 @@ var require_stringifyDocument = __commonJS({
           contentComment = doc.contents.comment;
         }
         const onChompKeep = contentComment ? void 0 : () => chompKeep = true;
-        let body = stringify.stringify(doc.contents, ctx, () => contentComment = null, onChompKeep);
+        let body = stringify2.stringify(doc.contents, ctx, () => contentComment = null, onChompKeep);
         if (contentComment)
           body += stringifyComment.lineComment(body, "", commentString(contentComment));
         if ((body[0] === "|" || body[0] === ">") && lines[lines.length - 1] === "---") {
@@ -20478,7 +15762,7 @@ var require_stringifyDocument = __commonJS({
         } else
           lines.push(body);
       } else {
-        lines.push(stringify.stringify(doc.contents, ctx));
+        lines.push(stringify2.stringify(doc.contents, ctx));
       }
       if (doc.directives?.docEnd) {
         if (doc.comment) {
@@ -20551,14 +15835,14 @@ var require_Document = __commonJS({
           version: "1.2"
         }, options);
         this.options = opt;
-        let { version } = opt;
+        let { version: version2 } = opt;
         if (options?._directives) {
           this.directives = options._directives.atDocument();
           if (this.directives.yaml.explicit)
-            version = this.directives.yaml.version;
+            version2 = this.directives.yaml.version;
         } else
-          this.directives = new directives.Directives({ version });
-        this.setSchema(version, options);
+          this.directives = new directives.Directives({ version: version2 });
+        this.setSchema(version2, options);
         this.contents = value === void 0 ? null : this.createNode(value, _replacer, options);
       }
       /**
@@ -20738,11 +16022,11 @@ var require_Document = __commonJS({
        *
        * Overrides all previously set schema options.
        */
-      setSchema(version, options = {}) {
-        if (typeof version === "number")
-          version = String(version);
+      setSchema(version2, options = {}) {
+        if (typeof version2 === "number")
+          version2 = String(version2);
         let opt;
-        switch (version) {
+        switch (version2) {
           case "1.1":
             if (this.directives)
               this.directives.yaml.version = "1.1";
@@ -20753,9 +16037,9 @@ var require_Document = __commonJS({
           case "1.2":
           case "next":
             if (this.directives)
-              this.directives.yaml.version = version;
+              this.directives.yaml.version = version2;
             else
-              this.directives = new directives.Directives({ version });
+              this.directives = new directives.Directives({ version: version2 });
             opt = { merge: false, resolveKnownTags: true, schema: "core" };
             break;
           case null:
@@ -20764,7 +16048,7 @@ var require_Document = __commonJS({
             opt = null;
             break;
           default: {
-            const sv = JSON.stringify(version);
+            const sv = JSON.stringify(version2);
             throw new Error(`Expected '1.1', '1.2' or null as first argument, but found: ${sv}`);
           }
         }
@@ -22587,7 +17871,7 @@ var require_cst_scalar = __commonJS({
 var require_cst_stringify = __commonJS({
   "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/yaml/dist/parse/cst-stringify.js"(exports2) {
     "use strict";
-    var stringify = /* @__PURE__ */ __name((cst) => "type" in cst ? stringifyToken(cst) : stringifyItem(cst), "stringify");
+    var stringify2 = /* @__PURE__ */ __name((cst) => "type" in cst ? stringifyToken(cst) : stringifyItem(cst), "stringify");
     function stringifyToken(token) {
       switch (token.type) {
         case "block-scalar": {
@@ -22642,7 +17926,7 @@ var require_cst_stringify = __commonJS({
       return res;
     }
     __name(stringifyItem, "stringifyItem");
-    exports2.stringify = stringify;
+    exports2.stringify = stringify2;
   }
 });
 
@@ -24325,7 +19609,7 @@ var require_public_api = __commonJS({
       return doc;
     }
     __name(parseDocument, "parseDocument");
-    function parse(src, reviver, options) {
+    function parse2(src, reviver, options) {
       let _reviver = void 0;
       if (typeof reviver === "function") {
         _reviver = reviver;
@@ -24344,8 +19628,8 @@ var require_public_api = __commonJS({
       }
       return doc.toJS(Object.assign({ reviver: _reviver }, options));
     }
-    __name(parse, "parse");
-    function stringify(value, replacer, options) {
+    __name(parse2, "parse");
+    function stringify2(value, replacer, options) {
       let _replacer = null;
       if (typeof replacer === "function" || Array.isArray(replacer)) {
         _replacer = replacer;
@@ -24365,11 +19649,11 @@ var require_public_api = __commonJS({
       }
       return new Document.Document(value, _replacer, options).toString(options);
     }
-    __name(stringify, "stringify");
-    exports2.parse = parse;
+    __name(stringify2, "stringify");
+    exports2.parse = parse2;
     exports2.parseAllDocuments = parseAllDocuments;
     exports2.parseDocument = parseDocument;
-    exports2.stringify = stringify;
+    exports2.stringify = stringify2;
   }
 });
 
@@ -24882,102 +20166,6 @@ var require_array = __commonJS({
   }
 });
 
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js
-var require_json_schema = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js"(exports2) {
-    "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
-    var _a;
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.JsonSchema = void 0;
-    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var ajv_1 = __importDefault(require_ajv());
-    var core_1 = require_core3();
-    var util_1 = require_util2();
-    var JsonSchema = class _JsonSchema {
-      static {
-        __name(this, "JsonSchema");
-      }
-      /**
-       * @internal
-       */
-      static _toInflightType(schema) {
-        return core_1.InflightClient.forType(__filename, `${this.name}._createJsonSchema(${JSON.stringify(schema)})`);
-      }
-      /**
-       * Static method for creating a StructSchema used for lifting a struct to an inflight type
-       *
-       * @internal
-       */
-      static _createJsonSchema(schema) {
-        return new _JsonSchema(schema);
-      }
-      constructor(schema) {
-        this._rawSchema = schema;
-        this.validator = new ajv_1.default({ allErrors: true, allowUnionTypes: true });
-      }
-      /**
-       * Attempt to validate a json object against the schema
-       *
-       * @param obj the Json object to validate
-       * @throws an error if the json object is not valid
-       */
-      validate(obj, options) {
-        if (options?.unsafe) {
-          return;
-        }
-        const validator = this.validator.compile(this._rawSchema);
-        const valid = validator(obj);
-        if (!valid) {
-          const schemaId = this._rawSchema.$id.replace("/", "");
-          throw new Error(`unable to parse ${schemaId}:
-- ${validator.errors?.map((error) => schemaId + error.instancePath + " " + error.message).join("\n- ")}`);
-        }
-      }
-      /**
-       * Retrieve the json schema as a string
-       *
-       * @returns the schema as a string
-       */
-      asStr() {
-        return JSON.stringify(this._rawSchema);
-      }
-      /** @internal */
-      _fromJson(obj, validateOptions) {
-        this.validate(obj, validateOptions);
-        const fields = (0, util_1.extractFieldsFromSchema)(this._rawSchema);
-        const filteredParameters = (0, util_1.filterParametersBySchema)(fields, obj);
-        return filteredParameters;
-      }
-      /** @internal */
-      _tryFromJson(obj) {
-        try {
-          return this._fromJson(obj);
-        } catch {
-          return void 0;
-        }
-      }
-      /** @internal */
-      _tryParseJson(json) {
-        try {
-          return this._fromJson(JSON.parse(json));
-        } catch {
-          return void 0;
-        }
-      }
-      /** @internal */
-      _toInflightType() {
-        return _JsonSchema._toInflightType(this._rawSchema);
-      }
-    };
-    exports2.JsonSchema = JsonSchema;
-    _a = JSII_RTTI_SYMBOL_1;
-    JsonSchema[_a] = { fqn: "@winglang/sdk.std.JsonSchema", version: "0.0.0" };
-  }
-});
-
 // ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/bool.js
 var require_bool3 = __commonJS({
   "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/bool.js"(exports2) {
@@ -25018,6 +20206,684 @@ var require_bool3 = __commonJS({
     exports2.Boolean = Boolean2;
     _a = JSII_RTTI_SYMBOL_1;
     Boolean2[_a] = { fqn: "@winglang/sdk.std.Boolean", version: "0.0.0" };
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/tokens.js
+var require_tokens = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/tokens.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.getTokenResolver = exports2.registerTokenResolver = exports2.tokenEnvName = void 0;
+    var _resolvers = [];
+    function tokenEnvName(value) {
+      return `WING_TOKEN_${value.replace(/([^a-zA-Z0-9]+)/g, "_").replace(/_+$/, "").replace(/^_+/, "").toUpperCase()}`;
+    }
+    __name(tokenEnvName, "tokenEnvName");
+    exports2.tokenEnvName = tokenEnvName;
+    function registerTokenResolver(resolver) {
+      _resolvers.push(resolver);
+    }
+    __name(registerTokenResolver, "registerTokenResolver");
+    exports2.registerTokenResolver = registerTokenResolver;
+    function getTokenResolver(value) {
+      return _resolvers.find((r) => r.isToken(value));
+    }
+    __name(getTokenResolver, "getTokenResolver");
+    exports2.getTokenResolver = getTokenResolver;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/lifting.js
+var require_lifting = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/lifting.js"(exports2) {
+    "use strict";
+    var _a;
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.Lifting = exports2.collectLifts = exports2.mergeLiftDeps = exports2.liftObject = exports2.toLiftableModuleType = exports2.INFLIGHT_INIT_METHOD_NAME = void 0;
+    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
+    var constructs_1 = require_lib();
+    var errors_1 = require_errors2();
+    var tokens_1 = require_tokens();
+    exports2.INFLIGHT_INIT_METHOD_NAME = "$inflight_init";
+    var INFLIGHT_CLOSURE_HANDLE_METHOD = "handle";
+    var INFLIGHT_CLOSURE_TYPE_PREFIX = "$Closure";
+    function toLiftableModuleType(type, moduleSpec, path2) {
+      if (typeof type?._toInflightType === "function" || type?.constructor?.name === "Object") {
+        return type;
+      } else {
+        return {
+          _toInflightType: () => `require("${moduleSpec}").${path2}`
+        };
+      }
+    }
+    __name(toLiftableModuleType, "toLiftableModuleType");
+    exports2.toLiftableModuleType = toLiftableModuleType;
+    function liftObject(obj) {
+      if (obj == null) {
+        return JSON.stringify(obj);
+      }
+      const tokenResolver = (0, tokens_1.getTokenResolver)(obj);
+      if (tokenResolver) {
+        return tokenResolver.lift(obj);
+      }
+      if (typeof obj?._toInflightType === "function") {
+        return obj._toInflightType();
+      }
+      switch (typeof obj) {
+        case "string":
+        case "boolean":
+        case "number":
+          return JSON.stringify(obj);
+        case "object":
+          if (Array.isArray(obj)) {
+            return `[${obj.map((o) => liftObject(o)).join(",")}]`;
+          }
+          if (obj instanceof Set) {
+            return `new Set(${liftObject(Array.from(obj))})`;
+          }
+          if (obj instanceof Map) {
+            return `new Map(${liftObject(Array.from(obj))})`;
+          }
+          if (typeof obj._toInflight === "function") {
+            return obj._toInflight();
+          }
+          if (obj.constructor.name === "Object") {
+            const lines = [];
+            lines.push("{");
+            for (const [k, v] of Object.entries(obj)) {
+              lines.push(`"${k.replace(/"/g, '\\"')}": ${liftObject(v)},`);
+            }
+            lines.push("}");
+            return lines.join("");
+          }
+          break;
+      }
+      throw new Error(`Unable to lift object of type ${obj?.constructor?.name}`);
+    }
+    __name(liftObject, "liftObject");
+    exports2.liftObject = liftObject;
+    function mergeLiftDeps(matrix1 = {}, matrix2 = {}) {
+      const result = {};
+      for (const [op, deps] of Object.entries(matrix1)) {
+        result[op] = /* @__PURE__ */ new Map();
+        for (const [obj, objDeps] of deps) {
+          result[op].set(obj, new Set(objDeps));
+        }
+      }
+      for (const [op, deps] of Object.entries(matrix2)) {
+        const resultDeps = result[op] ?? /* @__PURE__ */ new Map();
+        for (const [obj, objDeps] of deps) {
+          const resultObjDeps = resultDeps.get(obj) ?? /* @__PURE__ */ new Set();
+          for (const dep of objDeps) {
+            resultObjDeps.add(dep);
+          }
+          resultDeps.set(obj, resultObjDeps);
+        }
+        result[op] = resultDeps;
+      }
+      return result;
+    }
+    __name(mergeLiftDeps, "mergeLiftDeps");
+    exports2.mergeLiftDeps = mergeLiftDeps;
+    function parseMatrix(data) {
+      const result = {};
+      for (const [op, pairs] of Object.entries(data)) {
+        result[op] = /* @__PURE__ */ new Map();
+        for (const [obj, objDeps] of pairs) {
+          if (!result[op].has(obj)) {
+            result[op].set(obj, /* @__PURE__ */ new Set());
+          }
+          const depSet = result[op].get(obj);
+          for (const dep of objDeps) {
+            depSet.add(dep);
+          }
+        }
+      }
+      return result;
+    }
+    __name(parseMatrix, "parseMatrix");
+    function collectLifts(initialObj, initialOps) {
+      if (initialOps.includes(exports2.INFLIGHT_INIT_METHOD_NAME)) {
+        throw new Error(`The operation ${exports2.INFLIGHT_INIT_METHOD_NAME} is implicit and should not be requested explicitly.`);
+      }
+      const explored = /* @__PURE__ */ new Map();
+      const queue = new Array([initialObj, [...initialOps]]);
+      const matrixCache = /* @__PURE__ */ new Map();
+      while (queue.length > 0) {
+        let [obj, ops] = queue.shift();
+        let newObj = false;
+        if (!explored.has(obj)) {
+          explored.set(obj, /* @__PURE__ */ new Set());
+          newObj = true;
+        }
+        let existingOps = explored.get(obj);
+        ops = ops.filter((op) => !existingOps.has(op));
+        if (ops.length === 0 && !newObj) {
+          continue;
+        }
+        for (const op of ops) {
+          existingOps.add(op);
+        }
+        let matrix;
+        if (matrixCache.has(obj)) {
+          matrix = matrixCache.get(obj);
+        } else if (typeof obj === "object" && obj._liftMap !== void 0) {
+          matrix = parseMatrix(obj._liftMap ?? {});
+          matrixCache.set(obj, matrix);
+        } else if (typeof obj === "function" && typeof obj._liftTypeMap !== void 0) {
+          matrix = parseMatrix(obj._liftTypeMap ?? {});
+          matrixCache.set(obj, matrix);
+        } else {
+          let items_to_explore = [];
+          if (Array.isArray(obj)) {
+            items_to_explore = obj;
+          } else if (obj instanceof Set) {
+            items_to_explore = obj;
+          } else if (obj instanceof Map) {
+            items_to_explore = obj.values();
+          } else if (typeof obj === "object" && obj.constructor.name === "Object") {
+            items_to_explore = Object.values(obj);
+          }
+          for (const item of items_to_explore) {
+            if (!explored.has(item)) {
+              let item_ops = [];
+              if (isInflightClosureObject(item)) {
+                item_ops.push(INFLIGHT_CLOSURE_HANDLE_METHOD);
+              }
+              queue.push([item, item_ops]);
+            }
+          }
+          continue;
+        }
+        for (const op of [...ops, exports2.INFLIGHT_INIT_METHOD_NAME]) {
+          const objDeps = matrix[op];
+          if (op === exports2.INFLIGHT_INIT_METHOD_NAME && !objDeps) {
+            continue;
+          }
+          if (!objDeps) {
+            if (constructs_1.Construct.isConstruct(obj)) {
+              throw new errors_1.NotImplementedError(`Resource ${obj.node.path} does not support inflight operation ${op}.
+It might not be implemented yet.`, { resource: obj.constructor.name, operation: op });
+            } else {
+              throw new Error(`Unknown operation ${op} requested for object ${obj} (${obj.constructor.name})`);
+            }
+          }
+          for (const [depObj, depOps] of objDeps.entries()) {
+            if (depOps.has(exports2.INFLIGHT_INIT_METHOD_NAME)) {
+              throw new Error(`The operation ${exports2.INFLIGHT_INIT_METHOD_NAME} is implicit and should not be requested explicitly.`);
+            }
+            queue.push([depObj, [...depOps]]);
+          }
+        }
+      }
+      return explored;
+    }
+    __name(collectLifts, "collectLifts");
+    exports2.collectLifts = collectLifts;
+    function isInflightClosureObject(item) {
+      return typeof item === "object" && typeof item.constructor === "function" && typeof item.constructor.name === "string" && item.constructor.name.startsWith(INFLIGHT_CLOSURE_TYPE_PREFIX) && item._liftMap !== void 0 && item._liftMap[INFLIGHT_CLOSURE_HANDLE_METHOD] !== void 0;
+    }
+    __name(isInflightClosureObject, "isInflightClosureObject");
+    var Lifting = class {
+      static {
+        __name(this, "Lifting");
+      }
+      /**
+       * Perform the full lifting process on an object.
+       *
+       * Use this instead of calling `onLift` since it will also lift all of the
+       * object's dependencies, and it will ensure that the onLift methods of
+       * all objects are all called at most once.
+       */
+      static lift(obj, host, ops) {
+        const lifts = collectLifts(obj, ops);
+        for (const [liftedObj, liftedOps] of lifts) {
+          const tokens = (0, tokens_1.getTokenResolver)(liftedObj);
+          if (tokens) {
+            tokens.onLiftValue(host, liftedObj);
+            continue;
+          }
+          if (typeof liftedObj === "object" && typeof liftedObj.onLift === "function") {
+            liftedObj.onLift(host, [...liftedOps]);
+            continue;
+          }
+          if (typeof liftedObj === "function" && typeof liftedObj.onLiftType === "function") {
+            liftedObj.onLiftType(host, [...liftedOps]);
+            continue;
+          }
+        }
+      }
+    };
+    exports2.Lifting = Lifting;
+    _a = JSII_RTTI_SYMBOL_1;
+    Lifting[_a] = { fqn: "@winglang/sdk.core.Lifting", version: "0.0.0" };
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/types.js
+var require_types2 = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/types.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.SECRET_SYMBOL = exports2.INFLIGHT_SYMBOL = exports2.Construct = void 0;
+    var constructs_1 = require_lib();
+    Object.defineProperty(exports2, "Construct", { enumerable: true, get: function() {
+      return constructs_1.Construct;
+    } });
+    exports2.INFLIGHT_SYMBOL = Symbol("@winglang/sdk.inflight");
+    exports2.SECRET_SYMBOL = Symbol("@winglang/sdk.cloud.Secret");
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/shared/misc.js
+var require_misc = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/shared/misc.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.isPath = exports2.shell = exports2.runCommand = exports2.normalPath = exports2.readJsonSync = void 0;
+    var child_process_1 = require("child_process");
+    var fs_1 = require("fs");
+    var util_1 = require("util");
+    var execPromise = (0, util_1.promisify)(child_process_1.exec);
+    var execFilePromise = (0, util_1.promisify)(child_process_1.execFile);
+    function readJsonSync(file) {
+      return JSON.parse((0, fs_1.readFileSync)(file, "utf-8"));
+    }
+    __name(readJsonSync, "readJsonSync");
+    exports2.readJsonSync = readJsonSync;
+    function normalPath2(path2) {
+      if (process.platform === "win32") {
+        return path2.replace(/\\+/g, "/");
+      } else {
+        return path2;
+      }
+    }
+    __name(normalPath2, "normalPath");
+    exports2.normalPath = normalPath2;
+    async function runCommand(cmd, args, options) {
+      const { stdout } = await execFilePromise(cmd, args, options);
+      return stdout;
+    }
+    __name(runCommand, "runCommand");
+    exports2.runCommand = runCommand;
+    async function shell(cmd, args, options) {
+      const { stdout } = await execPromise(cmd + " " + args.join(" "), options);
+      return stdout;
+    }
+    __name(shell, "shell");
+    exports2.shell = shell;
+    function isPath(s) {
+      s = normalPath2(s);
+      return s.startsWith("./") || s.startsWith("../") || s.startsWith("/");
+    }
+    __name(isPath, "isPath");
+    exports2.isPath = isPath;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/inflight.js
+var require_inflight = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/core/inflight.js"(exports2) {
+    "use strict";
+    var _a;
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.importInflight = exports2.inflight = exports2.lift = exports2.InflightClient = exports2.closureId = void 0;
+    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
+    var path_1 = require("path");
+    var lifting_1 = require_lifting();
+    var types_1 = require_types2();
+    var misc_1 = require_misc();
+    var closureCount = 0;
+    function closureId() {
+      return closureCount++;
+    }
+    __name(closureId, "closureId");
+    exports2.closureId = closureId;
+    var InflightClient = class {
+      static {
+        __name(this, "InflightClient");
+      }
+      /**
+       * Returns code for creating an inflight client.
+       */
+      static for(dirname2, filename, clientClass, args) {
+        const inflightDir = dirname2;
+        const inflightFile = (0, path_1.basename)(filename).split(".")[0] + ".inflight";
+        return `new (require("${(0, misc_1.normalPath)(`${inflightDir}/${inflightFile}`)}")).${clientClass}(${args.join(", ")})`;
+      }
+      /**
+       * Returns code for implementing `_toInflightType()`.
+       */
+      static forType(filename, clientClass) {
+        return `require("${(0, misc_1.normalPath)(filename)}").${clientClass}`;
+      }
+      constructor() {
+      }
+    };
+    exports2.InflightClient = InflightClient;
+    _a = JSII_RTTI_SYMBOL_1;
+    InflightClient[_a] = { fqn: "@winglang/sdk.core.InflightClient", version: "0.0.0" };
+    function lift(captures) {
+      return new Lifter().lift(captures);
+    }
+    __name(lift, "lift");
+    exports2.lift = lift;
+    function inflight(fn) {
+      return new Lifter().inflight(fn);
+    }
+    __name(inflight, "inflight");
+    exports2.inflight = inflight;
+    function importInflight(inflightText, lifts) {
+      const newLifts = {};
+      const newGrants = {};
+      for (const liftAnnotation of lifts ?? []) {
+        if (liftAnnotation.alias === void 0) {
+          throw new Error("The alias field is required for all lifts");
+        }
+        newLifts[liftAnnotation.alias] = liftAnnotation.obj;
+        if (liftAnnotation.ops) {
+          newGrants[liftAnnotation.alias] = liftAnnotation.ops;
+        }
+      }
+      return lift(newLifts).grant(newGrants).inflight(inflightText);
+    }
+    __name(importInflight, "importInflight");
+    exports2.importInflight = importInflight;
+    var Lifter = class _Lifter {
+      static {
+        __name(this, "Lifter");
+      }
+      constructor(lifts = {}, grants = {}) {
+        this.lifts = lifts;
+        this.grants = grants;
+      }
+      /**
+       * Add additional liftable objects to the scope of the inflight function.
+       * Any existing liftable objects with the same name will be overwritten.
+       *
+       * Conventionally, this is used by passing in a `const` object to bind it with the same name
+       *
+       * ```ts
+       * const bucket = new cloud.Bucket(app, "Bucket");
+       * const number = 5;
+       *
+       * lift({ bucket, number })
+       *   .inflight(({ bucket, number }) => { ... }))
+       * ```
+       *
+       * However, the name is not required to match the variable in the current scope.
+       *
+       * This is especially useful/necessary when lifting data via a reference or some other expression
+       *
+       * ```ts
+       * const bucket = new cloud.Bucket(app, "Bucket");
+       *
+       * lift({ bkt: bucket, sum: 2 + 2, field: bucket.field })
+       *   .inflight(({ bkt, sum, field }) => { ... }))
+       * ```
+       */
+      lift(captures) {
+        return new _Lifter({
+          ...this.lifts,
+          ...captures
+        }, this.grants);
+      }
+      /**
+       * Grant permissions for lifted resources.
+       *
+       * By default, all all possible methods are granted to lifted resources.
+       * This function restricts those:
+       *
+       * ```ts
+       * const bucket = new cloud.Bucket(app, "Bucket");
+       *
+       * lift({ bucket })
+       *   .grant({ bucket: ["get"] })
+       *   .inflight(({ bucket }) => {
+       *     await bucket.get("key");
+       *     await bucket.set("key", "value"); // Error: set is not granted
+       *   });
+       * ```
+       *
+       * fields are always accessible, even if not granted.
+       */
+      grant(grants) {
+        return new _Lifter(this.lifts, {
+          ...this.grants,
+          ...grants
+        });
+      }
+      /**
+       * Create an inflight function with the available lifted data.
+       *
+       * This function must not reference any variables outside of its scope.
+       * If needed, use `lift` again to bind variables to the scope of the function.
+       * Bound variables will be available as properties on the `ctx` object passed as the first argument to the function.
+       *
+       * Built-in NodeJS globals are available, such as `console` and `process`.
+       * @wing inflight
+       */
+      inflight(fn) {
+        const _liftMap = { handle: [] };
+        for (const [key, obj] of Object.entries(this.lifts)) {
+          const knownOps = this.grants[key] ?? Object.keys(obj._liftMap ?? {}).filter(
+            (x) => x !== lifting_1.INFLIGHT_INIT_METHOD_NAME
+            // filter "$inflight_init"
+          );
+          _liftMap.handle.push([obj, knownOps]);
+        }
+        return {
+          _id: closureId(),
+          _toInflight: () => {
+            const serializedFunction = fn.toString();
+            return `(await (async () => {
+  const $func = ${serializedFunction}
+  const $ctx = {
+  ${Object.entries(this.lifts).map(([name, liftable]) => `${name}: ${(0, lifting_1.liftObject)(liftable)}`).join(",\n")}
+  };
+  let newFunction = async (...args) => {
+    return $func($ctx, ...args);
+  };
+  newFunction.handle = newFunction;
+  return newFunction;
+}
+)())`;
+          },
+          _liftMap,
+          // @ts-expect-error This function's type doesn't actually match, but it will just throw anyways
+          [types_1.INFLIGHT_SYMBOL]: () => {
+            throw new Error("This is a inflight function and can only be invoked while inflight");
+          }
+        };
+      }
+    };
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/datetime.js
+var require_datetime = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/datetime.js"(exports2) {
+    "use strict";
+    var _a;
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.Datetime = void 0;
+    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
+    var inflight_1 = require_inflight();
+    var misc_1 = require_misc();
+    var Datetime = class _Datetime {
+      static {
+        __name(this, "Datetime");
+      }
+      /**
+       * @internal
+       */
+      static _toInflightType() {
+        return inflight_1.InflightClient.forType(__filename, this.name);
+      }
+      /**
+       * Create a Datetime from UTC timezone
+       *
+       * @returns a new `Datetime` from current time in UTC timezone
+       */
+      static utcNow() {
+        return new _Datetime();
+      }
+      /**
+       * Create a Datetime from local system timezone
+       *
+       * @returns a new `Datetime` from current time in system timezone
+       */
+      static systemNow() {
+        const date = /* @__PURE__ */ new Date();
+        date.setTime(date.getTime() - date.getTimezoneOffset() * 60 * 1e3);
+        return new _Datetime(date, date.getTimezoneOffset());
+      }
+      /**
+       * Create a Datetime from an ISO-8601 string
+       *
+       * @returns a new `Datetime` in UTC timezone
+       * @param iso ISO-8601 string
+       */
+      static fromIso(iso) {
+        return new _Datetime(new Date(iso));
+      }
+      /**
+       * Create a Datetime from a JavaScript Date object.
+       *
+       * @param date The JavaScript Date object.
+       * @returns a new `Datetime` instance.
+       */
+      static fromDate(date) {
+        return this.fromIso(date.toISOString());
+      }
+      /**
+       * Create a Datetime from Datetime components
+       *
+       * @param c DatetimeComponents
+       * @returns a new `Datetime`
+       */
+      static fromComponents(c) {
+        const date = new Date(Date.UTC(c.year, c.month, c.day, c.hour, c.min, c.sec, c.ms));
+        return new _Datetime(date, c.tz);
+      }
+      constructor(date = /* @__PURE__ */ new Date(), timezoneOffset = 0) {
+        this._timezoneOffset = 0;
+        this._date = date;
+        this._timezoneOffset = timezoneOffset;
+      }
+      /** @internal */
+      _toInflight() {
+        return `(require("${(0, misc_1.normalPath)(__filename)}").Datetime.fromIso("${this.toIso()}"))`;
+      }
+      /**
+       * Return a timestamp of non-leap year seconds since epoch
+       *
+       * @returns a number representing the current timestamp in seconds
+       */
+      get timestamp() {
+        return this.timestampMs / 1e3;
+      }
+      /**
+       * Return a timestamp of non-leap year milliseconds since epoch
+       *
+       * @returns a number representing the current timestamp in milliseconds
+       */
+      get timestampMs() {
+        return this._date.valueOf() + this._timezoneOffset * 60 * 1e3;
+      }
+      /**
+       * Returns the hour of the local machine time or in utc
+       *
+       * @returns a number representing the datetime's hour
+       */
+      get hours() {
+        return this._date.getUTCHours();
+      }
+      /**
+       * Returns the minute of the local machine time or in utc
+       *
+       * @returns a number representing the datetime's minute
+       */
+      get min() {
+        return this._date.getUTCMinutes();
+      }
+      /**
+       * Returns the seconds of the local machine time or in utc
+       *
+       * @returns a number representing the datetime's seconds
+       */
+      get sec() {
+        return this._date.getUTCSeconds();
+      }
+      /**
+       * Returns the milliseconds of the local machine time or in utc
+       *  *
+       * @returns a number representing the datetime's milliseconds
+       */
+      get ms() {
+        return this._date.getUTCMilliseconds();
+      }
+      /**
+       * Returns the day of month in the local machine time or in utc (1 - 31)
+       *
+       * @returns a number representing the datetime's day of month
+       */
+      get dayOfMonth() {
+        return this._date.getUTCDate();
+      }
+      /**
+       * Returns the day in month of the local machine time or in utc (0 - 6)
+       *
+       * @returns a number representing the datetime's day of week
+       */
+      get dayOfWeek() {
+        return this._date.getUTCDay();
+      }
+      /**
+       * Returns the month of the local machine time or in utc (0 - 11)
+       *
+       * @returns a number representing the datetime's month
+       */
+      get month() {
+        return this._date.getUTCMonth();
+      }
+      /**
+       * Returns the year of the local machine time or in utc
+       *
+       * @returns a number representing the datetime's year
+       */
+      get year() {
+        return this._date.getUTCFullYear();
+      }
+      /**
+       * Returns the offset in minutes from UTC
+       *
+       * @returns a number representing the datetime's offset in minutes from UTC
+       */
+      get timezone() {
+        return this._timezoneOffset;
+      }
+      /**
+       * Returns a Datetime represents the same date in utc
+       *
+       * @returns a datetime representing the datetime's date in UTC
+       */
+      toUtc() {
+        return new _Datetime(new Date(this.timestampMs));
+      }
+      /**
+       * Returns ISO-8601 string
+       *
+       * @returns a ISO-8601 string representation of the datetime
+       */
+      toIso() {
+        return new Date(this.timestampMs).toISOString();
+      }
+    };
+    exports2.Datetime = Datetime;
+    _a = JSII_RTTI_SYMBOL_1;
+    Datetime[_a] = { fqn: "@winglang/sdk.std.Datetime", version: "0.0.0" };
   }
 });
 
@@ -26522,7 +22388,7 @@ var require_resource = __commonJS({
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
     var constructs_1 = require_lib();
     var core_1 = require_core3();
-    var errors_1 = require_errors();
+    var errors_1 = require_errors2();
     var std_1 = require_std();
     function hasLiftMap(x) {
       return x != null && typeof x._liftMap === "object";
@@ -27074,7 +22940,7 @@ var require_test = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.Test = exports2.TEST_FQN = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var constants_1 = require_constants2();
+    var constants_1 = require_constants();
     var core_1 = require_core3();
     var std_1 = require_std();
     exports2.TEST_FQN = (0, constants_1.fqnForType)("std.Test");
@@ -27114,9 +22980,9 @@ var require_api = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.sanitizeParamLikeObject = exports2.parseHttpMethod = exports2.DEFAULT_RESPONSE_STATUS = exports2.HttpMethod = exports2.ApiInflightMethods = exports2.Api = exports2.API_FQN = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var constants_1 = require_constants2();
-    var errors_1 = require_errors();
-    var types_1 = require_types();
+    var constants_1 = require_constants();
+    var errors_1 = require_errors2();
+    var types_1 = require_types2();
     var std_1 = require_std();
     exports2.API_FQN = (0, constants_1.fqnForType)("cloud.Api");
     var Api = class _Api extends std_1.Resource {
@@ -27551,9 +23417,9 @@ var require_topic = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TopicInflightMethods = exports2.Topic = exports2.TOPIC_FQN = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var constants_1 = require_constants2();
-    var errors_1 = require_errors();
-    var types_1 = require_types();
+    var constants_1 = require_constants();
+    var errors_1 = require_errors2();
+    var types_1 = require_types2();
     var std_1 = require_std();
     exports2.TOPIC_FQN = (0, constants_1.fqnForType)("cloud.Topic");
     var Topic = class _Topic extends std_1.Resource {
@@ -27641,10 +23507,10 @@ var require_bucket = __commonJS({
     var fs = __importStar2(require("fs"));
     var path_1 = require("path");
     var topic_1 = require_topic();
-    var constants_1 = require_constants2();
+    var constants_1 = require_constants();
     var core_1 = require_core3();
-    var errors_1 = require_errors();
-    var types_1 = require_types();
+    var errors_1 = require_errors2();
+    var types_1 = require_types2();
     var std_1 = require_std();
     exports2.BUCKET_FQN = (0, constants_1.fqnForType)("cloud.Bucket");
     var Bucket = class _Bucket extends std_1.Resource {
@@ -27848,8 +23714,8 @@ var require_counter = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.CounterInflightMethods = exports2.Counter = exports2.COUNTER_FQN = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var constants_1 = require_constants2();
-    var types_1 = require_types();
+    var constants_1 = require_constants();
+    var types_1 = require_types2();
     var std_1 = require_std();
     exports2.COUNTER_FQN = (0, constants_1.fqnForType)("cloud.Counter");
     var Counter = class _Counter extends std_1.Resource {
@@ -27887,7 +23753,7 @@ var require_domain = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.Domain = exports2.DOMAIN_FQN = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var constants_1 = require_constants2();
+    var constants_1 = require_constants();
     var std_1 = require_std();
     exports2.DOMAIN_FQN = (0, constants_1.fqnForType)("cloud.Domain");
     var Domain = class _Domain extends std_1.Resource {
@@ -27924,7 +23790,7 @@ var require_endpoint = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.Endpoint = exports2.ENDPOINT_FQN = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var constants_1 = require_constants2();
+    var constants_1 = require_constants();
     var std_1 = require_std();
     exports2.ENDPOINT_FQN = (0, constants_1.fqnForType)("cloud.Endpoint");
     var Endpoint = class _Endpoint extends std_1.Resource {
@@ -28033,9 +23899,9 @@ var require_function = __commonJS({
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
     var fs_1 = require("fs");
     var path_1 = require("path");
-    var constants_1 = require_constants2();
+    var constants_1 = require_constants();
     var core_1 = require_core3();
-    var types_1 = require_types();
+    var types_1 = require_types2();
     var resource_names_1 = require_resource_names();
     var std_1 = require_std();
     exports2.FUNCTION_FQN = (0, constants_1.fqnForType)("cloud.Function");
@@ -28131,8 +23997,8 @@ var require_on_deploy = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.OnDeploy = exports2.ON_DEPLOY_FQN = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var constants_1 = require_constants2();
-    var types_1 = require_types();
+    var constants_1 = require_constants();
+    var types_1 = require_types2();
     var std_1 = require_std();
     exports2.ON_DEPLOY_FQN = (0, constants_1.fqnForType)("cloud.OnDeploy");
     var OnDeploy = class _OnDeploy extends std_1.Resource {
@@ -28164,9 +24030,9 @@ var require_queue = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.QueueInflightMethods = exports2.Queue = exports2.DEFAULT_DELIVERY_ATTEMPTS = exports2.QUEUE_FQN = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var constants_1 = require_constants2();
-    var errors_1 = require_errors();
-    var types_1 = require_types();
+    var constants_1 = require_constants();
+    var errors_1 = require_errors2();
+    var types_1 = require_types2();
     var std_1 = require_std();
     exports2.QUEUE_FQN = (0, constants_1.fqnForType)("cloud.Queue");
     exports2.DEFAULT_DELIVERY_ATTEMPTS = 1;
@@ -28384,9 +24250,9 @@ var require_schedule = __commonJS({
     exports2.ScheduleInflightMethods = exports2.Schedule = exports2.SCHEDULE_FQN = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
     var cron_validator_1 = require_lib2();
-    var constants_1 = require_constants2();
-    var errors_1 = require_errors();
-    var types_1 = require_types();
+    var constants_1 = require_constants();
+    var errors_1 = require_errors2();
+    var types_1 = require_types2();
     var std_1 = require_std();
     exports2.SCHEDULE_FQN = (0, constants_1.fqnForType)("cloud.Schedule");
     var Schedule = class _Schedule extends std_1.Resource {
@@ -28448,8 +24314,8 @@ var require_secret = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.SecretInflightMethods = exports2.Secret = exports2.SECRET_FQN = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var constants_1 = require_constants2();
-    var types_1 = require_types();
+    var constants_1 = require_constants();
+    var types_1 = require_types2();
     var std_1 = require_std();
     exports2.SECRET_FQN = (0, constants_1.fqnForType)("cloud.Secret");
     var Secret = class _Secret extends std_1.Resource {
@@ -28492,9 +24358,9 @@ var require_service = __commonJS({
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
     var fs_1 = require("fs");
     var path_1 = require("path");
-    var constants_1 = require_constants2();
+    var constants_1 = require_constants();
     var core_1 = require_core3();
-    var types_1 = require_types();
+    var types_1 = require_types2();
     var resource_names_1 = require_resource_names();
     var std_1 = require_std();
     exports2.SERVICE_FQN = (0, constants_1.fqnForType)("cloud.Service");
@@ -28591,10 +24457,10 @@ var require_website = __commonJS({
     exports2.Website = exports2.WEBSITE_FQN = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
     var path_1 = require("path");
-    var constants_1 = require_constants2();
+    var constants_1 = require_constants();
     var core_1 = require_core3();
-    var errors_1 = require_errors();
-    var types_1 = require_types();
+    var errors_1 = require_errors2();
+    var types_1 = require_types2();
     var std_1 = require_std();
     exports2.WEBSITE_FQN = (0, constants_1.fqnForType)("cloud.Website");
     var Website = class _Website extends std_1.Resource {
@@ -28718,7 +24584,7 @@ var require_test_runner = __commonJS({
     var resource_1 = require_resource();
     var test_1 = require_test();
     var cloud_1 = require_cloud();
-    var constants_1 = require_constants2();
+    var constants_1 = require_constants();
     var std_1 = require_std();
     exports2.TEST_RUNNER_FQN = (0, constants_1.fqnForType)("std.TestRunner");
     var TestRunner = class _TestRunner extends resource_1.Resource {
@@ -29051,7 +24917,7 @@ var require_platform_manager = __commonJS({
     var process_1 = require("process");
     var vm = __importStar2(require("vm"));
     var util_1 = require_util2();
-    var types_1 = require_types();
+    var types_1 = require_types2();
     var BUILTIN_PLATFORMS = ["tf-aws", "tf-azure", "tf-gcp", "sim"];
     exports2.SECRETS_FILE_NAME = "secrets.json";
     var PlatformManager = class {
@@ -29290,8 +25156,8 @@ var require_app = __commonJS({
     exports2.preSynthesizeAllConstructs = exports2.App = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
     var constructs_1 = require_lib();
-    var errors_1 = require_errors();
-    var constants_1 = require_constants2();
+    var errors_1 = require_errors2();
+    var constants_1 = require_constants();
     var platform_1 = require_platform2();
     var node_1 = require_node();
     var App = class extends constructs_1.Construct {
@@ -29789,49 +25655,941 @@ var require_core3 = __commonJS({
   }
 });
 
-// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/http/http.js
-var require_http = __commonJS({
-  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/http/http.js"(exports2) {
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js
+var require_json_schema = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    var _a;
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.JsonSchema = void 0;
+    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
+    var ajv_1 = __importDefault(require_ajv());
+    var core_1 = require_core3();
+    var util_1 = require_util2();
+    var JsonSchema = class _JsonSchema {
+      static {
+        __name(this, "JsonSchema");
+      }
+      /**
+       * @internal
+       */
+      static _toInflightType(schema) {
+        return core_1.InflightClient.forType(__filename, `${this.name}._createJsonSchema(${JSON.stringify(schema)})`);
+      }
+      /**
+       * Static method for creating a StructSchema used for lifting a struct to an inflight type
+       *
+       * @internal
+       */
+      static _createJsonSchema(schema) {
+        return new _JsonSchema(schema);
+      }
+      constructor(schema) {
+        this._rawSchema = schema;
+        this.validator = new ajv_1.default({ allErrors: true, allowUnionTypes: true });
+      }
+      /**
+       * Attempt to validate a json object against the schema
+       *
+       * @param obj the Json object to validate
+       * @throws an error if the json object is not valid
+       */
+      validate(obj, options) {
+        if (options?.unsafe) {
+          return;
+        }
+        const validator = this.validator.compile(this._rawSchema);
+        const valid = validator(obj);
+        if (!valid) {
+          const schemaId = this._rawSchema.$id.replace("/", "");
+          throw new Error(`unable to parse ${schemaId}:
+- ${validator.errors?.map((error) => schemaId + error.instancePath + " " + error.message).join("\n- ")}`);
+        }
+      }
+      /**
+       * Retrieve the json schema as a string
+       *
+       * @returns the schema as a string
+       */
+      asStr() {
+        return JSON.stringify(this._rawSchema);
+      }
+      /** @internal */
+      _fromJson(obj, validateOptions) {
+        this.validate(obj, validateOptions);
+        const fields = (0, util_1.extractFieldsFromSchema)(this._rawSchema);
+        const filteredParameters = (0, util_1.filterParametersBySchema)(fields, obj);
+        return filteredParameters;
+      }
+      /** @internal */
+      _tryFromJson(obj) {
+        try {
+          return this._fromJson(obj);
+        } catch {
+          return void 0;
+        }
+      }
+      /** @internal */
+      _tryParseJson(json) {
+        try {
+          return this._fromJson(JSON.parse(json));
+        } catch {
+          return void 0;
+        }
+      }
+      /** @internal */
+      _toInflightType() {
+        return _JsonSchema._toInflightType(this._rawSchema);
+      }
+    };
+    exports2.JsonSchema = JsonSchema;
+    _a = JSII_RTTI_SYMBOL_1;
+    JsonSchema[_a] = { fqn: "@winglang/sdk.std.JsonSchema", version: "0.0.0" };
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/simulator/serialization.js
+var require_serialization = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/simulator/serialization.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.deserialize = exports2.serialize = void 0;
+    var datetime_1 = require_datetime();
+    function serialize(input) {
+      return JSON.stringify(input, (_key, value) => {
+        if (value instanceof datetime_1.Datetime) {
+          return {
+            $kind: "datetime",
+            day: value.dayOfMonth,
+            hour: value.hours,
+            min: value.min,
+            month: value.month,
+            sec: value.sec,
+            year: value.year,
+            ms: value.ms,
+            tz: value.timezone
+          };
+        }
+        return value;
+      });
+    }
+    __name(serialize, "serialize");
+    exports2.serialize = serialize;
+    function deserialize(input) {
+      return JSON.parse(input, (_key, value) => {
+        if (value === null) {
+          return void 0;
+        }
+        if (value.$kind === "datetime") {
+          return datetime_1.Datetime.fromComponents({
+            day: value.day,
+            hour: value.hour,
+            min: value.min,
+            month: value.month,
+            sec: value.sec,
+            year: value.year,
+            ms: value.ms,
+            tz: value.tz
+          });
+        }
+        return value;
+      });
+    }
+    __name(deserialize, "deserialize");
+    exports2.deserialize = deserialize;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/simulator/client.js
+var require_client = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/simulator/client.js"(exports2) {
+    "use strict";
+    var __createBinding2 = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      var desc = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function() {
+          return m[k];
+        } };
+      }
+      Object.defineProperty(o, k2, desc);
+    } : function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      o[k2] = m[k];
+    });
+    var __setModuleDefault2 = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
+      Object.defineProperty(o, "default", { enumerable: true, value: v });
+    } : function(o, v) {
+      o["default"] = v;
+    });
+    var __importStar2 = exports2 && exports2.__importStar || function(mod) {
+      if (mod && mod.__esModule)
+        return mod;
+      var result = {};
+      if (mod != null) {
+        for (var k in mod)
+          if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+            __createBinding2(result, mod, k);
+      }
+      __setModuleDefault2(result, mod);
+      return result;
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.makeSimulatorClient = void 0;
+    var http = __importStar2(require("http"));
+    var serialization_1 = require_serialization();
+    function makeHttpRequest(options) {
+      return new Promise((resolve, reject) => {
+        const req = http.request(options, (res) => {
+          let data = "";
+          res.on("data", (chunk) => {
+            data += chunk;
+          });
+          res.on("end", () => {
+            resolve(data);
+          });
+        });
+        req.on("error", (e) => {
+          reject(e);
+        });
+        if (options.body !== void 0) {
+          req.write(options.body);
+        }
+        req.end();
+      });
+    }
+    __name(makeHttpRequest, "makeHttpRequest");
+    function makeSimulatorClient(url, handle, caller) {
+      let proxy;
+      let hasThenMethod = true;
+      const get = /* @__PURE__ */ __name((_target, method, _receiver) => {
+        if (method === "then" && !hasThenMethod) {
+          return void 0;
+        }
+        return async function(...args) {
+          const body = { caller, handle, method, args };
+          const parsedUrl = new URL(url);
+          const resp = await makeHttpRequest({
+            hostname: parsedUrl.hostname,
+            port: parsedUrl.port,
+            path: "/v1/call",
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+          });
+          let parsed = (0, serialization_1.deserialize)(resp);
+          if (parsed.error) {
+            if (method === "then" && parsed.error?.message?.startsWith('Method "then" not found on resource')) {
+              hasThenMethod = false;
+              return args[0](proxy);
+            }
+            let err = new Error();
+            err.message = parsed.error?.message;
+            err.name = parsed.error?.name;
+            if (parsed.error?.stack) {
+              err.stack = `${parsed.error.stack}
+${err.stack}`;
+            }
+            throw err;
+          }
+          return parsed.result;
+        };
+      }, "get");
+      proxy = new Proxy({}, { get });
+      return proxy;
+    }
+    __name(makeSimulatorClient, "makeSimulatorClient");
+    exports2.makeSimulatorClient = makeSimulatorClient;
+  }
+});
+
+// target/test/main.wsim/.wing/inflight.BasicAuth-9.cjs
+var require_inflight_BasicAuth_9 = __commonJS({
+  "target/test/main.wsim/.wing/inflight.BasicAuth-9.cjs"(exports2, module2) {
+    "use strict";
+    var $helpers = require_helpers();
+    module2.exports = function({ $std_Json, $util_Util }) {
+      class BasicAuth {
+        static {
+          __name(this, "BasicAuth");
+        }
+        constructor({ $this_password, $this_user }) {
+          this.$this_password = $this_password;
+          this.$this_user = $this_user;
+        }
+        async call(req) {
+          try {
+            const authHeader = await this.authHeader(req.headers);
+            const credentials = await this.authCredentials(authHeader);
+            const username = credentials.username;
+            const password = credentials.password;
+            return $helpers.eq(username, this.$this_user) && $helpers.eq(password, this.$this_password);
+          } catch ($error_e) {
+            const e = $error_e.message;
+            console.log(String.raw({ raw: ["exception caught ", ""] }, e));
+            return false;
+          }
+        }
+        async authCredentials(header) {
+          const auth = await $util_Util.base64Decode(((arr, index) => {
+            if (index < 0 || index >= arr.length)
+              throw new Error("Index out of bounds");
+            return arr[index];
+          })(await header.split(" "), 1));
+          const splittedAuth = await auth.split(":");
+          const username = ((arr, index) => {
+            if (index < 0 || index >= arr.length)
+              throw new Error("Index out of bounds");
+            return arr[index];
+          })(splittedAuth, 0);
+          const password = ((arr, index) => {
+            if (index < 0 || index >= arr.length)
+              throw new Error("Index out of bounds");
+            return arr[index];
+          })(splittedAuth, 1);
+          return { "username": username, "password": password };
+        }
+        async authHeader(headers) {
+          if (await this.authHeaderPresent(headers)) {
+            const authHeaderOptional = headers["authorization"];
+            let authHeader = headers["Authorization"];
+            if ($helpers.eq(authHeader, void 0)) {
+              authHeader = authHeaderOptional;
+            }
+            return String.raw({ raw: ["", ""] }, authHeader ?? "test");
+          } else {
+            console.log(String.raw({ raw: ["headers: ", ""] }, ((json, opts) => {
+              return JSON.stringify(json, null, opts?.indent);
+            })(headers)));
+            console.log("no auth header");
+            throw new Error("no auth header");
+          }
+        }
+        async authHeaderPresent(headers) {
+          if ($helpers.eq("authorization" in headers, false) && $helpers.eq("Authorization" in headers, false)) {
+            return false;
+          }
+          return true;
+        }
+      }
+      return BasicAuth;
+    };
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/nanoid/url-alphabet/index.cjs
+var require_url_alphabet = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/nanoid/url-alphabet/index.cjs"(exports2, module2) {
+    var urlAlphabet = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
+    module2.exports = { urlAlphabet };
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/nanoid/index.cjs
+var require_nanoid = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/nanoid/index.cjs"(exports2, module2) {
+    var crypto4 = require("crypto");
+    var { urlAlphabet } = require_url_alphabet();
+    var POOL_SIZE_MULTIPLIER = 128;
+    var pool;
+    var poolOffset;
+    var fillPool = /* @__PURE__ */ __name((bytes) => {
+      if (!pool || pool.length < bytes) {
+        pool = Buffer.allocUnsafe(bytes * POOL_SIZE_MULTIPLIER);
+        crypto4.randomFillSync(pool);
+        poolOffset = 0;
+      } else if (poolOffset + bytes > pool.length) {
+        crypto4.randomFillSync(pool);
+        poolOffset = 0;
+      }
+      poolOffset += bytes;
+    }, "fillPool");
+    var random = /* @__PURE__ */ __name((bytes) => {
+      fillPool(bytes -= 0);
+      return pool.subarray(poolOffset - bytes, poolOffset);
+    }, "random");
+    var customRandom = /* @__PURE__ */ __name((alphabet, defaultSize, getRandom) => {
+      let mask = (2 << 31 - Math.clz32(alphabet.length - 1 | 1)) - 1;
+      let step = Math.ceil(1.6 * mask * defaultSize / alphabet.length);
+      return (size = defaultSize) => {
+        let id = "";
+        while (true) {
+          let bytes = getRandom(step);
+          let i = step;
+          while (i--) {
+            id += alphabet[bytes[i] & mask] || "";
+            if (id.length === size)
+              return id;
+          }
+        }
+      };
+    }, "customRandom");
+    var customAlphabet = /* @__PURE__ */ __name((alphabet, size = 21) => customRandom(alphabet, size, random), "customAlphabet");
+    var nanoid = /* @__PURE__ */ __name((size = 21) => {
+      fillPool(size -= 0);
+      let id = "";
+      for (let i = poolOffset - size; i < poolOffset; i++) {
+        id += urlAlphabet[pool[i] & 63];
+      }
+      return id;
+    }, "nanoid");
+    module2.exports = { nanoid, customAlphabet, customRandom, urlAlphabet, random };
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/ulid/dist/index.umd.js
+var require_index_umd = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/ulid/dist/index.umd.js"(exports2, module2) {
+    (function(global, factory) {
+      typeof exports2 === "object" && typeof module2 !== "undefined" ? factory(exports2) : typeof define === "function" && define.amd ? define(["exports"], factory) : factory(global.ULID = {});
+    })(exports2, function(exports3) {
+      "use strict";
+      function createError(message) {
+        var err = new Error(message);
+        err.source = "ulid";
+        return err;
+      }
+      __name(createError, "createError");
+      var ENCODING = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+      var ENCODING_LEN = ENCODING.length;
+      var TIME_MAX = Math.pow(2, 48) - 1;
+      var TIME_LEN = 10;
+      var RANDOM_LEN = 16;
+      function replaceCharAt(str, index, char) {
+        if (index > str.length - 1) {
+          return str;
+        }
+        return str.substr(0, index) + char + str.substr(index + 1);
+      }
+      __name(replaceCharAt, "replaceCharAt");
+      function incrementBase32(str) {
+        var done = void 0;
+        var index = str.length;
+        var char = void 0;
+        var charIndex = void 0;
+        var maxCharIndex = ENCODING_LEN - 1;
+        while (!done && index-- >= 0) {
+          char = str[index];
+          charIndex = ENCODING.indexOf(char);
+          if (charIndex === -1) {
+            throw createError("incorrectly encoded string");
+          }
+          if (charIndex === maxCharIndex) {
+            str = replaceCharAt(str, index, ENCODING[0]);
+            continue;
+          }
+          done = replaceCharAt(str, index, ENCODING[charIndex + 1]);
+        }
+        if (typeof done === "string") {
+          return done;
+        }
+        throw createError("cannot increment this string");
+      }
+      __name(incrementBase32, "incrementBase32");
+      function randomChar(prng) {
+        var rand = Math.floor(prng() * ENCODING_LEN);
+        if (rand === ENCODING_LEN) {
+          rand = ENCODING_LEN - 1;
+        }
+        return ENCODING.charAt(rand);
+      }
+      __name(randomChar, "randomChar");
+      function encodeTime(now, len) {
+        if (isNaN(now)) {
+          throw new Error(now + " must be a number");
+        }
+        if (now > TIME_MAX) {
+          throw createError("cannot encode time greater than " + TIME_MAX);
+        }
+        if (now < 0) {
+          throw createError("time must be positive");
+        }
+        if (Number.isInteger(now) === false) {
+          throw createError("time must be an integer");
+        }
+        var mod = void 0;
+        var str = "";
+        for (; len > 0; len--) {
+          mod = now % ENCODING_LEN;
+          str = ENCODING.charAt(mod) + str;
+          now = (now - mod) / ENCODING_LEN;
+        }
+        return str;
+      }
+      __name(encodeTime, "encodeTime");
+      function encodeRandom(len, prng) {
+        var str = "";
+        for (; len > 0; len--) {
+          str = randomChar(prng) + str;
+        }
+        return str;
+      }
+      __name(encodeRandom, "encodeRandom");
+      function decodeTime(id) {
+        if (id.length !== TIME_LEN + RANDOM_LEN) {
+          throw createError("malformed ulid");
+        }
+        var time = id.substr(0, TIME_LEN).split("").reverse().reduce(function(carry, char, index) {
+          var encodingIndex = ENCODING.indexOf(char);
+          if (encodingIndex === -1) {
+            throw createError("invalid character found: " + char);
+          }
+          return carry += encodingIndex * Math.pow(ENCODING_LEN, index);
+        }, 0);
+        if (time > TIME_MAX) {
+          throw createError("malformed ulid, timestamp too large");
+        }
+        return time;
+      }
+      __name(decodeTime, "decodeTime");
+      function detectPrng() {
+        var allowInsecure = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : false;
+        var root = arguments[1];
+        if (!root) {
+          root = typeof window !== "undefined" ? window : null;
+        }
+        var browserCrypto = root && (root.crypto || root.msCrypto);
+        if (browserCrypto) {
+          return function() {
+            var buffer = new Uint8Array(1);
+            browserCrypto.getRandomValues(buffer);
+            return buffer[0] / 255;
+          };
+        } else {
+          try {
+            var nodeCrypto = require("crypto");
+            return function() {
+              return nodeCrypto.randomBytes(1).readUInt8() / 255;
+            };
+          } catch (e) {
+          }
+        }
+        if (allowInsecure) {
+          try {
+            console.error("secure crypto unusable, falling back to insecure Math.random()!");
+          } catch (e) {
+          }
+          return function() {
+            return Math.random();
+          };
+        }
+        throw createError("secure crypto unusable, insecure Math.random not allowed");
+      }
+      __name(detectPrng, "detectPrng");
+      function factory(currPrng) {
+        if (!currPrng) {
+          currPrng = detectPrng();
+        }
+        return /* @__PURE__ */ __name(function ulid2(seedTime) {
+          if (isNaN(seedTime)) {
+            seedTime = Date.now();
+          }
+          return encodeTime(seedTime, TIME_LEN) + encodeRandom(RANDOM_LEN, currPrng);
+        }, "ulid");
+      }
+      __name(factory, "factory");
+      function monotonicFactory(currPrng) {
+        if (!currPrng) {
+          currPrng = detectPrng();
+        }
+        var lastTime = 0;
+        var lastRandom = void 0;
+        return /* @__PURE__ */ __name(function ulid2(seedTime) {
+          if (isNaN(seedTime)) {
+            seedTime = Date.now();
+          }
+          if (seedTime <= lastTime) {
+            var incrementedRandom = lastRandom = incrementBase32(lastRandom);
+            return encodeTime(lastTime, TIME_LEN) + incrementedRandom;
+          }
+          lastTime = seedTime;
+          var newRandom = lastRandom = encodeRandom(RANDOM_LEN, currPrng);
+          return encodeTime(seedTime, TIME_LEN) + newRandom;
+        }, "ulid");
+      }
+      __name(monotonicFactory, "monotonicFactory");
+      var ulid = factory();
+      exports3.replaceCharAt = replaceCharAt;
+      exports3.incrementBase32 = incrementBase32;
+      exports3.randomChar = randomChar;
+      exports3.encodeTime = encodeTime;
+      exports3.encodeRandom = encodeRandom;
+      exports3.decodeTime = decodeTime;
+      exports3.detectPrng = detectPrng;
+      exports3.factory = factory;
+      exports3.monotonicFactory = monotonicFactory;
+      exports3.ulid = ulid;
+      Object.defineProperty(exports3, "__esModule", { value: true });
+    });
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/rng.js
+function rng() {
+  if (poolPtr > rnds8Pool.length - 16) {
+    import_crypto.default.randomFillSync(rnds8Pool);
+    poolPtr = 0;
+  }
+  return rnds8Pool.slice(poolPtr, poolPtr += 16);
+}
+var import_crypto, rnds8Pool, poolPtr;
+var init_rng = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/rng.js"() {
+    import_crypto = __toESM(require("crypto"));
+    rnds8Pool = new Uint8Array(256);
+    poolPtr = rnds8Pool.length;
+    __name(rng, "rng");
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/regex.js
+var regex_default;
+var init_regex = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/regex.js"() {
+    regex_default = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/validate.js
+function validate(uuid) {
+  return typeof uuid === "string" && regex_default.test(uuid);
+}
+var validate_default;
+var init_validate = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/validate.js"() {
+    init_regex();
+    __name(validate, "validate");
+    validate_default = validate;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/stringify.js
+function stringify(arr, offset = 0) {
+  const uuid = (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
+  if (!validate_default(uuid)) {
+    throw TypeError("Stringified UUID is invalid");
+  }
+  return uuid;
+}
+var byteToHex, stringify_default;
+var init_stringify = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/stringify.js"() {
+    init_validate();
+    byteToHex = [];
+    for (let i = 0; i < 256; ++i) {
+      byteToHex.push((i + 256).toString(16).substr(1));
+    }
+    __name(stringify, "stringify");
+    stringify_default = stringify;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/v1.js
+function v1(options, buf, offset) {
+  let i = buf && offset || 0;
+  const b = buf || new Array(16);
+  options = options || {};
+  let node = options.node || _nodeId;
+  let clockseq = options.clockseq !== void 0 ? options.clockseq : _clockseq;
+  if (node == null || clockseq == null) {
+    const seedBytes = options.random || (options.rng || rng)();
+    if (node == null) {
+      node = _nodeId = [seedBytes[0] | 1, seedBytes[1], seedBytes[2], seedBytes[3], seedBytes[4], seedBytes[5]];
+    }
+    if (clockseq == null) {
+      clockseq = _clockseq = (seedBytes[6] << 8 | seedBytes[7]) & 16383;
+    }
+  }
+  let msecs = options.msecs !== void 0 ? options.msecs : Date.now();
+  let nsecs = options.nsecs !== void 0 ? options.nsecs : _lastNSecs + 1;
+  const dt = msecs - _lastMSecs + (nsecs - _lastNSecs) / 1e4;
+  if (dt < 0 && options.clockseq === void 0) {
+    clockseq = clockseq + 1 & 16383;
+  }
+  if ((dt < 0 || msecs > _lastMSecs) && options.nsecs === void 0) {
+    nsecs = 0;
+  }
+  if (nsecs >= 1e4) {
+    throw new Error("uuid.v1(): Can't create more than 10M uuids/sec");
+  }
+  _lastMSecs = msecs;
+  _lastNSecs = nsecs;
+  _clockseq = clockseq;
+  msecs += 122192928e5;
+  const tl = ((msecs & 268435455) * 1e4 + nsecs) % 4294967296;
+  b[i++] = tl >>> 24 & 255;
+  b[i++] = tl >>> 16 & 255;
+  b[i++] = tl >>> 8 & 255;
+  b[i++] = tl & 255;
+  const tmh = msecs / 4294967296 * 1e4 & 268435455;
+  b[i++] = tmh >>> 8 & 255;
+  b[i++] = tmh & 255;
+  b[i++] = tmh >>> 24 & 15 | 16;
+  b[i++] = tmh >>> 16 & 255;
+  b[i++] = clockseq >>> 8 | 128;
+  b[i++] = clockseq & 255;
+  for (let n = 0; n < 6; ++n) {
+    b[i + n] = node[n];
+  }
+  return buf || stringify_default(b);
+}
+var _nodeId, _clockseq, _lastMSecs, _lastNSecs, v1_default;
+var init_v1 = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/v1.js"() {
+    init_rng();
+    init_stringify();
+    _lastMSecs = 0;
+    _lastNSecs = 0;
+    __name(v1, "v1");
+    v1_default = v1;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/parse.js
+function parse(uuid) {
+  if (!validate_default(uuid)) {
+    throw TypeError("Invalid UUID");
+  }
+  let v;
+  const arr = new Uint8Array(16);
+  arr[0] = (v = parseInt(uuid.slice(0, 8), 16)) >>> 24;
+  arr[1] = v >>> 16 & 255;
+  arr[2] = v >>> 8 & 255;
+  arr[3] = v & 255;
+  arr[4] = (v = parseInt(uuid.slice(9, 13), 16)) >>> 8;
+  arr[5] = v & 255;
+  arr[6] = (v = parseInt(uuid.slice(14, 18), 16)) >>> 8;
+  arr[7] = v & 255;
+  arr[8] = (v = parseInt(uuid.slice(19, 23), 16)) >>> 8;
+  arr[9] = v & 255;
+  arr[10] = (v = parseInt(uuid.slice(24, 36), 16)) / 1099511627776 & 255;
+  arr[11] = v / 4294967296 & 255;
+  arr[12] = v >>> 24 & 255;
+  arr[13] = v >>> 16 & 255;
+  arr[14] = v >>> 8 & 255;
+  arr[15] = v & 255;
+  return arr;
+}
+var parse_default;
+var init_parse = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/parse.js"() {
+    init_validate();
+    __name(parse, "parse");
+    parse_default = parse;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/v35.js
+function stringToBytes(str) {
+  str = unescape(encodeURIComponent(str));
+  const bytes = [];
+  for (let i = 0; i < str.length; ++i) {
+    bytes.push(str.charCodeAt(i));
+  }
+  return bytes;
+}
+function v35_default(name, version2, hashfunc) {
+  function generateUUID(value, namespace, buf, offset) {
+    if (typeof value === "string") {
+      value = stringToBytes(value);
+    }
+    if (typeof namespace === "string") {
+      namespace = parse_default(namespace);
+    }
+    if (namespace.length !== 16) {
+      throw TypeError("Namespace must be array-like (16 iterable integer values, 0-255)");
+    }
+    let bytes = new Uint8Array(16 + value.length);
+    bytes.set(namespace);
+    bytes.set(value, namespace.length);
+    bytes = hashfunc(bytes);
+    bytes[6] = bytes[6] & 15 | version2;
+    bytes[8] = bytes[8] & 63 | 128;
+    if (buf) {
+      offset = offset || 0;
+      for (let i = 0; i < 16; ++i) {
+        buf[offset + i] = bytes[i];
+      }
+      return buf;
+    }
+    return stringify_default(bytes);
+  }
+  __name(generateUUID, "generateUUID");
+  try {
+    generateUUID.name = name;
+  } catch (err) {
+  }
+  generateUUID.DNS = DNS;
+  generateUUID.URL = URL2;
+  return generateUUID;
+}
+var DNS, URL2;
+var init_v35 = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/v35.js"() {
+    init_stringify();
+    init_parse();
+    __name(stringToBytes, "stringToBytes");
+    DNS = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
+    URL2 = "6ba7b811-9dad-11d1-80b4-00c04fd430c8";
+    __name(v35_default, "default");
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/md5.js
+function md5(bytes) {
+  if (Array.isArray(bytes)) {
+    bytes = Buffer.from(bytes);
+  } else if (typeof bytes === "string") {
+    bytes = Buffer.from(bytes, "utf8");
+  }
+  return import_crypto2.default.createHash("md5").update(bytes).digest();
+}
+var import_crypto2, md5_default;
+var init_md5 = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/md5.js"() {
+    import_crypto2 = __toESM(require("crypto"));
+    __name(md5, "md5");
+    md5_default = md5;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/v3.js
+var v3, v3_default;
+var init_v3 = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/v3.js"() {
+    init_v35();
+    init_md5();
+    v3 = v35_default("v3", 48, md5_default);
+    v3_default = v3;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/v4.js
+function v4(options, buf, offset) {
+  options = options || {};
+  const rnds = options.random || (options.rng || rng)();
+  rnds[6] = rnds[6] & 15 | 64;
+  rnds[8] = rnds[8] & 63 | 128;
+  if (buf) {
+    offset = offset || 0;
+    for (let i = 0; i < 16; ++i) {
+      buf[offset + i] = rnds[i];
+    }
+    return buf;
+  }
+  return stringify_default(rnds);
+}
+var v4_default;
+var init_v4 = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/v4.js"() {
+    init_rng();
+    init_stringify();
+    __name(v4, "v4");
+    v4_default = v4;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/sha1.js
+function sha1(bytes) {
+  if (Array.isArray(bytes)) {
+    bytes = Buffer.from(bytes);
+  } else if (typeof bytes === "string") {
+    bytes = Buffer.from(bytes, "utf8");
+  }
+  return import_crypto3.default.createHash("sha1").update(bytes).digest();
+}
+var import_crypto3, sha1_default;
+var init_sha1 = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/sha1.js"() {
+    import_crypto3 = __toESM(require("crypto"));
+    __name(sha1, "sha1");
+    sha1_default = sha1;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/v5.js
+var v5, v5_default;
+var init_v5 = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/v5.js"() {
+    init_v35();
+    init_sha1();
+    v5 = v35_default("v5", 80, sha1_default);
+    v5_default = v5;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/nil.js
+var nil_default;
+var init_nil = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/nil.js"() {
+    nil_default = "00000000-0000-0000-0000-000000000000";
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/version.js
+function version(uuid) {
+  if (!validate_default(uuid)) {
+    throw TypeError("Invalid UUID");
+  }
+  return parseInt(uuid.substr(14, 1), 16);
+}
+var version_default;
+var init_version = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/version.js"() {
+    init_validate();
+    __name(version, "version");
+    version_default = version;
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/index.js
+var esm_node_exports = {};
+__export(esm_node_exports, {
+  NIL: () => nil_default,
+  parse: () => parse_default,
+  stringify: () => stringify_default,
+  v1: () => v1_default,
+  v3: () => v3_default,
+  v4: () => v4_default,
+  v5: () => v5_default,
+  validate: () => validate_default,
+  version: () => version_default
+});
+var init_esm_node = __esm({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/node_modules/uuid/dist/esm-node/index.js"() {
+    init_v1();
+    init_v3();
+    init_v4();
+    init_v5();
+    init_nil();
+    init_version();
+    init_validate();
+    init_stringify();
+    init_parse();
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/util/child-process.js
+var require_child_process = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/util/child-process.js"(exports2) {
     "use strict";
     var _a;
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.Util = exports2.HttpMethod = exports2.RequestRedirect = exports2.RequestCache = void 0;
+    exports2.ChildProcess = void 0;
     var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
-    var url_1 = require("url");
+    var child_process_1 = require("child_process");
+    var util_1 = require_util3();
     var core_1 = require_core3();
-    var RequestCache;
-    (function(RequestCache2) {
-      RequestCache2["DEFAULT"] = "default";
-      RequestCache2["NO_STORE"] = "no-store";
-      RequestCache2["RELOAD"] = "reload";
-      RequestCache2["NO_CACHE"] = "no-cache";
-      RequestCache2["FORCE_CACHE"] = "force-cache";
-    })(RequestCache || (exports2.RequestCache = RequestCache = {}));
-    var RequestRedirect;
-    (function(RequestRedirect2) {
-      RequestRedirect2["MANUAL"] = "manual";
-      RequestRedirect2["FOLLOW"] = "follow";
-      RequestRedirect2["ERROR"] = "error";
-    })(RequestRedirect || (exports2.RequestRedirect = RequestRedirect = {}));
-    var HttpMethod;
-    (function(HttpMethod2) {
-      HttpMethod2["GET"] = "GET";
-      HttpMethod2["PUT"] = "PUT";
-      HttpMethod2["DELETE"] = "DELETE";
-      HttpMethod2["PATCH"] = "PATCH";
-      HttpMethod2["POST"] = "POST";
-      HttpMethod2["OPTIONS"] = "OPTIONS";
-      HttpMethod2["HEAD"] = "HEAD";
-    })(HttpMethod || (exports2.HttpMethod = HttpMethod = {}));
-    var defaultOptions = {
-      method: HttpMethod.GET,
-      headers: {},
-      cache: RequestCache.DEFAULT,
-      redirect: RequestRedirect.FOLLOW
-    };
-    var Util = class {
+    var ChildProcess = class {
       static {
-        __name(this, "Util");
+        __name(this, "ChildProcess");
       }
       /**
        * @internal
@@ -29839,149 +26597,330 @@ var require_http = __commonJS({
       static _toInflightType() {
         return core_1.InflightClient.forType(__filename, this.name);
       }
-      /**
-       * Executes a HTTP request to a specified URL and provides a formatted response.
-       * This method allows various HTTP methods based on the provided options.
-       * @throws Only throws if there is a networking error
-       * @param url The target URL for the request.
-       * @param options Optional parameters for customizing the HTTP request.
-       * @inflight
-       * @returns the formatted response of the call
-       */
-      static async fetch(url, options) {
-        const res = await fetch(url, { ...defaultOptions, ...options });
-        return this._formatResponse(res);
-      }
-      /**
-       * Executes a GET request to a specified URL and provides a formatted response.
-       * @param url The target URL for the GET request.
-       * @param options Optional parameters for customizing the GET request.
-       * @inflight
-       * @returns the formatted response of the call
-       */
-      static async get(url, options) {
-        return this.fetch(url, {
-          ...options,
-          method: HttpMethod.GET
+      constructor(program, args, opts) {
+        this.stdout = "";
+        this.stderr = "";
+        this.exitStatus = null;
+        const spawnOpts = {
+          cwd: opts?.cwd,
+          env: opts?.inheritEnv ? { ...process.env, ...opts.env } : { ...opts?.env },
+          stdio: [
+            opts?.stdin ?? util_1.Stdio.PIPED,
+            opts?.stdout ?? util_1.Stdio.PIPED,
+            opts?.stderr ?? util_1.Stdio.PIPED
+          ]
+        };
+        this.child = (0, child_process_1.spawn)(program, args, spawnOpts);
+        this.pid = this.child.pid;
+        this.child.on("exit", (code) => {
+          this.exitStatus = code;
         });
       }
       /**
-       * Executes a POST request to a specified URL and provides a formatted response.
-       * @param url The target URL for the POST request.
-       * @param options Optional parameters for customizing the POST request.
-       * @inflight
-       * @returns the formatted response of the call
+       * Kill the process.
+       * @param signal - the signal to send to the process (defaults to SIGTERM)
        */
-      static async post(url, options) {
-        return this.fetch(url, {
-          ...options,
-          method: HttpMethod.POST
-        });
+      kill(signal = 15) {
+        this.child.kill(signal);
       }
       /**
-       * Executes a PUT request to a specified URL and provides a formatted response.
-       * @param url The target URL for the PUT request.
-       * @param options ptional parameters for customizing the PUT request.
-       * @inflight
-       * @returns the formatted response of the call
+       * Wait for the process to finish and return its output.
+       * Calling this method multiple times will return the same output.
        */
-      static async put(url, options) {
-        return this.fetch(url, {
-          ...options,
-          method: HttpMethod.PUT
-        });
-      }
-      /**
-       * Executes a PATCH request to a specified URL and provides a formatted response.
-       * @param url The target URL for the PATCH request.
-       * @param options Optional parameters for customizing the PATCH request.
-       * @inflight
-       * @returns the formatted response of the call
-       */
-      static async patch(url, options) {
-        return this.fetch(url, {
-          ...options,
-          method: HttpMethod.PATCH
-        });
-      }
-      /**
-       * Executes a DELETE request to a specified URL and provides a formatted response.
-       * @param url The target URL for the DELETE request.
-       * @param options  Optional parameters for customizing the DELETE request.
-       * @inflight
-       * @returns the formatted response of the call
-       */
-      static async delete(url, options) {
-        return this.fetch(url, {
-          ...options,
-          method: HttpMethod.DELETE
-        });
-      }
-      /**
-       * Parses the input URL String using WHATWG URL API and returns an URL Struct.
-       * @param urlString The URL String to be parsed.
-       * @throws Will throw an error if the input String is not a valid URL.
-       * @inflight
-       * @returns An URL Struct.
-       */
-      static parseUrl(urlString) {
-        try {
-          const nodeUrl = new url_1.URL(urlString);
+      async wait() {
+        if (this.exitStatus !== null) {
           return {
-            href: nodeUrl.href,
-            protocol: nodeUrl.protocol,
-            host: nodeUrl.host,
-            hostname: nodeUrl.hostname,
-            port: nodeUrl.port,
-            pathname: nodeUrl.pathname,
-            search: nodeUrl.search,
-            hash: nodeUrl.hash,
-            origin: nodeUrl.origin,
-            username: nodeUrl.username,
-            password: nodeUrl.password
+            stdout: this.stdout,
+            stderr: this.stderr,
+            status: this.exitStatus
           };
+        }
+        return new Promise((resolve, reject) => {
+          const cleanup = /* @__PURE__ */ __name(() => {
+            this.child.off("exit", onExit);
+            this.child.off("error", onError);
+            if (this.child.stdout) {
+              this.child.stdout.off("data", onDataStdout);
+            }
+            if (this.child.stderr) {
+              this.child.stderr.off("data", onDataStderr);
+            }
+          }, "cleanup");
+          const onExit = /* @__PURE__ */ __name((code, signal) => {
+            cleanup();
+            if (code !== null) {
+              resolve({ stdout: this.stdout, stderr: this.stderr, status: code });
+            } else {
+              reject(new Error(`Process terminated by signal ${signal}`));
+            }
+          }, "onExit");
+          const onError = /* @__PURE__ */ __name((error) => {
+            cleanup();
+            reject(error);
+          }, "onError");
+          const onDataStdout = /* @__PURE__ */ __name((data) => {
+            this.stdout += data.toString();
+          }, "onDataStdout");
+          const onDataStderr = /* @__PURE__ */ __name((data) => {
+            this.stderr += data.toString();
+          }, "onDataStderr");
+          this.child.on("exit", onExit);
+          this.child.on("error", onError);
+          if (this.child.stdout) {
+            this.child.stdout.on("data", onDataStdout);
+          }
+          if (this.child.stderr) {
+            this.child.stderr.on("data", onDataStderr);
+          }
+        });
+      }
+    };
+    exports2.ChildProcess = ChildProcess;
+    _a = JSII_RTTI_SYMBOL_1;
+    ChildProcess[_a] = { fqn: "@winglang/sdk.util.ChildProcess", version: "0.0.0" };
+  }
+});
+
+// ../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/util/util.js
+var require_util3 = __commonJS({
+  "../../../../../../usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/util/util.js"(exports2) {
+    "use strict";
+    var _a;
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.Util = exports2.Stdio = void 0;
+    var JSII_RTTI_SYMBOL_1 = Symbol.for("jsii.rtti");
+    var child_process_1 = require("child_process");
+    var crypto_1 = require("crypto");
+    var util_1 = require("util");
+    var nanoid_1 = require_nanoid();
+    var ulid_1 = require_index_umd();
+    var uuid_1 = (init_esm_node(), __toCommonJS(esm_node_exports));
+    var child_process_2 = require_child_process();
+    var core_1 = require_core3();
+    var std_1 = require_std();
+    var execPromise = (0, util_1.promisify)(child_process_1.exec);
+    var execFilePromise = (0, util_1.promisify)(child_process_1.execFile);
+    var Stdio;
+    (function(Stdio2) {
+      Stdio2["INHERIT"] = "inherit";
+      Stdio2["PIPED"] = "pipe";
+      Stdio2["NULL"] = "ignore";
+    })(Stdio || (exports2.Stdio = Stdio = {}));
+    var Util = class _Util {
+      static {
+        __name(this, "Util");
+      }
+      /**
+       * Executes a command in the shell and returns its standard output.
+       * @param command The command string to execute in the shell.
+       * @param opts `ShellOptions`, such as the working directory and environment variables.
+       * @returns The standard output of the shell command.
+       * @throws An error if the shell command execution fails or returns a non-zero exit code.
+       */
+      static async shell(command, opts) {
+        const shellOpts = {
+          windowsHide: true,
+          cwd: opts?.cwd,
+          env: opts?.inheritEnv === true ? { ...process.env, ...opts?.env } : { ...opts?.env }
+        };
+        const createErrorMessage = /* @__PURE__ */ __name((error) => {
+          if (error.stderr) {
+            return `Error executing command "${command}". Exited with error: ${error.stderr}`;
+          }
+          return `Error executing command "${command}". Exited with error code: ${error.code}`;
+        }, "createErrorMessage");
+        try {
+          const { stdout } = await execPromise(command, shellOpts);
+          return stdout.toString();
         } catch (error) {
-          throw new Error(`Invalid URL: ${urlString}`);
+          const errorMessage = createErrorMessage(error);
+          if (opts?.throw !== false) {
+            throw new Error(errorMessage);
+          }
+          return errorMessage;
         }
       }
       /**
-       * Serializes an URL Struct to a String.
-       * @param url The URL Struct to be formatted.
-       * @throws Will throw an error if the input URL has invalid fields.
-       * @inflight
-       * @returns A formatted URL String.
+       * Execute a program with the given arguments, wait for it to finish, and
+       * return its outputs.
+       * @param program The program to execute.
+       * @param args An array of arguments to pass to the program.
+       * @param opts `ExecOptions`, such as the working directory and environment variables.
+       * @returns A struct containing `stdout`, `stderr` and exit `status` of the executed program.
        */
-      static formatUrl(url, options) {
+      static async exec(program, args, opts) {
+        const execOpts = {
+          windowsHide: true,
+          shell: false,
+          cwd: opts?.cwd,
+          env: opts?.inheritEnv === true ? { ...process.env, ...opts?.env } : { ...opts?.env }
+        };
         try {
-          const nodeUrl = new url_1.URL(url.href);
-          return (0, url_1.format)(nodeUrl, options);
+          const { stdout, stderr } = await execFilePromise(program, args, execOpts);
+          return {
+            stdout: stdout.toString(),
+            stderr: stderr.toString(),
+            status: 0
+          };
         } catch (error) {
-          if (error instanceof Error) {
-            throw new Error(`Unable to format URL Struct: ${error.message}`);
+          if (error.code === "ENOENT") {
+            throw new Error(`Program not found: ${error.message}`);
           } else {
-            throw new Error("Unable to format URL Struct: An unknown error occurred");
+            return {
+              stdout: error.stdout.toString(),
+              stderr: error.stderr.toString(),
+              status: error.code
+            };
           }
         }
       }
-      static async _formatResponse(response) {
-        const headers = {};
-        response.headers?.forEach((val, key) => {
-          headers[key] = val;
-        });
-        return {
-          status: response.status,
-          url: response.url,
-          ok: response.ok,
-          headers,
-          body: await response.text()
-        };
+      /**
+       * Execute a program with the given arguments, and return a `ChildProcess`
+       * object that can be used to interact with the process while it is running.
+       * @param program - The program to execute.
+       * @param args - An array of arguments to pass to the program.
+       * @param opts - Spawn options including working directory, environment variables, and stdio configurations.
+       * @returns The `ChildProcess` instance associated with the spawned process.
+       * @inflight
+       */
+      static spawn(program, args, opts) {
+        return new child_process_2.ChildProcess(program, args, opts);
+      }
+      /**
+       * Returns the value of an environment variable. Throws if not found or empty.
+       * @param name The name of the environment variable.
+       */
+      static env(name) {
+        const value = _Util.tryEnv(name);
+        if (!value) {
+          throw new Error(`Environment variable ${name} not found.`);
+        }
+        return value;
+      }
+      /**
+       * Returns the value of an environment variable. Returns `nil` if not found or empty.
+       * @param name The name of the environment variable.
+       * @returns The value of the environment variable or `nil`.
+       */
+      static tryEnv(name) {
+        return process.env[name];
+      }
+      /**
+       * Sets the given name and value as an environment variable.
+       * @param name The name of the environment variable.
+       * @param value The value of the environment variable.
+       */
+      static setEnv(name, value) {
+        process.env[name] = value;
+      }
+      /**
+       * Converts a string from UTF-8 to base64.
+       * @param stringToEncode The name of the UTF-8 string to encode.
+       * @param url If `true`, a URL-safe base64 string is returned.
+       * @returns The base64 string.
+       */
+      static base64Encode(stringToEncode, url) {
+        return Buffer.from(stringToEncode).toString(url ? "base64url" : "base64");
+      }
+      /**
+       * Converts a string from base64 to UTF-8.
+       * @param stringToDecode base64 string to decode.
+       * @param url If `true`, the source is expected to be a URL-safe base64 string.
+       * @returns The UTF-8 string.
+       */
+      static base64Decode(stringToDecode, url) {
+        return Buffer.from(stringToDecode, url ? "base64url" : "base64").toString("utf8");
+      }
+      /**
+       * Suspends execution for a given duration.
+       * @param delay The time to suspend execution.
+       * @inflight
+       */
+      static async sleep(delay) {
+        return new Promise((resolve) => setTimeout(resolve, delay.seconds * 1e3));
+      }
+      /**
+       * Run a predicate repeatedly, waiting until it returns true or until the timeout elapses.
+       * If the timeout elapses, the function throws an error.
+       *
+       * Alternatively, you can pass `throws: false` to suppress the error, and instead return a boolean
+       * indicating whether the predicate returned true within the timeout.
+       *
+       * @param predicate The function that will be evaluated.
+       * @param props Timeout and interval values, default to one 1m timeout and 0.1sec interval.
+       * @throws Will throw if the given predicate throws.
+       * @returns True if predicate is truthful within timeout.
+       * @inflight
+       */
+      static async waitUntil(predicate, props = {}) {
+        const timeout = props.timeout ?? std_1.Duration.fromMinutes(1);
+        const interval = props.interval ?? std_1.Duration.fromSeconds(0.1);
+        const f = predicate;
+        let elapsed = 0;
+        while (elapsed < timeout.seconds) {
+          if (await f()) {
+            return true;
+          }
+          elapsed += interval.seconds;
+          await this.sleep(interval);
+        }
+        if (props.throws !== false) {
+          throw new Error("Timeout elapsed");
+        }
+        return false;
+      }
+      /**
+       * Computes the SHA256 hash of the given data.
+       * @param data - The string to be hashed.
+       */
+      static sha256(data) {
+        return (0, crypto_1.createHash)("sha256").update(data).digest("hex");
+      }
+      /**
+       * Generates a version 4 UUID.
+       */
+      static uuidv4() {
+        return (0, uuid_1.v4)();
+      }
+      /**
+       * Generates a unique ID using the nanoid library.
+       # @link https://github.com/ai/nanoid
+       * @param options - Optional options object for generating the ID.
+       */
+      static nanoid(options) {
+        const size = options?.size ?? 21;
+        const nano = options?.alphabet ? (0, nanoid_1.customAlphabet)(options.alphabet, size) : void 0;
+        return nano ? nano(size) : (0, nanoid_1.nanoid)(size);
+      }
+      /**
+       * Generates universally unique lexicographically sortable identifier.
+       # @link https://github.com/ulid/javascript
+       * @param options - Optional options object for generating the ID.
+       */
+      static ulid(options) {
+        const seed = options?.seed;
+        return (0, ulid_1.ulid)(seed);
+      }
+      /**
+       * Returns a string identifying the operating system platform.
+       * @returns The operating system platform
+       * @example "linux", "darwin", "win32"
+       */
+      static os() {
+        return process.platform;
+      }
+      /**
+       * @internal
+       */
+      static _toInflightType() {
+        return core_1.InflightClient.forType(__filename, this.name);
       }
       constructor() {
       }
     };
     exports2.Util = Util;
     _a = JSII_RTTI_SYMBOL_1;
-    Util[_a] = { fqn: "@winglang/sdk.http.Util", version: "0.0.0" };
+    Util[_a] = { fqn: "@winglang/sdk.util.Util", version: "0.0.0" };
   }
 });
 
@@ -30004,36 +26943,38 @@ exports.handler = async function(event) {
     const $ctx = {
       handler: await (async () => {
         const $Closure2Client = require_inflight_Closure2_16()({
-          $counter: function() {
-            let handle = process.env.COUNTER_HANDLE_f9685446;
-            if (!handle) {
-              throw new Error("Missing environment variable: COUNTER_HANDLE_f9685446");
-            }
-            const simulatorUrl = process.env.WING_SIMULATOR_URL;
-            if (!simulatorUrl) {
-              throw new Error("Missing environment variable: WING_SIMULATOR_URL");
-            }
-            const caller = process.env.WING_SIMULATOR_CALLER;
-            if (!caller) {
-              throw new Error("Missing environment variable: WING_SIMULATOR_CALLER");
-            }
-            const backend = require_client().makeSimulatorClient(simulatorUrl, handle, caller);
-            const client2 = new Proxy(backend, {
-              get: function(target, prop, receiver) {
-                return async function(...args) {
-                  return backend.call(prop, args);
-                };
-              }
+          $__parent_this_2_notificationStorage: await (async () => {
+            const NotificationStorageClient = require_inflight_NotificationStorage_16()({
+              $Notification: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Notification", "type": "object", "properties": { "description": { "type": "string" }, "id": { "type": "string" }, "name": { "type": "string" } }, "required": ["description", "id", "name"] })
             });
-            return client2;
-          }(),
-          $myBroadcaster: await (async () => {
-            const BroadcasterClient = require_inflight_Broadcaster_8()({});
-            const client2 = new BroadcasterClient({
-              $this_clients: function() {
-                let handle = process.env.BUCKET_HANDLE_523a1d04;
+            const client2 = new NotificationStorageClient({
+              $this_counter: function() {
+                let handle = process.env.COUNTER_HANDLE_b860debc;
                 if (!handle) {
-                  throw new Error("Missing environment variable: BUCKET_HANDLE_523a1d04");
+                  throw new Error("Missing environment variable: COUNTER_HANDLE_b860debc");
+                }
+                const simulatorUrl = process.env.WING_SIMULATOR_URL;
+                if (!simulatorUrl) {
+                  throw new Error("Missing environment variable: WING_SIMULATOR_URL");
+                }
+                const caller = process.env.WING_SIMULATOR_CALLER;
+                if (!caller) {
+                  throw new Error("Missing environment variable: WING_SIMULATOR_CALLER");
+                }
+                const backend = require_client().makeSimulatorClient(simulatorUrl, handle, caller);
+                const client3 = new Proxy(backend, {
+                  get: function(target, prop, receiver) {
+                    return async function(...args) {
+                      return backend.call(prop, args);
+                    };
+                  }
+                });
+                return client3;
+              }(),
+              $this_db: function() {
+                let handle = process.env.TABLE_HANDLE_e6f18446;
+                if (!handle) {
+                  throw new Error("Missing environment variable: TABLE_HANDLE_e6f18446");
                 }
                 const simulatorUrl = process.env.WING_SIMULATOR_URL;
                 if (!simulatorUrl) {
@@ -30044,50 +26985,28 @@ exports.handler = async function(event) {
                   throw new Error("Missing environment variable: WING_SIMULATOR_CALLER");
                 }
                 return require_client().makeSimulatorClient(simulatorUrl, handle, caller);
-              }(),
-              $this_server: await (async () => {
-                const WebSocketClient = require_inflight_WebSocket_7()({});
-                const client3 = new WebSocketClient({
-                  $this_inner: await (async () => {
-                    const WebSocket_simClient = require_inflight_WebSocket_sim_6()({
-                      $http_Util: require_http().Util,
-                      $std_Json: require_json().Json
-                    });
-                    const client4 = new WebSocket_simClient({
-                      $this_localStateKey: "local",
-                      $this_state: function() {
-                        let handle = process.env.STATE_HANDLE_b63ab41d;
-                        if (!handle) {
-                          throw new Error("Missing environment variable: STATE_HANDLE_b63ab41d");
-                        }
-                        const simulatorUrl = process.env.WING_SIMULATOR_URL;
-                        if (!simulatorUrl) {
-                          throw new Error("Missing environment variable: WING_SIMULATOR_URL");
-                        }
-                        const caller = process.env.WING_SIMULATOR_CALLER;
-                        if (!caller) {
-                          throw new Error("Missing environment variable: WING_SIMULATOR_CALLER");
-                        }
-                        return require_client().makeSimulatorClient(simulatorUrl, handle, caller);
-                      }()
-                    });
-                    if (client4.$inflight_init) {
-                      await client4.$inflight_init();
-                    }
-                    return client4;
-                  })()
-                });
-                if (client3.$inflight_init) {
-                  await client3.$inflight_init();
-                }
-                return client3;
-              })()
+              }()
             });
             if (client2.$inflight_init) {
               await client2.$inflight_init();
             }
             return client2;
-          })()
+          })(),
+          $auth: await (async () => {
+            const BasicAuthClient = require_inflight_BasicAuth_9()({
+              $std_Json: require_json().Json,
+              $util_Util: require_util3().Util
+            });
+            const client2 = new BasicAuthClient({
+              $this_password: "admin",
+              $this_user: "admin"
+            });
+            if (client2.$inflight_init) {
+              await client2.$inflight_init();
+            }
+            return client2;
+          })(),
+          $std_Json: require_json().Json
         });
         const client = new $Closure2Client({});
         if (client.$inflight_init) {

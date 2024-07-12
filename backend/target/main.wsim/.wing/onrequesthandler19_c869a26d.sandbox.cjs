@@ -20,10 +20,18 @@ exports.handler = async function(event) {
           (await (async () => {
             const $Closure2Client = 
           require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/main.wsim/.wing/inflight.$Closure2-16.cjs")({
-            $counter: (function() {
-  let handle = process.env.COUNTER_HANDLE_7ced9640;
+            $__parent_this_2_notificationStorage: 
+      (await (async () => {
+        const NotificationStorageClient = 
+      require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/main.wsim/.wing/inflight.NotificationStorage-16.cjs")({
+        $Notification: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js").JsonSchema._createJsonSchema({"$id":"/Notification","type":"object","properties":{"description":{"type":"string"},"id":{"type":"string"},"name":{"type":"string"}},"required":["description","id","name"]}),
+      })
+    ;
+        const client = new NotificationStorageClient({
+          $this_counter: (function() {
+  let handle = process.env.COUNTER_HANDLE_c4166356;
   if (!handle) {
-    throw new Error("Missing environment variable: COUNTER_HANDLE_7ced9640");
+    throw new Error("Missing environment variable: COUNTER_HANDLE_c4166356");
   }
   const simulatorUrl = process.env.WING_SIMULATOR_URL;
   if (!simulatorUrl) {
@@ -43,17 +51,10 @@ exports.handler = async function(event) {
   });
   return client;
 })(),
-            $myBroadcaster: 
-      (await (async () => {
-        const BroadcasterClient = 
-      require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/main.wsim/.wing/inflight.Broadcaster-8.cjs")({
-      })
-    ;
-        const client = new BroadcasterClient({
-          $this_clients: (function() {
-  let handle = process.env.BUCKET_HANDLE_1b6cd9c9;
+          $this_db: (function() {
+  let handle = process.env.TABLE_HANDLE_092916b6;
   if (!handle) {
-    throw new Error("Missing environment variable: BUCKET_HANDLE_1b6cd9c9");
+    throw new Error("Missing environment variable: TABLE_HANDLE_092916b6");
   }
   const simulatorUrl = process.env.WING_SIMULATOR_URL;
   if (!simulatorUrl) {
@@ -65,53 +66,28 @@ exports.handler = async function(event) {
   }
   return require("@winglang/sdk/lib/simulator/client").makeSimulatorClient(simulatorUrl, handle, caller);
 })(),
-          $this_server: 
+        });
+        if (client.$inflight_init) { await client.$inflight_init(); }
+        return client;
+      })())
+    ,
+            $auth: 
       (await (async () => {
-        const WebSocketClient = 
-      require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/main.wsim/.wing/inflight.WebSocket-7.cjs")({
-      })
-    ;
-        const client = new WebSocketClient({
-          $this_inner: 
-      (await (async () => {
-        const WebSocket_simClient = 
-      require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/main.wsim/.wing/inflight.WebSocket_sim-6.cjs")({
-        $http_Util: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/http/http.js").Util,
+        const BasicAuthClient = 
+      require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/main.wsim/.wing/inflight.BasicAuth-9.cjs")({
         $std_Json: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json.js").Json,
+        $util_Util: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/util/util.js").Util,
       })
     ;
-        const client = new WebSocket_simClient({
-          $this_localStateKey: "local",
-          $this_state: (function() {
-  let handle = process.env.STATE_HANDLE_63ce87a2;
-  if (!handle) {
-    throw new Error("Missing environment variable: STATE_HANDLE_63ce87a2");
-  }
-  const simulatorUrl = process.env.WING_SIMULATOR_URL;
-  if (!simulatorUrl) {
-    throw new Error("Missing environment variable: WING_SIMULATOR_URL");
-  }
-  const caller = process.env.WING_SIMULATOR_CALLER;
-  if (!caller) {
-    throw new Error("Missing environment variable: WING_SIMULATOR_CALLER");
-  }
-  return require("@winglang/sdk/lib/simulator/client").makeSimulatorClient(simulatorUrl, handle, caller);
-})(),
+        const client = new BasicAuthClient({
+          $this_password: "admin",
+          $this_user: "admin",
         });
         if (client.$inflight_init) { await client.$inflight_init(); }
         return client;
       })())
     ,
-        });
-        if (client.$inflight_init) { await client.$inflight_init(); }
-        return client;
-      })())
-    ,
-        });
-        if (client.$inflight_init) { await client.$inflight_init(); }
-        return client;
-      })())
-    ,
+            $std_Json: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json.js").Json,
           })
         ;
             const client = new $Closure2Client({

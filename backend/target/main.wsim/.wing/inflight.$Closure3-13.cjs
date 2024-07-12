@@ -8,12 +8,12 @@ module.exports = function({ $__parent_this_3_categoryStorage, $auth, $std_Json }
       return $obj;
     }
     async handle(req) {
-      const categorys = (await $__parent_this_3_categoryStorage.list());
+      const categories = (await $__parent_this_3_categoryStorage.list());
       const authenticated = (await $auth.call(req));
       if ((!authenticated)) {
         return ({"status": 401, "headers": ({["Content-Type"]: "text/plain"}), "body": "Unauthorized"});
       }
-      return ({"status": 200, "body": ((json, opts) => { return JSON.stringify(json, null, opts?.indent) })(({"items": categorys}))});
+      return ({"status": 200, "body": ((json, opts) => { return JSON.stringify(json, null, opts?.indent) })(({"items": categories}))});
     }
   }
   return $Closure3;

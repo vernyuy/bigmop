@@ -9,7 +9,7 @@ const util = $stdlib.util;
 const http = $stdlib.http;
 const basicAuth = require("./preflight.auth-17.cjs");
 const broadcaster = require("./preflight.broadcaster-16.cjs");
-const Category = $stdlib.std.Struct._createJsonSchema({$id:"/Category",type:"object",properties:{description:{type:"string"},id:{type:"string"},name:{type:"string"},},required:["description","id","name",]});
+const Category = $stdlib.std.Struct._createJsonSchema({$id:"/Category",type:"object",properties:{createdAt:{type:"string"},description:{type:"string"},id:{type:"string"},name:{type:"string"},},required:["createdAt","description","id","name",]});
 const ColumnType =
   (function (tmp) {
     tmp["STRING"] = "STRING";

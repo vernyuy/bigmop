@@ -24,7 +24,7 @@ exports.handler = async function(event) {
       (await (async () => {
         const OrderStorageClient = 
       require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/test/main.wsim/.wing/inflight.OrderStorage-12.cjs")({
-        $Order: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js").JsonSchema._createJsonSchema({"$id":"/Order","type":"object","properties":{"id":{"type":"string"},"productId":{"type":"string"},"qty":{"type":"number"},"status":{"type":"string"}},"required":["id","productId","qty","status"]}),
+        $Order: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js").JsonSchema._createJsonSchema({"$id":"/Order","type":"object","properties":{"cartID":{"type":"string"},"id":{"type":"string"},"orderProducts":{"type":"array","items":{"type":"object","patternProperties":{".*":{"type":"object","properties":{"productID":{"type":"string"},"qty":{"type":"number"},"totalPrice":{"type":"number"}},"required":["productID","qty","totalPrice"]}}}},"status":{"type":"string"},"userID":{"type":"string"}},"required":["cartID","id","orderProducts","status","userID"]}),
       })
     ;
         const client = new OrderStorageClient({

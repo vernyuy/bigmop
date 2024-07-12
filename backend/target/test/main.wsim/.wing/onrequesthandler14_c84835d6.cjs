@@ -24,7 +24,7 @@ exports.handler = async function(event) {
       (await (async () => {
         const SubCategoryStorageClient = 
       require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/test/main.wsim/.wing/inflight.SubCategoryStorage-14.cjs")({
-        $SubCategory: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js").JsonSchema._createJsonSchema({"$id":"/SubCategory","type":"object","properties":{"description":{"type":"string"},"id":{"type":"string"},"name":{"type":"string"},"parentSubCategory":{"type":"string"}},"required":["description","id","name","parentSubCategory"]}),
+        $SubCategory: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js").JsonSchema._createJsonSchema({"$id":"/SubCategory","type":"object","properties":{"description":{"type":"string"},"id":{"type":"string"},"name":{"type":"string"},"parentCategoryID":{"type":"string"}},"required":["description","id","name","parentCategoryID"]}),
       })
     ;
         const client = new SubCategoryStorageClient({

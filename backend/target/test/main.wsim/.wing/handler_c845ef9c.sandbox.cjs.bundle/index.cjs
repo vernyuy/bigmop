@@ -523,9 +523,9 @@ var require_helpers = __commonJS({
   }
 });
 
-// target/test/main.wsim/.wing/inflight.$Closure3-16.cjs
-var require_inflight_Closure3_16 = __commonJS({
-  "target/test/main.wsim/.wing/inflight.$Closure3-16.cjs"(exports2, module2) {
+// target/test/main.wsim/.wing/inflight.$Closure3-17.cjs
+var require_inflight_Closure3_17 = __commonJS({
+  "target/test/main.wsim/.wing/inflight.$Closure3-17.cjs"(exports2, module2) {
     "use strict";
     var $helpers = require_helpers();
     module2.exports = function({ $api_url, $counter, $http_Util }) {
@@ -26024,7 +26024,7 @@ var require_http = __commonJS({
 var $handler = void 0;
 exports.handler = async function(event) {
   $handler = $handler ?? await (async () => {
-    const $Closure3Client = require_inflight_Closure3_16()({
+    const $Closure3Client = require_inflight_Closure3_17()({
       $api_url: process.env["WING_TOKEN_WSIM_ROOT_ENV0_API_ATTRS_URL"],
       $counter: function() {
         let handle = process.env.COUNTER_HANDLE_f9685446;

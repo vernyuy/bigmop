@@ -18,6 +18,7 @@ enum ColumnType {
     id: str;
     name: str;
     description: str;
+    createdAt: str;
   }
 
   /*************************************************************************
@@ -152,7 +153,7 @@ pub interface ICategoryStorage extends std.IResource {
       });
   
       this.api.get("/categories", inflight (req): cloud.ApiResponse => {
-          let categorys = this.categoryStorage.list();
+          let categories = this.categoryStorage.list();
           let authenticated = auth.call(req);  
           if (!authenticated) {
               return {
@@ -166,7 +167,7 @@ pub interface ICategoryStorage extends std.IResource {
           return {
             status:200,
             body: Json.stringify({
-              items: categorys
+              items: categories
             })
           };
       });

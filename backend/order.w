@@ -18,14 +18,22 @@ enum OrderStatus {
   COMPLETED
 }
 
+struct OrderedItem{
+  productID: str;
+  qty: num;
+  totalPrice: num;
+}
+
 /*************************************************************************
  * Define an order Item Struct
  *************************************************************************/
 struct Order {
   id: str;
-  productId: str;
-  qty: num;
   status: str;
+  userID: str;
+  cartID: str;
+  orderedProducts: Array<Map<OrderedItem>>;
+  createdAt: str;
 }
 
 
@@ -37,7 +45,7 @@ interface IOrderStorage extends std.IResource {
   inflight add(id: str, j: Json): void;
   inflight get(id: str): Order?;
   inflight list(): Array<Json>?;
-  inflight updateOrderStatus(id: str, status: str): void;
+  inflight updateOrderStatus(id: str, userId: str, status: str): void;
 }
 
 
@@ -85,7 +93,7 @@ interface IOrderStorage extends std.IResource {
       return orderJson;
   }
 
-  pub inflight updateOrderStatus(id: str, status: str) {
+  pub inflight updateOrderStatus(id: str, userId: str, status: str) {
       let updatedItem = {
         status: status
       };
@@ -115,7 +123,7 @@ pub class OrderService {
     this.api = api;
 
     // API endpoints
-    this.api.post("/order/:id/:qty", inflight (req): cloud.ApiResponse => {
+    this.api.post("/order/:id", inflight (req): cloud.ApiResponse => {
       let authenticated = auth.call(req);  
       if (!authenticated) {
           return {
@@ -128,19 +136,21 @@ pub class OrderService {
         }  
       if let body = req.body {
         let id = "{this.counter.inc()}";
-        let prodId = req.vars.get("id");
+        let userId = req.vars.get("userId");
+        let reqBody = Json.parse(req.body!);
+        let orderedItems = reqBody.get("orderedItems");
         let orderQty = req.vars.get("qty");
-        this.storage.add(id, {id: id, qty: num.fromStr(orderQty), prodId: prodId, status: "PENDING"});
+        this.storage.add(id, {id: id, userId: userId, orderedItems: orderedItems, status: "PENDING"});
         log("Sending to queue");
         queue.push(Json.stringify({
                 id: id,
-                prodId: prodId,
-                orderQty: orderQty
+                userId: userId,
+                orderedItems: orderedItems
               }));
               log("Queue recieved");
         return {
           status:201,
-          body: prodId
+          body: id
         };
       } else {
         return {
@@ -193,10 +203,8 @@ pub class OrderService {
     this.queue.setConsumer(inflight (message) => {
       let orderInfo = Json.parse(message);
       let id = orderInfo.get("id").asStr();
-      let prodId = orderInfo.get("prodId").asStr();
-      let orderQty = orderInfo.get("orderQty").asStr();
-      this.prodStorage.updateProduct(prodId, num.fromStr(orderQty));
-      this.storage.updateOrderStatus(id, "COMPLETED");
+      let userId = orderInfo.get("userId").asStr();
+      this.storage.updateOrderStatus(id, userId, "COMPLETED");
     }, timeout: 3s);
     
   }

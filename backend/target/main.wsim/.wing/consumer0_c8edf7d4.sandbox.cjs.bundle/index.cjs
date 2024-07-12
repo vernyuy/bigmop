@@ -25995,7 +25995,7 @@ exports.handler = async function(event) {
         const $Closure4Client = require_inflight_Closure4_12()({
           $__parent_this_4_prodStorage: await (async () => {
             const ProductStorageClient = require_inflight_ProductStorage_10()({
-              $Product: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Product", "type": "object", "properties": { "description": { "type": "string" }, "id": { "type": "string" }, "imageUrl": { "type": "string" }, "images": { "type": "string" }, "name": { "type": "string" }, "price": { "type": "number" }, "qty": { "type": "number" }, "unit": { "type": "string" } }, "required": ["description", "id", "imageUrl", "images", "name", "price", "qty", "unit"] }),
+              $Product: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Product", "type": "object", "properties": { "categoryID": { "type": "string" }, "description": { "type": "string" }, "id": { "type": "string" }, "imageUrl": { "type": "string" }, "images": { "type": "array", "items": { "type": "string" } }, "name": { "type": "string" }, "price": { "type": "number" }, "qty": { "type": "number" }, "subCategoryID": { "type": "string" }, "unit": { "type": "string" }, "weight": { "type": "number" } }, "required": ["categoryID", "description", "id", "imageUrl", "images", "name", "price", "qty", "subCategoryID", "unit", "weight"] }),
               $std_Number: require_number().Number
             });
             const client2 = new ProductStorageClient({
@@ -26045,7 +26045,7 @@ exports.handler = async function(event) {
           })(),
           $__parent_this_4_storage: await (async () => {
             const OrderStorageClient = require_inflight_OrderStorage_12()({
-              $Order: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Order", "type": "object", "properties": { "id": { "type": "string" }, "productId": { "type": "string" }, "qty": { "type": "number" }, "status": { "type": "string" } }, "required": ["id", "productId", "qty", "status"] })
+              $Order: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Order", "type": "object", "properties": { "cartID": { "type": "string" }, "id": { "type": "string" }, "orderProducts": { "type": "array", "items": { "type": "object", "patternProperties": { ".*": { "type": "object", "properties": { "productID": { "type": "string" }, "qty": { "type": "number" }, "totalPrice": { "type": "number" } }, "required": ["productID", "qty", "totalPrice"] } } } }, "status": { "type": "string" }, "userID": { "type": "string" } }, "required": ["cartID", "id", "orderProducts", "status", "userID"] })
             });
             const client2 = new OrderStorageClient({
               $this_counter: function() {

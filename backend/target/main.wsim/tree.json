@@ -736,7 +736,7 @@
                   "version": "0.0.0"
                 },
                 "display": {
-                  "title": "GET /counter",
+                  "title": "POST /notifications",
                   "description": "A cloud function (FaaS)",
                   "sourceModule": "@winglang/sdk"
                 }
@@ -760,7 +760,7 @@
                   "version": "0.0.0"
                 },
                 "display": {
-                  "title": "POST /counter",
+                  "title": "GET /notification/:id",
                   "description": "A cloud function (FaaS)",
                   "sourceModule": "@winglang/sdk"
                 }
@@ -768,6 +768,78 @@
               "ApiEventMapping19": {
                 "id": "ApiEventMapping19",
                 "path": "root/Default/Api/ApiEventMapping19",
+                "constructInfo": {
+                  "fqn": "@winglang/sdk.std.Resource",
+                  "version": "0.0.0"
+                },
+                "display": {
+                  "hidden": true
+                }
+              },
+              "OnRequestHandler20": {
+                "id": "OnRequestHandler20",
+                "path": "root/Default/Api/OnRequestHandler20",
+                "constructInfo": {
+                  "fqn": "@winglang/sdk.cloud.Function",
+                  "version": "0.0.0"
+                },
+                "display": {
+                  "title": "GET /notifications",
+                  "description": "A cloud function (FaaS)",
+                  "sourceModule": "@winglang/sdk"
+                }
+              },
+              "ApiEventMapping20": {
+                "id": "ApiEventMapping20",
+                "path": "root/Default/Api/ApiEventMapping20",
+                "constructInfo": {
+                  "fqn": "@winglang/sdk.std.Resource",
+                  "version": "0.0.0"
+                },
+                "display": {
+                  "hidden": true
+                }
+              },
+              "OnRequestHandler21": {
+                "id": "OnRequestHandler21",
+                "path": "root/Default/Api/OnRequestHandler21",
+                "constructInfo": {
+                  "fqn": "@winglang/sdk.cloud.Function",
+                  "version": "0.0.0"
+                },
+                "display": {
+                  "title": "GET /counter",
+                  "description": "A cloud function (FaaS)",
+                  "sourceModule": "@winglang/sdk"
+                }
+              },
+              "ApiEventMapping21": {
+                "id": "ApiEventMapping21",
+                "path": "root/Default/Api/ApiEventMapping21",
+                "constructInfo": {
+                  "fqn": "@winglang/sdk.std.Resource",
+                  "version": "0.0.0"
+                },
+                "display": {
+                  "hidden": true
+                }
+              },
+              "OnRequestHandler22": {
+                "id": "OnRequestHandler22",
+                "path": "root/Default/Api/OnRequestHandler22",
+                "constructInfo": {
+                  "fqn": "@winglang/sdk.cloud.Function",
+                  "version": "0.0.0"
+                },
+                "display": {
+                  "title": "POST /counter",
+                  "description": "A cloud function (FaaS)",
+                  "sourceModule": "@winglang/sdk"
+                }
+              },
+              "ApiEventMapping22": {
+                "id": "ApiEventMapping22",
+                "path": "root/Default/Api/ApiEventMapping22",
                 "constructInfo": {
                   "fqn": "@winglang/sdk.std.Resource",
                   "version": "0.0.0"
@@ -1417,6 +1489,101 @@
               "$Closure3_0": {
                 "id": "$Closure3_0",
                 "path": "root/Default/CartService/$Closure3_0",
+                "constructInfo": {
+                  "fqn": "@winglang/sdk.std.AutoIdResource",
+                  "version": "0.0.0"
+                },
+                "display": {
+                  "hidden": true
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "@winglang/sdk.std.Resource",
+              "version": "0.0.0"
+            },
+            "display": {}
+          },
+          "NotificationStorage": {
+            "id": "NotificationStorage",
+            "path": "root/Default/NotificationStorage",
+            "children": {
+              "Table": {
+                "id": "Table",
+                "path": "root/Default/NotificationStorage/Table",
+                "constructInfo": {
+                  "fqn": "@winglang/sdk.ex.Table",
+                  "version": "0.0.0"
+                },
+                "display": {
+                  "title": "Table",
+                  "description": "A cloud NoSQL database table that can be used to store and query data"
+                }
+              },
+              "Counter": {
+                "id": "Counter",
+                "path": "root/Default/NotificationStorage/Counter",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "root/Default/NotificationStorage/Counter/Resource",
+                    "constructInfo": {
+                      "fqn": "@winglang/sdk.sim.Resource",
+                      "version": "0.0.0"
+                    },
+                    "display": {
+                      "title": "Resource",
+                      "description": "A simulated resource",
+                      "hidden": true,
+                      "color": "emerald"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "@winglang/sdk.cloud.Counter",
+                  "version": "0.0.0"
+                },
+                "display": {
+                  "title": "Counter",
+                  "description": "A distributed atomic counter"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "@winglang/sdk.std.Resource",
+              "version": "0.0.0"
+            },
+            "display": {}
+          },
+          "NotificationService": {
+            "id": "NotificationService",
+            "path": "root/Default/NotificationService",
+            "children": {
+              "$Closure1_0": {
+                "id": "$Closure1_0",
+                "path": "root/Default/NotificationService/$Closure1_0",
+                "constructInfo": {
+                  "fqn": "@winglang/sdk.std.AutoIdResource",
+                  "version": "0.0.0"
+                },
+                "display": {
+                  "hidden": true
+                }
+              },
+              "$Closure2_0": {
+                "id": "$Closure2_0",
+                "path": "root/Default/NotificationService/$Closure2_0",
+                "constructInfo": {
+                  "fqn": "@winglang/sdk.std.AutoIdResource",
+                  "version": "0.0.0"
+                },
+                "display": {
+                  "hidden": true
+                }
+              },
+              "$Closure3_0": {
+                "id": "$Closure3_0",
+                "path": "root/Default/NotificationService/$Closure3_0",
                 "constructInfo": {
                   "fqn": "@winglang/sdk.std.AutoIdResource",
                   "version": "0.0.0"

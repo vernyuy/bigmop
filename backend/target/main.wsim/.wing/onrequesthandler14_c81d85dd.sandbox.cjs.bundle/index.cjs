@@ -26940,7 +26940,7 @@ exports.handler = async function(event) {
         const $Closure3Client = require_inflight_Closure3_14()({
           $__parent_this_3_subSubCategoryStorage: await (async () => {
             const SubCategoryStorageClient = require_inflight_SubCategoryStorage_14()({
-              $SubCategory: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/SubCategory", "type": "object", "properties": { "description": { "type": "string" }, "id": { "type": "string" }, "name": { "type": "string" }, "parentSubCategory": { "type": "string" } }, "required": ["description", "id", "name", "parentSubCategory"] })
+              $SubCategory: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/SubCategory", "type": "object", "properties": { "description": { "type": "string" }, "id": { "type": "string" }, "name": { "type": "string" }, "parentCategoryID": { "type": "string" } }, "required": ["description", "id", "name", "parentCategoryID"] })
             });
             const client2 = new SubCategoryStorageClient({
               $this_counter: function() {

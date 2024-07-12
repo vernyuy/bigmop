@@ -22,7 +22,7 @@ module.exports = function({ $Order }) {
       const orderJson = (await this.$this_db.list());
       return orderJson;
     }
-    async updateOrderStatus(id, status) {
+    async updateOrderStatus(id, userId, status) {
       const updatedItem = ({"status": status});
       (await this.$this_db.update(id, updatedItem));
     }

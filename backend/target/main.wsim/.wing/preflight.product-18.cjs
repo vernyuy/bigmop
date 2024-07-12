@@ -9,7 +9,7 @@ const util = $stdlib.util;
 const http = $stdlib.http;
 const basicAuth = require("./preflight.auth-17.cjs");
 const broadcaster = require("./preflight.broadcaster-16.cjs");
-const Product = $stdlib.std.Struct._createJsonSchema({$id:"/Product",type:"object",properties:{description:{type:"string"},id:{type:"string"},imageUrl:{type:"string"},images:{type:"string"},name:{type:"string"},price:{type:"number"},qty:{type:"number"},unit:{type:"string"},},required:["description","id","imageUrl","images","name","price","qty","unit",]});
+const Product = $stdlib.std.Struct._createJsonSchema({$id:"/Product",type:"object",properties:{categoryID:{type:"string"},createdAt:{type:"string"},description:{type:"string"},id:{type:"string"},imageUrl:{type:"string"},images:{type:"array",items:{type:"string"}},name:{type:"string"},price:{type:"number"},qty:{type:"number"},subCategoryID:{type:"string"},unit:{type:"string"},weight:{type:"number"},},required:["categoryID","createdAt","description","id","imageUrl","images","name","price","qty","subCategoryID","unit","weight",]});
 const ColumnType =
   (function (tmp) {
     tmp["STRING"] = "STRING";
