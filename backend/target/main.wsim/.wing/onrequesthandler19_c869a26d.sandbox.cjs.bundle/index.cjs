@@ -551,15 +551,15 @@ var require_helpers = __commonJS({
   }
 });
 
-// target/main.wsim/.wing/inflight.$Closure2-16.cjs
-var require_inflight_Closure2_16 = __commonJS({
-  "target/main.wsim/.wing/inflight.$Closure2-16.cjs"(exports2, module2) {
+// target/main.wsim/.wing/inflight.$Closure3-16.cjs
+var require_inflight_Closure3_16 = __commonJS({
+  "target/main.wsim/.wing/inflight.$Closure3-16.cjs"(exports2, module2) {
     "use strict";
     var $helpers = require_helpers();
-    module2.exports = function({ $__parent_this_2_notificationStorage, $auth, $std_Json }) {
-      class $Closure2 {
+    module2.exports = function({ $__parent_this_3_notificationStorage, $auth, $std_Json }) {
+      class $Closure3 {
         static {
-          __name(this, "$Closure2");
+          __name(this, "$Closure3");
         }
         constructor({}) {
           const $obj = /* @__PURE__ */ __name((...args) => this.handle(...args), "$obj");
@@ -567,22 +567,17 @@ var require_inflight_Closure2_16 = __commonJS({
           return $obj;
         }
         async handle(req) {
-          const id = ((obj, key) => {
-            if (!(key in obj))
-              throw new Error(`Map does not contain key: "${key}"`);
-            return obj[key];
-          })(req.vars, "id");
-          const notification = await $__parent_this_2_notificationStorage.get(id);
+          const notifications = await $__parent_this_3_notificationStorage.list();
           const authenticated = await $auth.call(req);
           if (!authenticated) {
             return { "status": 401, "headers": { ["Content-Type"]: "text/plain" }, "body": "Unauthorized" };
           }
           return { "status": 200, "body": ((json, opts) => {
             return JSON.stringify(json, null, opts?.indent);
-          })(notification) };
+          })({ "items": notifications }) };
         }
       }
-      return $Closure2;
+      return $Closure3;
     };
   }
 });
@@ -26942,8 +26937,8 @@ exports.handler = async function(event) {
     }, "$func");
     const $ctx = {
       handler: await (async () => {
-        const $Closure2Client = require_inflight_Closure2_16()({
-          $__parent_this_2_notificationStorage: await (async () => {
+        const $Closure3Client = require_inflight_Closure3_16()({
+          $__parent_this_3_notificationStorage: await (async () => {
             const NotificationStorageClient = require_inflight_NotificationStorage_16()({
               $Notification: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Notification", "type": "object", "properties": { "description": { "type": "string" }, "id": { "type": "string" }, "name": { "type": "string" } }, "required": ["description", "id", "name"] })
             });
@@ -27008,7 +27003,7 @@ exports.handler = async function(event) {
           })(),
           $std_Json: require_json().Json
         });
-        const client = new $Closure2Client({});
+        const client = new $Closure3Client({});
         if (client.$inflight_init) {
           await client.$inflight_init();
         }

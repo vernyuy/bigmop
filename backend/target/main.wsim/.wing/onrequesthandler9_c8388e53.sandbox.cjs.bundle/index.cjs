@@ -31084,7 +31084,7 @@ exports.handler = async function(event) {
         const $Closure1Client = require_inflight_Closure1_13()({
           $__parent_this_1_categoryStorage: await (async () => {
             const CategoryStorageClient = require_inflight_CategoryStorage_13()({
-              $Category: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Category", "type": "object", "properties": { "description": { "type": "string" }, "id": { "type": "string" }, "name": { "type": "string" } }, "required": ["description", "id", "name"] })
+              $Category: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Category", "type": "object", "properties": { "createdAt": { "type": "string" }, "description": { "type": "string" }, "id": { "type": "string" }, "name": { "type": "string" } }, "required": ["createdAt", "description", "id", "name"] })
             });
             const client2 = new CategoryStorageClient({
               $this_counter: function() {

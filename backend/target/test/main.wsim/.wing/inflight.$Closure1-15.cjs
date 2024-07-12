@@ -13,7 +13,7 @@ module.exports = function({ $__parent_this_1_cartStorage, $std_Json, $std_Number
         if ($if_let_value != undefined) {
           const body = $if_let_value;
           const cart = JSON.parse($helpers.unwrap(req.body));
-          const productId = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "productId");
+          const productId = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "id");
           const userId = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "userId");
           const qty = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "qty");
           const productQty = (await $std_Number.fromJson(qty));

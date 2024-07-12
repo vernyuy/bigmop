@@ -20,7 +20,7 @@ module.exports = function({ $Cart }) {
       (await this.$this_db.delete(id));
       console.log(String.raw({ raw: ["deleting cart ", ""] }, id));
     }
-    async getCartItem(id, userId) {
+    async getCartItems(id, userId) {
       const cartJson = (await this.$this_db.tryGet(id));
       const cartItems = [];
       const userCartItems = ((obj, args) => { if (obj[args] === undefined) throw new Error(`Json property "${args}" does not exist`); return obj[args] })(cartJson, "userId");

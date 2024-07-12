@@ -24,7 +24,7 @@ exports.handler = async function(event) {
       (await (async () => {
         const CategoryStorageClient = 
       require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/main.wsim/.wing/inflight.CategoryStorage-13.cjs")({
-        $Category: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js").JsonSchema._createJsonSchema({"$id":"/Category","type":"object","properties":{"description":{"type":"string"},"id":{"type":"string"},"name":{"type":"string"}},"required":["description","id","name"]}),
+        $Category: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js").JsonSchema._createJsonSchema({"$id":"/Category","type":"object","properties":{"createdAt":{"type":"string"},"description":{"type":"string"},"id":{"type":"string"},"name":{"type":"string"}},"required":["createdAt","description","id","name"]}),
       })
     ;
         const client = new CategoryStorageClient({

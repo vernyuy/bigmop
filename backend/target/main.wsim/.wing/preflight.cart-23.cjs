@@ -57,7 +57,7 @@ class CartStorage extends $stdlib.std.Resource {
       "remove": [
         [this.db, ["delete"]],
       ],
-      "getCartItem": [
+      "getCartItems": [
         [this.db, ["tryGet"]],
       ],
       "updateCartStatus": [
@@ -119,7 +119,7 @@ class CartService extends $stdlib.std.Resource {
         });
       }
     }
-    (this.api.post("/cart/:productId/:userId/:qty", new $Closure1(this, "$Closure1")));
+    (this.api.post("/cart/:id/:userId/:qty", new $Closure1(this, "$Closure1")));
     const __parent_this_2 = this;
     class $Closure2 extends $stdlib.std.AutoIdResource {
       _id = $stdlib.core.closureId();
@@ -149,7 +149,7 @@ class CartService extends $stdlib.std.Resource {
       get _liftMap() {
         return ({
           "handle": [
-            [__parent_this_2.cartStorage, ["getCartItem"]],
+            [__parent_this_2.cartStorage, ["getCartItems"]],
           ],
           "$inflight_init": [
             [__parent_this_2.cartStorage, []],

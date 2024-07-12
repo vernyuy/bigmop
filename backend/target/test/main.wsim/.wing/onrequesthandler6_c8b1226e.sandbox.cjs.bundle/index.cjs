@@ -556,7 +556,7 @@ var require_inflight_Closure1_12 = __commonJS({
   "target/test/main.wsim/.wing/inflight.$Closure1-12.cjs"(exports2, module2) {
     "use strict";
     var $helpers = require_helpers();
-    module2.exports = function({ $__parent_this_1_counter, $__parent_this_1_storage, $auth, $queue, $std_Json, $std_Number }) {
+    module2.exports = function({ $__parent_this_1_counter, $__parent_this_1_storage, $auth, $queue, $std_Json }) {
       class $Closure1 {
         static {
           __name(this, "$Closure1");
@@ -576,29 +576,29 @@ var require_inflight_Closure1_12 = __commonJS({
             if ($if_let_value != void 0) {
               const body = $if_let_value;
               const id = String.raw({ raw: ["", ""] }, await $__parent_this_1_counter.inc());
-              const prodId = ((obj, key) => {
+              const userId = ((obj, key) => {
                 if (!(key in obj))
                   throw new Error(`Map does not contain key: "${key}"`);
                 return obj[key];
               })(req.vars, "id");
+              const reqBody = JSON.parse($helpers.unwrap(req.body));
+              const orderedItems = ((obj, args) => {
+                if (obj[args] === void 0)
+                  throw new Error(`Json property "${args}" does not exist`);
+                return obj[args];
+              })(reqBody, "orderedItems");
               const orderQty = ((obj, key) => {
                 if (!(key in obj))
                   throw new Error(`Map does not contain key: "${key}"`);
                 return obj[key];
               })(req.vars, "qty");
-              await $__parent_this_1_storage.add(id, { "id": id, "qty": ((args) => {
-                if (isNaN(args)) {
-                  throw new Error('unable to parse "' + args + '" as a number');
-                }
-                ;
-                return Number(args);
-              })(orderQty), "prodId": prodId, "status": "PENDING" });
+              await $__parent_this_1_storage.add(id, { "id": id, "userId": userId, "orderedItems": orderedItems, "status": "PENDING" });
               console.log("Sending to queue");
               await $queue.push(((json, opts) => {
                 return JSON.stringify(json, null, opts?.indent);
-              })({ "id": id, "prodId": prodId, "orderQty": orderQty }));
+              })({ "id": id, "userId": userId, "orderedItems": orderedItems }));
               console.log("Queue recieved");
-              return { "status": 201, "body": prodId };
+              return { "status": 201, "body": id };
             } else {
               return { "status": 400 };
             }
@@ -2125,7 +2125,7 @@ var require_inflight_OrderStorage_12 = __commonJS({
           const orderJson = await this.$this_db.list();
           return orderJson;
         }
-        async updateOrderStatus(id, status) {
+        async updateOrderStatus(id, userId, status) {
           const updatedItem = { "status": status };
           await this.$this_db.update(id, updatedItem);
         }
@@ -26980,7 +26980,7 @@ exports.handler = async function(event) {
           }(),
           $__parent_this_1_storage: await (async () => {
             const OrderStorageClient = require_inflight_OrderStorage_12()({
-              $Order: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Order", "type": "object", "properties": { "cartID": { "type": "string" }, "id": { "type": "string" }, "orderProducts": { "type": "array", "items": { "type": "object", "patternProperties": { ".*": { "type": "object", "properties": { "productID": { "type": "string" }, "qty": { "type": "number" }, "totalPrice": { "type": "number" } }, "required": ["productID", "qty", "totalPrice"] } } } }, "status": { "type": "string" }, "userID": { "type": "string" } }, "required": ["cartID", "id", "orderProducts", "status", "userID"] })
+              $Order: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Order", "type": "object", "properties": { "cartID": { "type": "string" }, "createdAt": { "type": "string" }, "id": { "type": "string" }, "orderedProducts": { "type": "array", "items": { "type": "object", "patternProperties": { ".*": { "type": "object", "properties": { "productID": { "type": "string" }, "qty": { "type": "number" }, "totalPrice": { "type": "number" } }, "required": ["productID", "qty", "totalPrice"] } } } }, "status": { "type": "string" }, "userID": { "type": "string" } }, "required": ["cartID", "createdAt", "id", "orderedProducts", "status", "userID"] })
             });
             const client2 = new OrderStorageClient({
               $this_counter: function() {
@@ -27056,8 +27056,7 @@ exports.handler = async function(event) {
             }
             return require_client().makeSimulatorClient(simulatorUrl, handle, caller);
           }(),
-          $std_Json: require_json().Json,
-          $std_Number: require_number().Number
+          $std_Json: require_json().Json
         });
         const client = new $Closure1Client({});
         if (client.$inflight_init) {

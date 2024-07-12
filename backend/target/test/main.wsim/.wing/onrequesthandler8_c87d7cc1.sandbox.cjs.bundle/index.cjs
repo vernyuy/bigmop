@@ -612,7 +612,7 @@ var require_inflight_OrderStorage_12 = __commonJS({
           const orderJson = await this.$this_db.list();
           return orderJson;
         }
-        async updateOrderStatus(id, status) {
+        async updateOrderStatus(id, userId, status) {
           const updatedItem = { "status": status };
           await this.$this_db.update(id, updatedItem);
         }
@@ -26929,7 +26929,7 @@ exports.handler = async function(event) {
         const $Closure3Client = require_inflight_Closure3_12()({
           $__parent_this_3_storage: await (async () => {
             const OrderStorageClient = require_inflight_OrderStorage_12()({
-              $Order: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Order", "type": "object", "properties": { "cartID": { "type": "string" }, "id": { "type": "string" }, "orderProducts": { "type": "array", "items": { "type": "object", "patternProperties": { ".*": { "type": "object", "properties": { "productID": { "type": "string" }, "qty": { "type": "number" }, "totalPrice": { "type": "number" } }, "required": ["productID", "qty", "totalPrice"] } } } }, "status": { "type": "string" }, "userID": { "type": "string" } }, "required": ["cartID", "id", "orderProducts", "status", "userID"] })
+              $Order: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Order", "type": "object", "properties": { "cartID": { "type": "string" }, "createdAt": { "type": "string" }, "id": { "type": "string" }, "orderedProducts": { "type": "array", "items": { "type": "object", "patternProperties": { ".*": { "type": "object", "properties": { "productID": { "type": "string" }, "qty": { "type": "number" }, "totalPrice": { "type": "number" } }, "required": ["productID", "qty", "totalPrice"] } } } }, "status": { "type": "string" }, "userID": { "type": "string" } }, "required": ["cartID", "createdAt", "id", "orderedProducts", "status", "userID"] })
             });
             const client2 = new OrderStorageClient({
               $this_counter: function() {

@@ -528,7 +528,7 @@ var require_inflight_Closure4_12 = __commonJS({
   "target/main.wsim/.wing/inflight.$Closure4-12.cjs"(exports2, module2) {
     "use strict";
     var $helpers = require_helpers();
-    module2.exports = function({ $__parent_this_4_prodStorage, $__parent_this_4_storage, $std_Json, $std_Number }) {
+    module2.exports = function({ $__parent_this_4_storage, $std_Json }) {
       class $Closure4 {
         static {
           __name(this, "$Closure4");
@@ -551,7 +551,7 @@ var require_inflight_Closure4_12 = __commonJS({
               throw new Error(`Json property "${args}" does not exist`);
             return obj[args];
           })(orderInfo, "id"));
-          const prodId = ((arg) => {
+          const userId = ((arg) => {
             if (typeof arg !== "string") {
               throw new Error("unable to parse " + typeof arg + " " + arg + " as a string");
             }
@@ -561,26 +561,8 @@ var require_inflight_Closure4_12 = __commonJS({
             if (obj[args] === void 0)
               throw new Error(`Json property "${args}" does not exist`);
             return obj[args];
-          })(orderInfo, "prodId"));
-          const orderQty = ((arg) => {
-            if (typeof arg !== "string") {
-              throw new Error("unable to parse " + typeof arg + " " + arg + " as a string");
-            }
-            ;
-            return JSON.parse(JSON.stringify(arg));
-          })(((obj, args) => {
-            if (obj[args] === void 0)
-              throw new Error(`Json property "${args}" does not exist`);
-            return obj[args];
-          })(orderInfo, "orderQty"));
-          await $__parent_this_4_prodStorage.updateProduct(prodId, ((args) => {
-            if (isNaN(args)) {
-              throw new Error('unable to parse "' + args + '" as a number');
-            }
-            ;
-            return Number(args);
-          })(orderQty));
-          await $__parent_this_4_storage.updateOrderStatus(id, "COMPLETED");
+          })(orderInfo, "userId"));
+          await $__parent_this_4_storage.updateOrderStatus(id, userId, "COMPLETED");
         }
       }
       return $Closure4;
@@ -588,74 +570,42 @@ var require_inflight_Closure4_12 = __commonJS({
   }
 });
 
-// target/main.wsim/.wing/inflight.ProductStorage-10.cjs
-var require_inflight_ProductStorage_10 = __commonJS({
-  "target/main.wsim/.wing/inflight.ProductStorage-10.cjs"(exports2, module2) {
+// target/main.wsim/.wing/inflight.OrderStorage-12.cjs
+var require_inflight_OrderStorage_12 = __commonJS({
+  "target/main.wsim/.wing/inflight.OrderStorage-12.cjs"(exports2, module2) {
     "use strict";
     var $helpers = require_helpers();
-    module2.exports = function({ $Product, $std_Number }) {
-      class ProductStorage {
+    module2.exports = function({ $Order }) {
+      class OrderStorage {
         static {
-          __name(this, "ProductStorage");
+          __name(this, "OrderStorage");
         }
         constructor({ $this_counter, $this_db }) {
           this.$this_counter = $this_counter;
           this.$this_db = $this_db;
         }
-        async _add(id, j) {
-          await this.$this_db.insert(id, j);
-        }
-        async add(product) {
+        async add(name, productData) {
           const id = String.raw({ raw: ["", ""] }, await this.$this_counter.inc());
-          const productJson = { "id": id, "name": ((obj, args) => {
-            if (obj[args] === void 0)
-              throw new Error(`Json property "${args}" does not exist`);
-            return obj[args];
-          })(product, "name"), "qty": ((obj, args) => {
-            if (obj[args] === void 0)
-              throw new Error(`Json property "${args}" does not exist`);
-            return obj[args];
-          })(product, "qty"), "price": ((obj, args) => {
-            if (obj[args] === void 0)
-              throw new Error(`Json property "${args}" does not exist`);
-            return obj[args];
-          })(product, "price"), "imageUrl": ((obj, args) => {
-            if (obj[args] === void 0)
-              throw new Error(`Json property "${args}" does not exist`);
-            return obj[args];
-          })(product, "imageUrl") };
-          await this._add(id, productJson);
-          console.log(String.raw({ raw: ["adding task ", " with data: ", ""] }, id, JSON.stringify(productJson)));
-          return String.raw({ raw: ["Product with id ", " added successfully"] }, id);
+          await this.$this_db.insert(id, productData);
         }
         async remove(id) {
           await this.$this_db.delete(id);
           console.log(String.raw({ raw: ["deleting product ", ""] }, id));
         }
         async get(id) {
-          const productJson = await this.$this_db.tryGet(id);
-          return $Product._fromJson(productJson);
+          const orderJson = await this.$this_db.tryGet(id);
+          return $Order._fromJson(orderJson);
         }
         async list() {
-          const productJson = await this.$this_db.list();
-          console.log(String.raw({ raw: ["", ""] }, productJson.length));
-          return productJson;
+          const orderJson = await this.$this_db.list();
+          return orderJson;
         }
-        async updateProduct(id, qty) {
-          const productId = id;
-          const orderQty = qty;
-          const response = await this.$this_db.tryGet(productId);
-          const prodQty = ((obj, args) => {
-            if (obj[args] === void 0)
-              throw new Error(`Json property "${args}" does not exist`);
-            return obj[args];
-          })($helpers.unwrap(response), "qty");
-          const totalQty = await $std_Number.fromJson(prodQty) - orderQty;
-          const updatedItem = { "qty": totalQty };
-          await this.$this_db.update(productId, updatedItem);
+        async updateOrderStatus(id, userId, status) {
+          const updatedItem = { "status": status };
+          await this.$this_db.update(id, updatedItem);
         }
       }
-      return ProductStorage;
+      return OrderStorage;
     };
   }
 });
@@ -25932,46 +25882,6 @@ ${err.stack}`;
   }
 });
 
-// target/main.wsim/.wing/inflight.OrderStorage-12.cjs
-var require_inflight_OrderStorage_12 = __commonJS({
-  "target/main.wsim/.wing/inflight.OrderStorage-12.cjs"(exports2, module2) {
-    "use strict";
-    var $helpers = require_helpers();
-    module2.exports = function({ $Order }) {
-      class OrderStorage {
-        static {
-          __name(this, "OrderStorage");
-        }
-        constructor({ $this_counter, $this_db }) {
-          this.$this_counter = $this_counter;
-          this.$this_db = $this_db;
-        }
-        async add(name, productData) {
-          const id = String.raw({ raw: ["", ""] }, await this.$this_counter.inc());
-          await this.$this_db.insert(id, productData);
-        }
-        async remove(id) {
-          await this.$this_db.delete(id);
-          console.log(String.raw({ raw: ["deleting product ", ""] }, id));
-        }
-        async get(id) {
-          const orderJson = await this.$this_db.tryGet(id);
-          return $Order._fromJson(orderJson);
-        }
-        async list() {
-          const orderJson = await this.$this_db.list();
-          return orderJson;
-        }
-        async updateOrderStatus(id, status) {
-          const updatedItem = { "status": status };
-          await this.$this_db.update(id, updatedItem);
-        }
-      }
-      return OrderStorage;
-    };
-  }
-});
-
 // target/main.wsim/.wing/consumer0_c8edf7d4.sandbox.cjs
 var $handler = void 0;
 exports.handler = async function(event) {
@@ -25993,59 +25903,9 @@ exports.handler = async function(event) {
     const $ctx = {
       handler: await (async () => {
         const $Closure4Client = require_inflight_Closure4_12()({
-          $__parent_this_4_prodStorage: await (async () => {
-            const ProductStorageClient = require_inflight_ProductStorage_10()({
-              $Product: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Product", "type": "object", "properties": { "categoryID": { "type": "string" }, "description": { "type": "string" }, "id": { "type": "string" }, "imageUrl": { "type": "string" }, "images": { "type": "array", "items": { "type": "string" } }, "name": { "type": "string" }, "price": { "type": "number" }, "qty": { "type": "number" }, "subCategoryID": { "type": "string" }, "unit": { "type": "string" }, "weight": { "type": "number" } }, "required": ["categoryID", "description", "id", "imageUrl", "images", "name", "price", "qty", "subCategoryID", "unit", "weight"] }),
-              $std_Number: require_number().Number
-            });
-            const client2 = new ProductStorageClient({
-              $this_counter: function() {
-                let handle = process.env.COUNTER_HANDLE_b7ff29cb;
-                if (!handle) {
-                  throw new Error("Missing environment variable: COUNTER_HANDLE_b7ff29cb");
-                }
-                const simulatorUrl = process.env.WING_SIMULATOR_URL;
-                if (!simulatorUrl) {
-                  throw new Error("Missing environment variable: WING_SIMULATOR_URL");
-                }
-                const caller = process.env.WING_SIMULATOR_CALLER;
-                if (!caller) {
-                  throw new Error("Missing environment variable: WING_SIMULATOR_CALLER");
-                }
-                const backend = require_client().makeSimulatorClient(simulatorUrl, handle, caller);
-                const client3 = new Proxy(backend, {
-                  get: function(target, prop, receiver) {
-                    return async function(...args) {
-                      return backend.call(prop, args);
-                    };
-                  }
-                });
-                return client3;
-              }(),
-              $this_db: function() {
-                let handle = process.env.TABLE_HANDLE_7903a5a6;
-                if (!handle) {
-                  throw new Error("Missing environment variable: TABLE_HANDLE_7903a5a6");
-                }
-                const simulatorUrl = process.env.WING_SIMULATOR_URL;
-                if (!simulatorUrl) {
-                  throw new Error("Missing environment variable: WING_SIMULATOR_URL");
-                }
-                const caller = process.env.WING_SIMULATOR_CALLER;
-                if (!caller) {
-                  throw new Error("Missing environment variable: WING_SIMULATOR_CALLER");
-                }
-                return require_client().makeSimulatorClient(simulatorUrl, handle, caller);
-              }()
-            });
-            if (client2.$inflight_init) {
-              await client2.$inflight_init();
-            }
-            return client2;
-          })(),
           $__parent_this_4_storage: await (async () => {
             const OrderStorageClient = require_inflight_OrderStorage_12()({
-              $Order: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Order", "type": "object", "properties": { "cartID": { "type": "string" }, "id": { "type": "string" }, "orderProducts": { "type": "array", "items": { "type": "object", "patternProperties": { ".*": { "type": "object", "properties": { "productID": { "type": "string" }, "qty": { "type": "number" }, "totalPrice": { "type": "number" } }, "required": ["productID", "qty", "totalPrice"] } } } }, "status": { "type": "string" }, "userID": { "type": "string" } }, "required": ["cartID", "id", "orderProducts", "status", "userID"] })
+              $Order: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Order", "type": "object", "properties": { "cartID": { "type": "string" }, "createdAt": { "type": "string" }, "id": { "type": "string" }, "orderedProducts": { "type": "array", "items": { "type": "object", "patternProperties": { ".*": { "type": "object", "properties": { "productID": { "type": "string" }, "qty": { "type": "number" }, "totalPrice": { "type": "number" } }, "required": ["productID", "qty", "totalPrice"] } } } }, "status": { "type": "string" }, "userID": { "type": "string" } }, "required": ["cartID", "createdAt", "id", "orderedProducts", "status", "userID"] })
             });
             const client2 = new OrderStorageClient({
               $this_counter: function() {
@@ -26092,8 +25952,7 @@ exports.handler = async function(event) {
             }
             return client2;
           })(),
-          $std_Json: require_json().Json,
-          $std_Number: require_number().Number
+          $std_Json: require_json().Json
         });
         const client = new $Closure4Client({});
         if (client.$inflight_init) {

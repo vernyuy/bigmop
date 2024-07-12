@@ -37,7 +37,7 @@ struct CartItemDetails{
 pub interface ICartStorage extends std.IResource {
     inflight addItemToCart(productId: str, userId: str, qty:num): str;
     inflight remove(id: str): void;
-    inflight getCartItem(id: str, userId: str): Cart?;
+    inflight getCartItems(id: str, userId: str): Cart?;
     inflight updateCartStatus(id: str, userID: str): void;
   }
 
@@ -87,7 +87,7 @@ pub interface ICartStorage extends std.IResource {
       log("deleting cart {id}");
     }
   
-    pub inflight getCartItem(id: str, userId: str): Cart {
+    pub inflight getCartItems(id: str, userId: str): Cart {
     let cartJson = this.db.tryGet(id);
     let cartItems: Array<Cart> = [];
     let userCartItems = cartJson?.get("userId");
@@ -134,10 +134,10 @@ pub interface ICartStorage extends std.IResource {
       this.cartStorage = storage;
   
       // API endpoints
-      this.api.post("/cart/:productId/:userId/:qty", inflight (req): cloud.ApiResponse => {
+      this.api.post("/cart/:id/:userId/:qty", inflight (req): cloud.ApiResponse => {
         if let body = req.body {
           let cart = Json.parse(req.body!);
-          let productId = req.vars.get("productId");
+          let productId = req.vars.get("id");
           let userId = req.vars.get("userId");
           let qty = req.vars.get("qty");
           let productQty = num.fromJson(qty);
@@ -156,7 +156,7 @@ pub interface ICartStorage extends std.IResource {
       this.api.get("/cart/:id/:userId", inflight (req): cloud.ApiResponse => {
           let id = req.vars.get("id");
           let userId = req.vars.get("userId");
-          let cart = this.cartStorage.getCartItem(id, userId);
+          let cart = this.cartStorage.getCartItems(id, userId);
           return {
             status:200,
             body: Json.stringify(cart)

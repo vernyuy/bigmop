@@ -18,9 +18,9 @@ exports.handler = async function(event) {
   const $ctx = {
   handler: 
           (await (async () => {
-            const $Closure2Client = 
-          require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/main.wsim/.wing/inflight.$Closure2-16.cjs")({
-            $__parent_this_2_notificationStorage: 
+            const $Closure3Client = 
+          require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/main.wsim/.wing/inflight.$Closure3-16.cjs")({
+            $__parent_this_3_notificationStorage: 
       (await (async () => {
         const NotificationStorageClient = 
       require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/main.wsim/.wing/inflight.NotificationStorage-16.cjs")({
@@ -90,7 +90,7 @@ exports.handler = async function(event) {
             $std_Json: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json.js").Json,
           })
         ;
-            const client = new $Closure2Client({
+            const client = new $Closure3Client({
             });
             if (client.$inflight_init) { await client.$inflight_init(); }
             return client;

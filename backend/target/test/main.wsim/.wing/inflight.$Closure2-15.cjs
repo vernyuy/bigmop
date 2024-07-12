@@ -10,7 +10,7 @@ module.exports = function({ $__parent_this_2_cartStorage, $std_Json }) {
     async handle(req) {
       const id = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "id");
       const userId = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "userId");
-      const cart = (await $__parent_this_2_cartStorage.getCartItem(id, userId));
+      const cart = (await $__parent_this_2_cartStorage.getCartItems(id, userId));
       return ({"status": 200, "body": ((json, opts) => { return JSON.stringify(json, null, opts?.indent) })(cart)});
     }
   }

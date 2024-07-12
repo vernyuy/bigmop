@@ -528,7 +528,7 @@ var require_inflight_Closure1_15 = __commonJS({
   "target/main.wsim/.wing/inflight.$Closure1-15.cjs"(exports2, module2) {
     "use strict";
     var $helpers = require_helpers();
-    module2.exports = function({ $__parent_this_1_cartStorage, $std_Json }) {
+    module2.exports = function({ $__parent_this_1_cartStorage, $std_Json, $std_Number }) {
       class $Closure1 {
         static {
           __name(this, "$Closure1");
@@ -544,7 +544,23 @@ var require_inflight_Closure1_15 = __commonJS({
             if ($if_let_value != void 0) {
               const body = $if_let_value;
               const cart = JSON.parse($helpers.unwrap(req.body));
-              const id = await $__parent_this_1_cartStorage.add(cart);
+              const productId = ((obj, key) => {
+                if (!(key in obj))
+                  throw new Error(`Map does not contain key: "${key}"`);
+                return obj[key];
+              })(req.vars, "id");
+              const userId = ((obj, key) => {
+                if (!(key in obj))
+                  throw new Error(`Map does not contain key: "${key}"`);
+                return obj[key];
+              })(req.vars, "userId");
+              const qty = ((obj, key) => {
+                if (!(key in obj))
+                  throw new Error(`Map does not contain key: "${key}"`);
+                return obj[key];
+              })(req.vars, "qty");
+              const productQty = await $std_Number.fromJson(qty);
+              const id = await $__parent_this_1_cartStorage.addItemToCart(productId, userId, productQty);
               return { "status": 201, "body": id };
             } else {
               return { "status": 400 };
@@ -562,7 +578,7 @@ var require_inflight_CartStorage_15 = __commonJS({
   "target/main.wsim/.wing/inflight.CartStorage-15.cjs"(exports2, module2) {
     "use strict";
     var $helpers = require_helpers();
-    module2.exports = function({ $Cart, $std_Number }) {
+    module2.exports = function({ $Cart }) {
       class CartStorage {
         static {
           __name(this, "CartStorage");
@@ -571,36 +587,12 @@ var require_inflight_CartStorage_15 = __commonJS({
           this.$this_counter = $this_counter;
           this.$this_db = $this_db;
         }
-        async _add(id, j) {
-          await this.$this_db.insert(id, j);
+        async _add(id, cartItem) {
+          await this.$this_db.insert(id, cartItem);
         }
-        async add(cart) {
+        async addItemToCart(productId, userId, qty) {
           const id = String.raw({ raw: ["", ""] }, await this.$this_counter.inc());
-          const cartJson = { "id": id, "firstName": ((obj, args) => {
-            if (obj[args] === void 0)
-              throw new Error(`Json property "${args}" does not exist`);
-            return obj[args];
-          })(cart, "firstName"), "lastName": ((obj, args) => {
-            if (obj[args] === void 0)
-              throw new Error(`Json property "${args}" does not exist`);
-            return obj[args];
-          })(cart, "lastName"), "dob": ((obj, args) => {
-            if (obj[args] === void 0)
-              throw new Error(`Json property "${args}" does not exist`);
-            return obj[args];
-          })(cart, "dob"), "email": ((obj, args) => {
-            if (obj[args] === void 0)
-              throw new Error(`Json property "${args}" does not exist`);
-            return obj[args];
-          })(cart, "email"), "cartname": ((obj, args) => {
-            if (obj[args] === void 0)
-              throw new Error(`Json property "${args}" does not exist`);
-            return obj[args];
-          })(cart, "cartname"), "imageUrl": ((obj, args) => {
-            if (obj[args] === void 0)
-              throw new Error(`Json property "${args}" does not exist`);
-            return obj[args];
-          })(cart, "imageUrl") };
+          const cartJson = { "id": id, "productId": productId, "userId": userId, "qty": qty, "status": "PENDING" };
           await this._add(id, cartJson);
           console.log(String.raw({ raw: ["adding cart ", " with data: ", ""] }, id, JSON.stringify(cartJson)));
           return String.raw({ raw: ["Cart with id ", " added successfully"] }, id);
@@ -609,27 +601,38 @@ var require_inflight_CartStorage_15 = __commonJS({
           await this.$this_db.delete(id);
           console.log(String.raw({ raw: ["deleting cart ", ""] }, id));
         }
-        async get(id) {
+        async getCartItem(id, userId) {
           const cartJson = await this.$this_db.tryGet(id);
-          return $Cart._fromJson(cartJson);
-        }
-        async list() {
-          const cartJson = await this.$this_db.list();
-          console.log(String.raw({ raw: ["", ""] }, cartJson.length));
-          return cartJson;
-        }
-        async updateCart(id, qty) {
-          const cartId = id;
-          const orderQty = qty;
-          const response = await this.$this_db.tryGet(cartId);
-          const prodQty = ((obj, args) => {
+          const cartItems = [];
+          const userCartItems = ((obj, args) => {
             if (obj[args] === void 0)
               throw new Error(`Json property "${args}" does not exist`);
             return obj[args];
-          })($helpers.unwrap(response), "qty");
-          const totalQty = await $std_Number.fromJson(prodQty) - orderQty;
-          const updatedItem = { "qty": totalQty };
+          })(cartJson, "userId");
+          const pendindCartItems = ((obj, args) => {
+            if (obj[args] === void 0)
+              throw new Error(`Json property "${args}" does not exist`);
+            return obj[args];
+          })(userCartItems, "PENDING");
+          return $Cart._fromJson(pendindCartItems);
+        }
+        async updateCartStatus(id, userID) {
+          const cartId = id;
+          const response = await this.$this_db.tryGet(cartId);
+          const cartStatus = ((obj, args) => {
+            if (obj[args] === void 0)
+              throw new Error(`Json property "${args}" does not exist`);
+            return obj[args];
+          })($helpers.unwrap(response), "PENDING");
+          const updatedItem = { "status": "COMPLETED" };
           await this.$this_db.update(cartId, updatedItem);
+        }
+        async updateCartProductQuantity(id, qty, userID, productID) {
+          const cartId = id;
+          const orderQty = qty;
+          const userId = userID;
+          const productId = productID;
+          const response = await this.$this_db.tryGet(cartId);
         }
       }
       return CartStorage;
@@ -25930,8 +25933,7 @@ exports.handler = async function(event) {
         const $Closure1Client = require_inflight_Closure1_15()({
           $__parent_this_1_cartStorage: await (async () => {
             const CartStorageClient = require_inflight_CartStorage_15()({
-              $Cart: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Cart", "type": "object", "properties": { "id": { "type": "string" }, "products": { "type": "array", "items": { "type": "object", "patternProperties": { ".*": { "type": "object", "properties": { "productID": { "type": "string" }, "qty": { "type": "number" }, "totalPrice": { "type": "number" } }, "required": ["productID", "qty", "totalPrice"] } } } }, "status": { "type": "string" } }, "required": ["id", "products", "status"] }),
-              $std_Number: require_number().Number
+              $Cart: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Cart", "type": "object", "properties": { "createdAt": { "type": "string" }, "id": { "type": "string" }, "productId": { "type": "string" }, "qty": { "type": "number" }, "status": { "type": "string" }, "userId": { "type": "string" } }, "required": ["createdAt", "id", "productId", "qty", "status", "userId"] })
             });
             const client2 = new CartStorageClient({
               $this_counter: function() {
@@ -25978,7 +25980,8 @@ exports.handler = async function(event) {
             }
             return client2;
           })(),
-          $std_Json: require_json().Json
+          $std_Json: require_json().Json,
+          $std_Number: require_number().Number
         });
         const client = new $Closure1Client({});
         if (client.$inflight_init) {

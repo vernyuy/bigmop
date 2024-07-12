@@ -17,7 +17,7 @@ module.exports = function({ $__parent_this_1_counter, $__parent_this_1_storage, 
         if ($if_let_value != undefined) {
           const body = $if_let_value;
           const id = String.raw({ raw: ["", ""] }, (await $__parent_this_1_counter.inc()));
-          const userId = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "userId");
+          const userId = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "id");
           const reqBody = JSON.parse($helpers.unwrap(req.body));
           const orderedItems = ((obj, args) => { if (obj[args] === undefined) throw new Error(`Json property "${args}" does not exist`); return obj[args] })(reqBody, "orderedItems");
           const orderQty = ((obj, key) => { if (!(key in obj)) throw new Error(`Map does not contain key: "${key}"`); return obj[key]; })(req.vars, "qty");

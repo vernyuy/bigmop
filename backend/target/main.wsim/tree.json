@@ -448,7 +448,7 @@
                   "version": "0.0.0"
                 },
                 "display": {
-                  "title": "POST /order/:id/:qty",
+                  "title": "POST /order/:id",
                   "description": "A cloud function (FaaS)",
                   "sourceModule": "@winglang/sdk"
                 }
@@ -664,7 +664,7 @@
                   "version": "0.0.0"
                 },
                 "display": {
-                  "title": "POST /cart",
+                  "title": "POST /cart/:id/:userId/:qty",
                   "description": "A cloud function (FaaS)",
                   "sourceModule": "@winglang/sdk"
                 }
@@ -688,7 +688,7 @@
                   "version": "0.0.0"
                 },
                 "display": {
-                  "title": "GET /cart/:id",
+                  "title": "GET /cart/:id/:userId",
                   "description": "A cloud function (FaaS)",
                   "sourceModule": "@winglang/sdk"
                 }
@@ -712,7 +712,7 @@
                   "version": "0.0.0"
                 },
                 "display": {
-                  "title": "GET /carts",
+                  "title": "POST /notifications",
                   "description": "A cloud function (FaaS)",
                   "sourceModule": "@winglang/sdk"
                 }
@@ -736,7 +736,7 @@
                   "version": "0.0.0"
                 },
                 "display": {
-                  "title": "POST /notifications",
+                  "title": "GET /notification/:id",
                   "description": "A cloud function (FaaS)",
                   "sourceModule": "@winglang/sdk"
                 }
@@ -760,7 +760,7 @@
                   "version": "0.0.0"
                 },
                 "display": {
-                  "title": "GET /notification/:id",
+                  "title": "GET /notifications",
                   "description": "A cloud function (FaaS)",
                   "sourceModule": "@winglang/sdk"
                 }
@@ -784,7 +784,7 @@
                   "version": "0.0.0"
                 },
                 "display": {
-                  "title": "GET /notifications",
+                  "title": "GET /counter",
                   "description": "A cloud function (FaaS)",
                   "sourceModule": "@winglang/sdk"
                 }
@@ -808,7 +808,7 @@
                   "version": "0.0.0"
                 },
                 "display": {
-                  "title": "GET /counter",
+                  "title": "POST /counter",
                   "description": "A cloud function (FaaS)",
                   "sourceModule": "@winglang/sdk"
                 }
@@ -816,30 +816,6 @@
               "ApiEventMapping21": {
                 "id": "ApiEventMapping21",
                 "path": "root/Default/Api/ApiEventMapping21",
-                "constructInfo": {
-                  "fqn": "@winglang/sdk.std.Resource",
-                  "version": "0.0.0"
-                },
-                "display": {
-                  "hidden": true
-                }
-              },
-              "OnRequestHandler22": {
-                "id": "OnRequestHandler22",
-                "path": "root/Default/Api/OnRequestHandler22",
-                "constructInfo": {
-                  "fqn": "@winglang/sdk.cloud.Function",
-                  "version": "0.0.0"
-                },
-                "display": {
-                  "title": "POST /counter",
-                  "description": "A cloud function (FaaS)",
-                  "sourceModule": "@winglang/sdk"
-                }
-              },
-              "ApiEventMapping22": {
-                "id": "ApiEventMapping22",
-                "path": "root/Default/Api/ApiEventMapping22",
                 "constructInfo": {
                   "fqn": "@winglang/sdk.std.Resource",
                   "version": "0.0.0"
@@ -1478,17 +1454,6 @@
               "$Closure2_0": {
                 "id": "$Closure2_0",
                 "path": "root/Default/CartService/$Closure2_0",
-                "constructInfo": {
-                  "fqn": "@winglang/sdk.std.AutoIdResource",
-                  "version": "0.0.0"
-                },
-                "display": {
-                  "hidden": true
-                }
-              },
-              "$Closure3_0": {
-                "id": "$Closure3_0",
-                "path": "root/Default/CartService/$Closure3_0",
                 "constructInfo": {
                   "fqn": "@winglang/sdk.std.AutoIdResource",
                   "version": "0.0.0"

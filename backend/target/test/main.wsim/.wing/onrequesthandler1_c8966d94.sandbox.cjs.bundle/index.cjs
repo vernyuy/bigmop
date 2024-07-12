@@ -571,7 +571,7 @@ var require_inflight_Closure2_10 = __commonJS({
             if (!(key in obj))
               throw new Error(`Map does not contain key: "${key}"`);
             return obj[key];
-          })(req.vars, "id");
+          })(req.vars, "productId");
           const product = await $__parent_this_2_productStorage.get(id);
           const authenticated = await $auth.call(req);
           if (!authenticated) {
@@ -26966,7 +26966,7 @@ exports.handler = async function(event) {
         const $Closure2Client = require_inflight_Closure2_10()({
           $__parent_this_2_productStorage: await (async () => {
             const ProductStorageClient = require_inflight_ProductStorage_10()({
-              $Product: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Product", "type": "object", "properties": { "categoryID": { "type": "string" }, "description": { "type": "string" }, "id": { "type": "string" }, "imageUrl": { "type": "string" }, "images": { "type": "array", "items": { "type": "string" } }, "name": { "type": "string" }, "price": { "type": "number" }, "qty": { "type": "number" }, "subCategoryID": { "type": "string" }, "unit": { "type": "string" }, "weight": { "type": "number" } }, "required": ["categoryID", "description", "id", "imageUrl", "images", "name", "price", "qty", "subCategoryID", "unit", "weight"] }),
+              $Product: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Product", "type": "object", "properties": { "categoryID": { "type": "string" }, "createdAt": { "type": "string" }, "description": { "type": "string" }, "id": { "type": "string" }, "imageUrl": { "type": "string" }, "images": { "type": "array", "items": { "type": "string" } }, "name": { "type": "string" }, "price": { "type": "number" }, "qty": { "type": "number" }, "subCategoryID": { "type": "string" }, "unit": { "type": "string" }, "weight": { "type": "number" } }, "required": ["categoryID", "createdAt", "description", "id", "imageUrl", "images", "name", "price", "qty", "subCategoryID", "unit", "weight"] }),
               $std_Number: require_number().Number
             });
             const client2 = new ProductStorageClient({

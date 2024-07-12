@@ -48,7 +48,7 @@
       "sourceOp": "request",
       "target": "root/env0/Api/OnRequestHandler6",
       "targetOp": "invoke",
-      "name": "post /order/:id/:qty"
+      "name": "post /order/:id"
     },
     {
       "source": "root/env0/Api",
@@ -118,76 +118,55 @@
       "sourceOp": "request",
       "target": "root/env0/Api/OnRequestHandler15",
       "targetOp": "invoke",
-      "name": "post /cart"
+      "name": "post /cart/:id/:userId/:qty"
     },
     {
       "source": "root/env0/Api",
       "sourceOp": "request",
       "target": "root/env0/Api/OnRequestHandler16",
       "targetOp": "invoke",
-      "name": "get /cart/:id"
+      "name": "get /cart/:id/:userId"
     },
     {
       "source": "root/env0/Api",
       "sourceOp": "request",
       "target": "root/env0/Api/OnRequestHandler17",
       "targetOp": "invoke",
-      "name": "get /carts"
+      "name": "post /notifications"
     },
     {
       "source": "root/env0/Api",
       "sourceOp": "request",
       "target": "root/env0/Api/OnRequestHandler18",
       "targetOp": "invoke",
-      "name": "post /notifications"
+      "name": "get /notification/:id"
     },
     {
       "source": "root/env0/Api",
       "sourceOp": "request",
       "target": "root/env0/Api/OnRequestHandler19",
       "targetOp": "invoke",
-      "name": "get /notification/:id"
+      "name": "get /notifications"
     },
     {
       "source": "root/env0/Api",
       "sourceOp": "request",
       "target": "root/env0/Api/OnRequestHandler20",
       "targetOp": "invoke",
-      "name": "get /notifications"
+      "name": "get /counter"
     },
     {
       "source": "root/env0/Api",
       "sourceOp": "request",
       "target": "root/env0/Api/OnRequestHandler21",
       "targetOp": "invoke",
-      "name": "get /counter"
-    },
-    {
-      "source": "root/env0/Api",
-      "sourceOp": "request",
-      "target": "root/env0/Api/OnRequestHandler22",
-      "targetOp": "invoke",
       "name": "post /counter"
-    },
-    {
-      "source": "root/env0/Queue/Consumer0",
-      "sourceOp": "invoke",
-      "target": "root/env0/ProductStorage",
-      "targetOp": "updateProduct",
-      "name": "call"
     },
     {
       "source": "root/env0/Queue/Consumer0",
       "sourceOp": "invoke",
       "target": "root/env0/OrderStorage",
       "targetOp": "updateOrderStatus",
-      "name": "call"
-    },
-    {
-      "source": "root/env0/Queue/Consumer0",
-      "sourceOp": "invokeAsync",
-      "target": "root/env0/ProductStorage",
-      "targetOp": "updateProduct",
       "name": "call"
     },
     {
@@ -691,80 +670,94 @@
       "source": "root/env0/Api/OnRequestHandler15",
       "sourceOp": "invoke",
       "target": "root/env0/CartStorage",
-      "targetOp": "add",
+      "targetOp": "addItemToCart",
       "name": "call"
     },
     {
       "source": "root/env0/Api/OnRequestHandler15",
       "sourceOp": "invokeAsync",
       "target": "root/env0/CartStorage",
-      "targetOp": "add",
+      "targetOp": "addItemToCart",
       "name": "call"
     },
     {
       "source": "root/env0/Api/OnRequestHandler16",
       "sourceOp": "invoke",
       "target": "root/env0/CartStorage",
-      "targetOp": "get",
+      "targetOp": "getCartItem",
       "name": "call"
     },
     {
       "source": "root/env0/Api/OnRequestHandler16",
       "sourceOp": "invokeAsync",
       "target": "root/env0/CartStorage",
-      "targetOp": "get",
+      "targetOp": "getCartItem",
       "name": "call"
     },
     {
       "source": "root/env0/Api/OnRequestHandler17",
-      "sourceOp": "invoke",
-      "target": "root/env0/CartStorage",
-      "targetOp": "list",
-      "name": "call"
-    },
-    {
-      "source": "root/env0/Api/OnRequestHandler17",
-      "sourceOp": "invokeAsync",
-      "target": "root/env0/CartStorage",
-      "targetOp": "list",
-      "name": "call"
-    },
-    {
-      "source": "root/env0/Api/OnRequestHandler18",
       "sourceOp": "invoke",
       "target": "root/env0/Broadcaster",
       "targetOp": "broadcast",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler18",
+      "source": "root/env0/Api/OnRequestHandler17",
       "sourceOp": "invoke",
       "target": "root/env0/NotificationStorage",
       "targetOp": "add",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler18",
+      "source": "root/env0/Api/OnRequestHandler17",
       "sourceOp": "invoke",
       "target": "root/env0/BasicAuth",
       "targetOp": "call",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler18",
+      "source": "root/env0/Api/OnRequestHandler17",
       "sourceOp": "invokeAsync",
       "target": "root/env0/Broadcaster",
       "targetOp": "broadcast",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler18",
+      "source": "root/env0/Api/OnRequestHandler17",
       "sourceOp": "invokeAsync",
       "target": "root/env0/NotificationStorage",
       "targetOp": "add",
       "name": "call"
     },
     {
+      "source": "root/env0/Api/OnRequestHandler17",
+      "sourceOp": "invokeAsync",
+      "target": "root/env0/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/env0/Api/OnRequestHandler18",
+      "sourceOp": "invoke",
+      "target": "root/env0/NotificationStorage",
+      "targetOp": "get",
+      "name": "call"
+    },
+    {
+      "source": "root/env0/Api/OnRequestHandler18",
+      "sourceOp": "invoke",
+      "target": "root/env0/BasicAuth",
+      "targetOp": "call",
+      "name": "call"
+    },
+    {
+      "source": "root/env0/Api/OnRequestHandler18",
+      "sourceOp": "invokeAsync",
+      "target": "root/env0/NotificationStorage",
+      "targetOp": "get",
+      "name": "call"
+    },
+    {
       "source": "root/env0/Api/OnRequestHandler18",
       "sourceOp": "invokeAsync",
       "target": "root/env0/BasicAuth",
@@ -775,95 +768,67 @@
       "source": "root/env0/Api/OnRequestHandler19",
       "sourceOp": "invoke",
       "target": "root/env0/NotificationStorage",
-      "targetOp": "get",
-      "name": "call"
-    },
-    {
-      "source": "root/env0/Api/OnRequestHandler19",
-      "sourceOp": "invoke",
-      "target": "root/env0/BasicAuth",
-      "targetOp": "call",
-      "name": "call"
-    },
-    {
-      "source": "root/env0/Api/OnRequestHandler19",
-      "sourceOp": "invokeAsync",
-      "target": "root/env0/NotificationStorage",
-      "targetOp": "get",
-      "name": "call"
-    },
-    {
-      "source": "root/env0/Api/OnRequestHandler19",
-      "sourceOp": "invokeAsync",
-      "target": "root/env0/BasicAuth",
-      "targetOp": "call",
-      "name": "call"
-    },
-    {
-      "source": "root/env0/Api/OnRequestHandler20",
-      "sourceOp": "invoke",
-      "target": "root/env0/NotificationStorage",
       "targetOp": "list",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler20",
+      "source": "root/env0/Api/OnRequestHandler19",
       "sourceOp": "invoke",
       "target": "root/env0/BasicAuth",
       "targetOp": "call",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler20",
+      "source": "root/env0/Api/OnRequestHandler19",
       "sourceOp": "invokeAsync",
       "target": "root/env0/NotificationStorage",
       "targetOp": "list",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler20",
+      "source": "root/env0/Api/OnRequestHandler19",
       "sourceOp": "invokeAsync",
       "target": "root/env0/BasicAuth",
       "targetOp": "call",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler21",
+      "source": "root/env0/Api/OnRequestHandler20",
       "sourceOp": "invoke",
       "target": "root/env0/Counter",
       "targetOp": "peek",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler21",
+      "source": "root/env0/Api/OnRequestHandler20",
       "sourceOp": "invokeAsync",
       "target": "root/env0/Counter",
       "targetOp": "peek",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler22",
+      "source": "root/env0/Api/OnRequestHandler21",
       "sourceOp": "invoke",
       "target": "root/env0/Counter",
       "targetOp": "inc",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler22",
+      "source": "root/env0/Api/OnRequestHandler21",
       "sourceOp": "invoke",
       "target": "root/env0/Broadcaster",
       "targetOp": "broadcast",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler22",
+      "source": "root/env0/Api/OnRequestHandler21",
       "sourceOp": "invokeAsync",
       "target": "root/env0/Counter",
       "targetOp": "inc",
       "name": "call"
     },
     {
-      "source": "root/env0/Api/OnRequestHandler22",
+      "source": "root/env0/Api/OnRequestHandler21",
       "sourceOp": "invokeAsync",
       "target": "root/env0/Broadcaster",
       "targetOp": "broadcast",
@@ -1333,14 +1298,14 @@
     },
     {
       "source": "root/env0/CartStorage",
-      "sourceOp": "add",
+      "sourceOp": "addItemToCart",
       "target": "root/env0/CartStorage",
       "targetOp": "_add",
       "name": "call"
     },
     {
       "source": "root/env0/CartStorage",
-      "sourceOp": "add",
+      "sourceOp": "addItemToCart",
       "target": "root/env0/CartStorage/Counter",
       "targetOp": "inc",
       "name": "call"
@@ -1354,30 +1319,30 @@
     },
     {
       "source": "root/env0/CartStorage",
-      "sourceOp": "get",
+      "sourceOp": "getCartItem",
       "target": "root/env0/CartStorage/Table",
       "targetOp": "tryGet",
       "name": "call"
     },
     {
       "source": "root/env0/CartStorage",
-      "sourceOp": "list",
-      "target": "root/env0/CartStorage/Table",
-      "targetOp": "list",
-      "name": "call"
-    },
-    {
-      "source": "root/env0/CartStorage",
-      "sourceOp": "updateCart",
+      "sourceOp": "updateCartStatus",
       "target": "root/env0/CartStorage/Table",
       "targetOp": "tryGet",
       "name": "call"
     },
     {
       "source": "root/env0/CartStorage",
-      "sourceOp": "updateCart",
+      "sourceOp": "updateCartStatus",
       "target": "root/env0/CartStorage/Table",
       "targetOp": "update",
+      "name": "call"
+    },
+    {
+      "source": "root/env0/CartStorage",
+      "sourceOp": "updateCartProductQuantity",
+      "target": "root/env0/CartStorage/Table",
+      "targetOp": "tryGet",
       "name": "call"
     },
     {

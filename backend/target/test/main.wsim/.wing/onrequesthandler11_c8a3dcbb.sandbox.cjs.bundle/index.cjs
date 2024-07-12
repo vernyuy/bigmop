@@ -567,14 +567,14 @@ var require_inflight_Closure3_13 = __commonJS({
           return $obj;
         }
         async handle(req) {
-          const categorys = await $__parent_this_3_categoryStorage.list();
+          const categories = await $__parent_this_3_categoryStorage.list();
           const authenticated = await $auth.call(req);
           if (!authenticated) {
             return { "status": 401, "headers": { ["Content-Type"]: "text/plain" }, "body": "Unauthorized" };
           }
           return { "status": 200, "body": ((json, opts) => {
             return JSON.stringify(json, null, opts?.indent);
-          })({ "items": categorys }) };
+          })({ "items": categories }) };
         }
       }
       return $Closure3;
@@ -26940,7 +26940,7 @@ exports.handler = async function(event) {
         const $Closure3Client = require_inflight_Closure3_13()({
           $__parent_this_3_categoryStorage: await (async () => {
             const CategoryStorageClient = require_inflight_CategoryStorage_13()({
-              $Category: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Category", "type": "object", "properties": { "description": { "type": "string" }, "id": { "type": "string" }, "name": { "type": "string" } }, "required": ["description", "id", "name"] })
+              $Category: require_json_schema().JsonSchema._createJsonSchema({ "$id": "/Category", "type": "object", "properties": { "createdAt": { "type": "string" }, "description": { "type": "string" }, "id": { "type": "string" }, "name": { "type": "string" } }, "required": ["createdAt", "description", "id", "name"] })
             });
             const client2 = new CategoryStorageClient({
               $this_counter: function() {

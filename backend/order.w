@@ -136,7 +136,7 @@ pub class OrderService {
         }  
       if let body = req.body {
         let id = "{this.counter.inc()}";
-        let userId = req.vars.get("userId");
+        let userId = req.vars.get("id");
         let reqBody = Json.parse(req.body!);
         let orderedItems = reqBody.get("orderedItems");
         let orderQty = req.vars.get("qty");

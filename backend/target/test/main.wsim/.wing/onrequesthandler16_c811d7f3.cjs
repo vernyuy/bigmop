@@ -24,8 +24,7 @@ exports.handler = async function(event) {
       (await (async () => {
         const CartStorageClient = 
       require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/test/main.wsim/.wing/inflight.CartStorage-15.cjs")({
-        $Cart: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js").JsonSchema._createJsonSchema({"$id":"/Cart","type":"object","properties":{"id":{"type":"string"},"products":{"type":"array","items":{"type":"object","patternProperties":{".*":{"type":"object","properties":{"productID":{"type":"string"},"qty":{"type":"number"},"totalPrice":{"type":"number"}},"required":["productID","qty","totalPrice"]}}}},"status":{"type":"string"}},"required":["id","products","status"]}),
-        $std_Number: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/number.js").Number,
+        $Cart: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js").JsonSchema._createJsonSchema({"$id":"/Cart","type":"object","properties":{"createdAt":{"type":"string"},"id":{"type":"string"},"productId":{"type":"string"},"qty":{"type":"number"},"status":{"type":"string"},"userId":{"type":"string"}},"required":["createdAt","id","productId","qty","status","userId"]}),
       })
     ;
         const client = new CartStorageClient({

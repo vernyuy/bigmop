@@ -93,7 +93,7 @@ exports.handler = async function(event) {
       (await (async () => {
         const ProductStorageClient = 
       require("/Users/pro-3ie-s/Desktop/educloud/bigmop2/backend/target/main.wsim/.wing/inflight.ProductStorage-10.cjs")({
-        $Product: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js").JsonSchema._createJsonSchema({"$id":"/Product","type":"object","properties":{"categoryID":{"type":"string"},"description":{"type":"string"},"id":{"type":"string"},"imageUrl":{"type":"string"},"images":{"type":"array","items":{"type":"string"}},"name":{"type":"string"},"price":{"type":"number"},"qty":{"type":"number"},"subCategoryID":{"type":"string"},"unit":{"type":"string"},"weight":{"type":"number"}},"required":["categoryID","description","id","imageUrl","images","name","price","qty","subCategoryID","unit","weight"]}),
+        $Product: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/json_schema.js").JsonSchema._createJsonSchema({"$id":"/Product","type":"object","properties":{"categoryID":{"type":"string"},"createdAt":{"type":"string"},"description":{"type":"string"},"id":{"type":"string"},"imageUrl":{"type":"string"},"images":{"type":"array","items":{"type":"string"}},"name":{"type":"string"},"price":{"type":"number"},"qty":{"type":"number"},"subCategoryID":{"type":"string"},"unit":{"type":"string"},"weight":{"type":"number"}},"required":["categoryID","createdAt","description","id","imageUrl","images","name","price","qty","subCategoryID","unit","weight"]}),
         $std_Number: require("/usr/local/lib/node_modules/winglang/node_modules/@winglang/sdk/lib/std/number.js").Number,
       })
     ;
